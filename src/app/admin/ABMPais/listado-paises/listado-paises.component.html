@@ -1,0 +1,82 @@
+<div class="container">
+    <div class="titulo-wrapper">
+        <h2 class="titulo-listado">Países</h2>
+    </div>
+    <div class="busqueda-acciones">
+        <div class="input-search-wrapper">
+            <input 
+                type="text" 
+                placeholder="Buscar..." 
+                class="input-search"
+                [(ngModel)]="filtro"
+                (input)="buscarPaises()" />
+            <button id="icon-button" (click)="buscarPaises()">
+                <span class="material-symbols-outlined search-icon">search</span>
+            </button>
+        </div>
+        <button type="button" class="boton-nuevo" (click)="crearPais()">
+            <span class="material-symbols-outlined">add</span>
+            Nuevo País
+        </button>
+    </div>
+    @if (paisListOriginal.length === 0) {
+            <div class="alert alert-warning">
+                ¡No hay países cargados en el sistema!
+            </div>
+        } @else if (paisList.length === 0) {
+            <div class="sin-resultados">
+                <img src="assets\img\sin-resultados.png" alt="No hay resultados" class="sin-resultados-img">
+                <p class="sin-resultados-txt">
+                    No encontramos países que coincidan con tu búsqueda
+                </p>
+            </div>
+        } @else {
+            <table class="table align-middle">
+            <thead>
+                        <tr>
+                            <th scope="col">PAÍS</th>
+                            <th scope="col">ESTADO</th>
+                            <th scope="col">ACCIONES</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (pais of paisList; track $index) {
+                            <tr>
+                                <td> {{pais.nombrePais}} </td>
+                                <td> 
+                                    <span class="estado-badge"
+                                    [ngClass]=" { 'habilitado': !pais.fechaHoraBajaPais, 'deshabilitado': pais.fechaHoraBajaPais }">
+                                        {{ pais.fechaHoraBajaPais ? 'DESHABILITADO' : 'HABILITADO'}}
+                                    </span>
+                                </td>
+                                <td>
+                                    <button id="icon-button" class="icon-button-celeste" (click)="modificarPais()" title="Modificar">
+                                        <span class="material-symbols-outlined">
+                                            edit
+                                        </span>
+                                    </button>
+                                    <button id="icon-button" class="icon-button-celeste" (click)="verProvincias()" title="Ver provincias" >
+                                        <span class="material-symbols-outlined">
+                                            globe
+                                        </span>
+                                    </button>
+                                    @if (!pais.fechaHoraBajaPais) {
+                                        <button id="icon-button" class="icon-button-rojo" (click)="deshabilitarPais()" title="Deshabilitar" >
+                                            <span class="material-symbols-outlined">
+                                                disabled_by_default
+                                            </span>
+                                        </button>
+                                    } @else {
+                                        <button id="icon-button" class="icon-button-verde" (click)="habilitarPais()" title="Habilitar" >
+                                            <span class="material-symbols-outlined">
+                                                check_box
+                                            </span>
+                                        </button>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+            </table>
+        }
+</div>
