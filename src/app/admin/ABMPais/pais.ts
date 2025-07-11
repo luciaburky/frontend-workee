@@ -1,6 +1,6 @@
 export class Pais {
-    idPais?: number;
+    id?: number;
     nombrePais?: string;
-    fechaHoraAltaPais?: string;
-    fechaHoraBajaPais?: string | null;
+    fechaHoraAlta?: string;
+    fechaHoraBaja?: string | null;
 }

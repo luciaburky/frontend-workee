@@ -1,61 +1,40 @@
 <div class="modal-content">
     <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Crear</h5>
+        <h5 class="modal-title">Crear</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" (click)="dismissModal()" aria-label="Close"></button>
     </div>
     <div class="modal-body">
-        <form>
+      <form [formGroup]="paisForm">
         <div class="mb-3">
-            <label for="recipient-name" class="col-form-label">Nombre</label>
-            <input 
-                required
-                type="text"
-                class="form-control"
-                id="recipient-name"
-                formControlName="pais"
-                placeholder="Ingrese el nombre del país">
-            @if( paisForm?.get('pais')?.invalid && (paisForm?.get('pais')?.dirty || paisForm?.get('pais')?.touched) ) {
-                @if (paisForm?.get('pais')?.errors!['required']) {
-                    <div class="text-danger">
-                        El campo “Nombre” no puede estar vacío.
-                    </div>
-                }
-            }
+          <label for="nombrePais" class="col-form-label">Nombre</label>
+          <input 
+            required
+            id="nombrePais"
+            type="text"
+            class="form-control"
+            formControlName="pais"
+            placeholder="Ingrese el nombre del país"
+            [ngClass]="{ 'is-invalid': isCampoInvalido() }">
+          @if (isCampoInvalido()) {
+            <div class="invalid-feedback">
+              El campo “Nombre” no puede estar vacío
+            </div>
+          }
+          <!-- @if (paisForm.get('pais')?.errors?.['duplicado']) {
+            <div class="invalid-feedback">
+              Ya existe un país con ese nombre
+            </div>
+          } -->
         </div>
-        </form>
+      </form>
     </div>
+
     <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="dismissModal()">Volver</button>
-        <button type="button" class="btn-guardar">Guardar</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="dismissModal()">
+          Volver
+        </button>
+        <button type="button" class="btn-guardar" (click)="enviarDatos()">
+          Guardar
+        </button>
     </div>
 </div>
-
-<!-- <div class="modal-content-interes">
-    <div class="modal-header">
-      <button type="button" class="btn btn-link grande" (click)="dismissModal()">
-        <i class="far fa-times-circle"></i>
-      </button>
-    </div>
-    <!-- <form [formGroup]="paisForm" (ngSubmit)="enviarDatos()" class="formulario-orden"> -->
-      <!-- <h2 class="estilo-letra-h2">Añadir nuevo país</h2>
-      <div class="padding">
-        <div class="estilo-letra">
-          <label for="pais">País*</label>
-        </div>
-        <div class="estilo-letra">
-          <input type="text" id="pais" formControlName="pais" placeholder="Ingresá el país" required />
-        </div>
-        <div>
-          <div *ngIf="paisForm.get('pais').hasError('required') && submitForm">
-            <div class="text-error">El país es requerido</div>
-          </div>
-          <div *ngIf="paisForm.get('pais').errors?.['soloLetras'] && submitForm">
-            <div class="text-error" >Solo se permiten letras y espacios.</div>
-          </div>
-        </div>
-        <div class="botones">
-          <div type="button" class="botones-volver estilo-letra grande" type="button" (click)="dismissModal()">Volver</div>
-          <button class="botones-submit estilo-letra grande" type="submit">Confirmar</button>
-        </div>
-      </div> -->
-  <!-- </div> -->

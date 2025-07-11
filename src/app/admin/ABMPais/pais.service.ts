@@ -21,12 +21,11 @@ export class PaisService {
     return this.id$;
   }
   
-  agregarPais(nombrePais:string){
-    const urlEndpoint = this.url + 'crearpais';
+  crearPais(nombrePais: string){
     const body ={
-      "nombrePais":nombrePais
+      "nombrePais": nombrePais
     }
-    return this.http.post(urlEndpoint,body);
+    return this.http.post(this.url,body);
   }
 
 }
