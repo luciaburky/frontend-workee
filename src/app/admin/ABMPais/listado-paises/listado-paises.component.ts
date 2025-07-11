@@ -7,6 +7,8 @@ import { ModalService } from '../../../compartidos/modal/modal.service';
 import Swal from 'sweetalert2'
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { ModificarPaisComponent } from '../modificar-pais/modificar-pais.component';
 
 @Component({
   standalone: true,
@@ -25,7 +27,7 @@ export class ListadoPaisesComponent implements OnInit{
 
   constructor(
     private paisService: PaisService,
-    // // private router: Router,
+    private router: Router,
     private modalService: ModalService,
   ) {  }
 
@@ -87,7 +89,9 @@ export class ListadoPaisesComponent implements OnInit{
   }
 
   // Ver provincias asociadas
-  verProvincias() {}
+  verProvincias(idPais: number): void {
+    this.router.navigate([`/provincias`, idPais])
+  }
 
   // Buscar paises dentro del listado
   buscarPaises() {

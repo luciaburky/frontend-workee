@@ -5,6 +5,7 @@ import { HabilitacionesComponent } from './habilitaciones/habilitaciones.compone
 import { UsuariosComponent } from './usuarios/usuarios.component';
 import { EstadisticasComponent } from './estadisticas/estadisticas.component';
 import { ListadoPaisesComponent } from './admin/ABMPais/listado-paises/listado-paises.component';
+import { ListadoProvinciasComponent } from './admin/ABMProvincia/listado-provincias/listado-provincias.component';
 
 export const routes: Routes = [
     // { path: 'buscar-ofertas', component: BuscarComponent },
@@ -16,5 +17,7 @@ export const routes: Routes = [
     // { path: 'habilitaciones', component: HabilitacionesComponent },
     // { path: 'usuarios', component: UsuariosComponent },
     // { path: 'estadisticas', component: EstadisticasComponent },
-    { path: 'paises', component: ListadoPaisesComponent }
+    { path: 'paises', component: ListadoPaisesComponent },
+    { path: 'provincias/:idPais', component: ListadoProvinciasComponent },
+
 ];
