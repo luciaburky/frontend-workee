@@ -16,6 +16,19 @@ export class PaisService {
   findAll(): Observable<Pais[]> {
     return this.http.get<Pais[]>(this.url);
   }
+  
+  deshabilitar(idPais:number) {
+    console.log("Deshabilito pais con id: " + idPais);
+    return this.http.delete<void>(`${this.url}/${idPais}`);
+  }
+  
+  habilitar(idPais:number) {
+    console.log("Habilito pais con id: " + idPais);
+    const body = {
+      "idPais": idPais
+    }
+    return this.http.put<Pais>(`${this.url}/habilitar/${idPais}`, body);
+  }
 
   getId(){
     return this.id$;
