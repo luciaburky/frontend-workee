@@ -1,11 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import Swal from 'sweetalert2';
 import { ModalService } from '../../../compartidos/modal/modal.service';
 import { PaisService } from '../pais.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { RecargarService } from '../../recargar.service';
 
 @Component({
   selector: 'app-crear-pais',
@@ -22,6 +23,7 @@ export class CrearPaisComponent implements OnInit{
     private modalService: ModalService,
     private paisService: PaisService,
     private router: Router,
+    private recargarService: RecargarService,
   ) {
     this.paisForm = new FormGroup({
       pais: new FormControl('', [Validators.required])
@@ -55,6 +57,7 @@ export class CrearPaisComponent implements OnInit{
 
     this.paisService.crearPais(nombrePais).subscribe({
       next: () => {
+        this.recargarService.emitirRecarga();
         this.submitForm = true;
         console.log("Pongo submit Form en true");
         this.dismissModal();
@@ -92,10 +95,5 @@ export class CrearPaisComponent implements OnInit{
         },
       });
   }
-  
-  // Para recargar la pagina
-  // recargar(): void {
-  //   this.listado.recargar();
-  // }
   
 }

@@ -9,6 +9,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ModificarPaisComponent } from '../modificar-pais/modificar-pais.component';
+import { RecargarService } from '../../recargar.service';
 
 @Component({
   standalone: true,
@@ -23,12 +24,14 @@ export class ListadoPaisesComponent implements OnInit{
   // nuevoPais: Pais;
   modalRef?: NgbModalRef;
   filtro: string = '';
-
+  paginaActual: number = 1;
+  elementosPorPagina: number = 10;
 
   constructor(
     private paisService: PaisService,
     private router: Router,
     private modalService: ModalService,
+    private recargarService: RecargarService
   ) {  }
 
   ngOnInit(): void {
@@ -36,6 +39,11 @@ export class ListadoPaisesComponent implements OnInit{
       this.paisListOriginal = paises;
       this.paisList = [...paises];
     });
+
+    this.recargar();
+    this.recargarService.recargar$.subscribe(() => {
+      this.recargar();
+    })
   }
 
   // Creacion de pais
@@ -46,7 +54,12 @@ export class ListadoPaisesComponent implements OnInit{
   }
   
   // Modificacion de pais
-  modificarPais() {}
+  modificarPais(idPais: number) {
+    this.paisService.setId(idPais);
+    this.modalRef = this.modalService.open(ModificarPaisComponent, {
+      centered: true,
+    });
+  }
   
   // Habilitacion de pais
   habilitarPais(idPais: number) {
@@ -61,7 +74,7 @@ export class ListadoPaisesComponent implements OnInit{
       cancelButtonText: "Volver",
       reverseButtons: true,
     }).then((result) => {
-      if (result.isConfirmed) {
+          if (result.isConfirmed) {
             this.paisService.habilitar(idPais).subscribe({
               next: (response) => {
               this.recargar();
@@ -82,11 +95,11 @@ export class ListadoPaisesComponent implements OnInit{
               });
               }
             })
-    } else {
+        } else {
 
-    }});
-  }
-  
+        }});
+      }
+    
   // Deshabilitacion de pais
   deshabilitarPais(idPais: number) {
      Swal.fire({
@@ -170,6 +183,39 @@ export class ListadoPaisesComponent implements OnInit{
       this.paisListOriginal = paises;
       this.buscarPaises();
     });
+  }
+
+  // Para paginacion
+  get totalPaginas(): number {
+    return Math.ceil(this.paisList.length / this.elementosPorPagina);
+  }
+
+  get paginas(): number[] {
+    return Array.from({ length: this.totalPaginas }, (_, i) => i + 1);
+  }
+
+  obtenerPaisesPaginados(): Pais[] {
+    const inicio = (this.paginaActual - 1) * this.elementosPorPagina;
+    const fin = inicio + this.elementosPorPagina;
+    return this.paisList.slice(inicio, fin);
+  }
+
+  avanzarPagina(): void {
+    if (this.paginaActual < this.totalPaginas) {
+      this.paginaActual++;
+    }
+  }
+  
+  retrocederPagina(): void {
+    if (this.paginaActual > 1) {
+      this.paginaActual--;
+    }
+  }
+
+  irAPagina(pagina: number): void {
+    if (pagina >= 1 && pagina <= this.totalPaginas) {
+      this.paginaActual = pagina;
+    }
   }
 
 }
