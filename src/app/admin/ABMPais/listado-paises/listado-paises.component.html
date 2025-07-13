@@ -79,4 +79,26 @@
                     </tbody>
             </table>
         }
+    <!-- tuve que usar ngIf porque no me funcionaba solo con @if -->
+    <nav *ngIf="totalPaginas > 1">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" [class.disabled]="paginaActual === 1">
+            <button class="page-link" (click)="retrocederPagina()">Anterior</button>
+            </li>
+
+            <!-- tuve que usar ngFor porque no me funcionaba solo con @for -->
+            <li 
+            *ngFor="let pagina of paginas"
+            class="page-item" 
+            [class.active]="paginaActual === pagina">
+                <button class="page-link" (click)="irAPagina(pagina)">
+                    {{ pagina }}
+                </button>
+            </li>
+
+            <li class="page-item" [class.disabled]="paginaActual === totalPaginas">
+                <button class="page-link" (click)="avanzarPagina()">Siguiente</button>
+            </li>
+        </ul>
+    </nav>
 </div>
