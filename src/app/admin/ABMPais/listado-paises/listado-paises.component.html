@@ -25,7 +25,7 @@
             </div>
         } @else if (paisList.length === 0) {
             <div class="sin-resultados">
-                <img src="assets\img\sin-resultados.png" alt="No hay resultados" class="sin-resultados-img">
+                <img src="assets\sin-resultados.png" alt="No hay resultados" class="sin-resultados-img">
                 <p class="sin-resultados-txt">
                     No encontramos países que coincidan con tu búsqueda
                 </p>
@@ -33,41 +33,41 @@
         } @else {
             <table class="table align-middle">
             <thead>
-                        <tr>
-                            <th scope="col">PAÍS</th>
-                            <th scope="col">ESTADO</th>
-                            <th scope="col">ACCIONES</th>
-                        </tr>
+                <tr>
+                    <th scope="col">PAÍS</th>
+                    <th scope="col">ESTADO</th>
+                    <th scope="col">ACCIONES</th>
+                </tr>
                     </thead>
                     <tbody>
-                        @for (pais of paisList; track $index) {
+                        @for (pais of obtenerPaisesPaginados(); track $index) {
                             <tr>
                                 <td> {{pais.nombrePais}} </td>
                                 <td> 
                                     <span class="estado-badge"
-                                    [ngClass]=" { 'habilitado': !pais.fechaHoraBajaPais, 'deshabilitado': pais.fechaHoraBajaPais }">
-                                        {{ pais.fechaHoraBajaPais ? 'DESHABILITADO' : 'HABILITADO'}}
+                                    [ngClass]=" { 'habilitado': !pais.fechaHoraBaja, 'deshabilitado': pais.fechaHoraBaja }">
+                                        {{ pais.fechaHoraBaja ? 'DESHABILITADO' : 'HABILITADO'}}
                                     </span>
                                 </td>
                                 <td>
-                                    <button id="icon-button" class="icon-button-celeste" (click)="modificarPais()" title="Modificar">
+                                    <button id="icon-button" class="icon-button-celeste" (click)="modificarPais(pais.id!)" title="Modificar">
                                         <span class="material-symbols-outlined">
                                             edit
                                         </span>
                                     </button>
-                                    <button id="icon-button" class="icon-button-celeste" (click)="verProvincias()" title="Ver provincias" >
+                                    <button id="icon-button" class="icon-button-celeste" (click)="verProvincias(pais.id!)" title="Ver provincias" >
                                         <span class="material-symbols-outlined">
                                             globe
                                         </span>
                                     </button>
-                                    @if (!pais.fechaHoraBajaPais) {
-                                        <button id="icon-button" class="icon-button-rojo" (click)="deshabilitarPais()" title="Deshabilitar" >
+                                    @if (!pais.fechaHoraBaja) {
+                                        <button id="icon-button" class="icon-button-rojo" (click)="deshabilitarPais(pais.id!)" title="Deshabilitar" >
                                             <span class="material-symbols-outlined">
                                                 disabled_by_default
                                             </span>
                                         </button>
                                     } @else {
-                                        <button id="icon-button" class="icon-button-verde" (click)="habilitarPais()" title="Habilitar" >
+                                        <button id="icon-button" class="icon-button-verde" (click)="habilitarPais(pais.id!)" title="Habilitar" >
                                             <span class="material-symbols-outlined">
                                                 check_box
                                             </span>
