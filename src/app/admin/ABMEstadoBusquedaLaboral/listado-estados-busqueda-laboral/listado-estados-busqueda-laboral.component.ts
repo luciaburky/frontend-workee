@@ -7,7 +7,7 @@ import { EstadoBusquedaLaboralService } from '../estado-busqueda-laboral.service
 import { ModalService } from '../../../compartidos/modal/modal.service';
 import { RecargarService } from '../../recargar.service';
 import { CrearEstadoBusquedaLaboralComponent } from '../crear-estado-busqueda-laboral/crear-estado-busqueda-laboral.component';
-import { ModificarEstadoBusquedaLaboralComponent } from '../modificar-estado-busqueda-laboral/modificar-estados-busqueda-laboral.component';
+import { ModificarEstadoBusquedaLaboralComponent } from '../modificar-estado-busqueda-laboral/modificar-estado-busqueda-laboral.component';
 import Swal from 'sweetalert2';
 
 @Component({
