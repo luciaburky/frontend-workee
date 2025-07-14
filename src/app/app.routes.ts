@@ -1,11 +1,7 @@
 import { Routes } from '@angular/router';
-import { BuscarComponent } from './buscar/buscar.component';
-import { PanelControlComponent } from './panel-control/panel-control.component';
-import { HabilitacionesComponent } from './habilitaciones/habilitaciones.component';
-import { UsuariosComponent } from './usuarios/usuarios.component';
-import { EstadisticasComponent } from './estadisticas/estadisticas.component';
 import { ListadoPaisesComponent } from './admin/ABMPais/listado-paises/listado-paises.component';
 import { ListadoProvinciasComponent } from './admin/ABMProvincia/listado-provincias/listado-provincias.component';
+import { ListadoGenerosComponent } from './admin/ABMGenero/listado-generos/listado-generos.component';
 
 export const routes: Routes = [
     // { path: 'buscar-ofertas', component: BuscarComponent },
@@ -19,5 +15,6 @@ export const routes: Routes = [
     // { path: 'estadisticas', component: EstadisticasComponent },
     { path: 'paises', component: ListadoPaisesComponent },
     { path: 'provincias/:idPais', component: ListadoProvinciasComponent },
+    { path: 'generos', component: ListadoGenerosComponent },
 
 ];
