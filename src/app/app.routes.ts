@@ -6,6 +6,7 @@ import { ListadoEstadosUsuarioComponent } from './admin/ABMEstadoUsuario/listado
 import { ListadoTiposEventoComponent } from './admin/ABMTipoEvento/listado-tipos-evento/listado-tipos-evento.component';
 import { ListadoTiposContratoComponent } from './admin/ABMTipoContrato/listado-tipos-contrato/listado-tipos-contrato.component';
 import { ListadoEstadosBusquedaLaboralComponent } from './admin/ABMEstadoBusquedaLaboral/listado-estados-busqueda-laboral/listado-estados-busqueda-laboral.component';
+import { ListadoEstadosOfertaComponent } from './admin/ABMEstadoOferta/listado-estados-oferta/listado-estados-oferta.component';
 
 export const routes: Routes = [
     // { path: 'buscar-ofertas', component: BuscarComponent },
@@ -24,5 +25,6 @@ export const routes: Routes = [
     { path: 'tiposEvento', component: ListadoTiposEventoComponent },
     { path: 'tiposContrato', component: ListadoTiposContratoComponent },
     { path: 'estadosBusqueda', component: ListadoEstadosBusquedaLaboralComponent },
+    { path: 'estadosOferta', component: ListadoEstadosOfertaComponent },
 
 ];
