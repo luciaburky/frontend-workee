@@ -7,7 +7,7 @@ import { TipoEventoService } from '../tipo-evento.service';
 import { ModalService } from '../../../compartidos/modal/modal.service';
 import { RecargarService } from '../../recargar.service';
 import Swal from 'sweetalert2';
-import { CrearTipoEventoComponent } from '../crear-tipo-evento/crear-tipos-evento.component';
+import { CrearTipoEventoComponent } from '../crear-tipo-evento/crear-tipo-evento.component';
 import { ModificarTipoEventoComponent } from '../modificar-tipo-evento/modificar-tipo-evento.component';
 
 @Component({
