@@ -30,12 +30,7 @@ export class CrearPaisComponent implements OnInit{
     });
   }
 
-  ngOnInit() {
-    this.paisForm = new FormGroup({
-      pais: new FormControl('', [Validators.required])
-    });
-    console.log("Creo el form");
-  }
+  ngOnInit() { }
 
   dismissModal() {
     this.modalService.dismissActiveModal();
