@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { ListadoPaisesComponent } from './admin/ABMPais/listado-paises/listado-paises.component';
 import { ListadoProvinciasComponent } from './admin/ABMProvincia/listado-provincias/listado-provincias.component';
 import { ListadoGenerosComponent } from './admin/ABMGenero/listado-generos/listado-generos.component';
+import { ListadoEstadosUsuarioComponent } from './admin/ABMEstadoUsuario/listado-estados-usuario/listado-estados-usuario.component';
 
 export const routes: Routes = [
     // { path: 'buscar-ofertas', component: BuscarComponent },
@@ -16,5 +17,6 @@ export const routes: Routes = [
     { path: 'paises', component: ListadoPaisesComponent },
     { path: 'provincias/:idPais', component: ListadoProvinciasComponent },
     { path: 'generos', component: ListadoGenerosComponent },
+    { path: 'estadosUsuario', component: ListadoEstadosUsuarioComponent },
 
 ];
