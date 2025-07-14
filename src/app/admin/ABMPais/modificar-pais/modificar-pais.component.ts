@@ -87,7 +87,7 @@ export class ModificarPaisComponent implements OnInit{
           })
         },
         error: (error) => {
-          if (error.error.mensaje === 'Ya existe un país con ese nombre') {
+          if (error.error.message === 'Ya existe un país con ese nombre') {
             Swal.fire({
               toast: true,
               icon: 'warning',

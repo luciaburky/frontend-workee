@@ -84,7 +84,7 @@ export class ModificarProvinciaComponent implements OnInit {
           })
         },
         error: (error) => {
-          if (error.error.mensaje === 'Ya existe una provincia con ese nombre') {
+          if (error.error.message === 'Ya existe una provincia con ese nombre') {
             Swal.fire({
               toast: true,
               icon: 'warning',
