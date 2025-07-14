@@ -6,7 +6,7 @@ import { CrearPaisComponent } from '../crear-pais/crear-pais.component';
 import { ModalService } from '../../../compartidos/modal/modal.service';
 import Swal from 'sweetalert2'
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ModificarPaisComponent } from '../modificar-pais/modificar-pais.component';
 import { RecargarService } from '../../recargar.service';
@@ -14,7 +14,7 @@ import { RecargarService } from '../../recargar.service';
 @Component({
   standalone: true,
   selector: 'app-listado-paises',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './listado-paises.component.html',
   styleUrls: ['./listado-paises.component.css']
 })
