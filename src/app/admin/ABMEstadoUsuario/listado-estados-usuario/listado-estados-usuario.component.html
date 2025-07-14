@@ -5,12 +5,12 @@
     <div class="busqueda-acciones">
         <button type="button" class="boton-nuevo" (click)="crearEstadoUsuario()">
             <span class="material-symbols-outlined">add</span>
-            Nuevo Género
+            Nuevo Estado de usuario
         </button>
     </div>
     @if (estadoList.length === 0) {
             <div class="alert alert-warning">
-                ¡No hay género cargado en el sistema!
+                ¡No hay estados de usuario cargados en el sistema!
             </div>
     } @else {
         <table class="table align-middle">
