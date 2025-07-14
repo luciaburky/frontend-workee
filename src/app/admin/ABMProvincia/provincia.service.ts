@@ -57,7 +57,7 @@ export class ProvinciaService {
   modificarProvincia(nombreProvincia: string, idPais: number, idProvincia: number) {
     const body = {
       "nombreProvincia": nombreProvincia,
-      "idPais": idPais
+      "idPais": null
     }
     return this.http.put(`${this.url}/${idProvincia}`,body);
   }
