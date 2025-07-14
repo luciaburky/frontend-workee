@@ -9,12 +9,57 @@ import { Provincia } from './provincia';
 export class ProvinciaService {
   private url: string = 'http://localhost:9090/provincias';
   id = new BehaviorSubject<number | null>(null);
-  id$ = this.id.asObservable();
+  
+  idSubject = new BehaviorSubject<number | null>(null);
 
   constructor(private http: HttpClient) { };
 
   getProvinciasPorPais(idPais: number): Observable<Provincia[]> {
+    console.log("Imprimo desde el service, el id del pais es ", idPais)
     return this.http.get<Provincia[]>(`${this.url}/provinciasPorPais/${idPais}`);
+  }
+
+  findAll(): Observable<Provincia[]> {
+    return this.http.get<Provincia[]>(this.url);
+  }
+  
+  findById(idProvincia: number): Observable<Provincia> {
+    return this.http.get<Provincia>(`${this.url}/${idProvincia}`);
+  }
+  
+  deshabilitar(idProvincia: number) {
+    return this.http.delete<void>(`${this.url}/${idProvincia}`);
+  }
+  
+  habilitar(idProvincia: number) {
+    const body = {
+      "idProvincia": idProvincia
+    }
+    return this.http.put<Provincia>(`${this.url}/habilitar/${idProvincia}`, body);
+  }
+  
+  setId(id: number) {
+    this.idSubject.next(id);
+  }
+  
+  getId(){
+    return this.idSubject.asObservable();
+  }
+  
+  crearProvincia(nombreProvincia: string, idPais: number){
+    const body = {
+      "nombreProvincia": nombreProvincia,
+      "idPais": idPais
+    }
+    return this.http.post(this.url,body);
+  }
+  
+  modificarProvincia(nombreProvincia: string, idPais: number, idProvincia: number) {
+    const body = {
+      "nombreProvincia": nombreProvincia,
+      "idPais": idPais
+    }
+    return this.http.put(`${this.url}/${idProvincia}`,body);
   }
 
 }
