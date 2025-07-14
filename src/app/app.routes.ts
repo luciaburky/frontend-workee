@@ -4,6 +4,7 @@ import { ListadoProvinciasComponent } from './admin/ABMProvincia/listado-provinc
 import { ListadoGenerosComponent } from './admin/ABMGenero/listado-generos/listado-generos.component';
 import { ListadoEstadosUsuarioComponent } from './admin/ABMEstadoUsuario/listado-estados-usuario/listado-estados-usuario.component';
 import { ListadoTiposEventoComponent } from './admin/ABMTipoEvento/listado-tipos-evento/listado-tipos-evento.component';
+import { ListadoTiposContratoComponent } from './admin/ABMTipoContrato/listado-tipos-contrato/listado-tipos-contrato.component';
 
 export const routes: Routes = [
     // { path: 'buscar-ofertas', component: BuscarComponent },
@@ -20,5 +21,6 @@ export const routes: Routes = [
     { path: 'generos', component: ListadoGenerosComponent },
     { path: 'estadosUsuario', component: ListadoEstadosUsuarioComponent },
     { path: 'tiposEvento', component: ListadoTiposEventoComponent },
+    { path: 'tiposContrato', component: ListadoTiposContratoComponent },
 
 ];
