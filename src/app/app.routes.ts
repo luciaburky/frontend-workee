@@ -8,6 +8,7 @@ import { ListadoTiposContratoComponent } from './admin/ABMTipoContrato/listado-t
 import { ListadoEstadosBusquedaLaboralComponent } from './admin/ABMEstadoBusquedaLaboral/listado-estados-busqueda-laboral/listado-estados-busqueda-laboral.component';
 import { ListadoEstadosOfertaComponent } from './admin/ABMEstadoOferta/listado-estados-oferta/listado-estados-oferta.component';
 import { ListadoModalidadesComponent } from './admin/ABMModalidad/listado-modalidades/listado-modalidades.component';
+import { ListadoTiposHabilidadComponent } from './admin/ABMTipoHabilidad/listado-tipos-habilidad/listado-tipos-habilidad.component';
 
 export const routes: Routes = [
     // { path: 'buscar-ofertas', component: BuscarComponent },
@@ -28,5 +29,6 @@ export const routes: Routes = [
     { path: 'estadosBusqueda', component: ListadoEstadosBusquedaLaboralComponent },
     { path: 'estadosOferta', component: ListadoEstadosOfertaComponent },
     { path: 'modalidades', component: ListadoModalidadesComponent },
+    { path: 'tiposHabilidad', component: ListadoTiposHabilidadComponent },
 
 ];
