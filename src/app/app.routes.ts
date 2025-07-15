@@ -9,6 +9,7 @@ import { ListadoEstadosBusquedaLaboralComponent } from './admin/ABMEstadoBusqued
 import { ListadoEstadosOfertaComponent } from './admin/ABMEstadoOferta/listado-estados-oferta/listado-estados-oferta.component';
 import { ListadoModalidadesComponent } from './admin/ABMModalidad/listado-modalidades/listado-modalidades.component';
 import { ListadoTiposHabilidadComponent } from './admin/ABMTipoHabilidad/listado-tipos-habilidad/listado-tipos-habilidad.component';
+import { ListadoRubrosComponent } from './admin/ABMRubro/listado-rubros/listado-rubros.component';
 
 export const routes: Routes = [
     // { path: 'buscar-ofertas', component: BuscarComponent },
@@ -30,5 +31,6 @@ export const routes: Routes = [
     { path: 'estadosOferta', component: ListadoEstadosOfertaComponent },
     { path: 'modalidades', component: ListadoModalidadesComponent },
     { path: 'tiposHabilidad', component: ListadoTiposHabilidadComponent },
+    { path: 'rubros', component: ListadoRubrosComponent },
 
 ];
