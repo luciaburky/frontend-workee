@@ -10,6 +10,8 @@ import { ListadoEstadosOfertaComponent } from './admin/ABMEstadoOferta/listado-e
 import { ListadoModalidadesComponent } from './admin/ABMModalidad/listado-modalidades/listado-modalidades.component';
 import { ListadoTiposHabilidadComponent } from './admin/ABMTipoHabilidad/listado-tipos-habilidad/listado-tipos-habilidad.component';
 import { ListadoRubrosComponent } from './admin/ABMRubro/listado-rubros/listado-rubros.component';
+import { ListadoHabilidadesComponent } from './admin/ABMHabilidad/listado-habilidades/listado-habilidades.component';
+import { ListadoEtapasComponent } from './admin/ABMEtapa/listado-etapas/listado-etapas.component';
 
 export const routes: Routes = [
     // { path: 'buscar-ofertas', component: BuscarComponent },
@@ -32,6 +34,7 @@ export const routes: Routes = [
     { path: 'modalidades', component: ListadoModalidadesComponent },
     { path: 'tiposHabilidad', component: ListadoTiposHabilidadComponent },
     { path: 'rubros', component: ListadoRubrosComponent },
+    { path: 'habilidades', component: ListadoHabilidadesComponent },
     { path: 'etapas', component: ListadoEtapasComponent },
 
 ];
