@@ -12,6 +12,7 @@ import { ListadoTiposHabilidadComponent } from './admin/ABMTipoHabilidad/listado
 import { ListadoRubrosComponent } from './admin/ABMRubro/listado-rubros/listado-rubros.component';
 import { ListadoHabilidadesComponent } from './admin/ABMHabilidad/listado-habilidades/listado-habilidades.component';
 import { ListadoEtapasComponent } from './admin/ABMEtapa/listado-etapas/listado-etapas.component';
+import { VisualizarPerfilEmpresaComponent } from './modulos/empresa/visualizar-perfil-empresa/visualizar-perfil-empresa.component';
 
 export const routes: Routes = [
     // { path: 'buscar-ofertas', component: BuscarComponent },
@@ -36,5 +37,7 @@ export const routes: Routes = [
     { path: 'rubros', component: ListadoRubrosComponent },
     { path: 'habilidades', component: ListadoHabilidadesComponent },
     { path: 'etapas', component: ListadoEtapasComponent },
+    { path: 'perfil-empresa/:id', component: VisualizarPerfilEmpresaComponent },
+    { path: 'empresas', component: VisualizarPerfilEmpresaComponent }
 
 ];
