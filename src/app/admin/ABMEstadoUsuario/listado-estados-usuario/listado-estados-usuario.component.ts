@@ -123,7 +123,7 @@ export class ListadoEstadosUsuarioComponent {
           });
           Toast.fire({
             icon: "success",
-            title: "Estado de usuario habilitado correctamente",
+            title: "Estado de usuario deshabilitado correctamente",
           });
           },
           error: (error) => {

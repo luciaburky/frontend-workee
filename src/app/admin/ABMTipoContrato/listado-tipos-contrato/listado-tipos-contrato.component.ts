@@ -123,7 +123,7 @@ export class ListadoTiposContratoComponent {
           });
           Toast.fire({
             icon: "success",
-            title: "Tipo de contrato habilitado correctamente",
+            title: "Tipo de contrato deshabilitado correctamente",
           });
           },
           error: (error) => {

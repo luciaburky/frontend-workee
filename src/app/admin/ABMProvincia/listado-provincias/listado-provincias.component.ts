@@ -133,7 +133,7 @@ export class ListadoProvinciasComponent implements OnInit {
           });
           Toast.fire({
             icon: "success",
-            title: "Provincia habilitada correctamente",
+            title: "Provincia deshabilitada correctamente",
           });
           },
           error: (error) => {

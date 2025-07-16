@@ -124,7 +124,7 @@ export class ListadoEstadosOfertaComponent {
           });
           Toast.fire({
             icon: "success",
-            title: "Estado de oferta habilitado correctamente",
+            title: "Estado de oferta deshabilitado correctamente",
           });
           },
           error: (error) => {

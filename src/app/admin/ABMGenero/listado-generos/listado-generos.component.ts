@@ -125,7 +125,7 @@ export class ListadoGenerosComponent {
           });
           Toast.fire({
             icon: "success",
-            title: "Género habilitado correctamente",
+            title: "Género deshabilitado correctamente",
           });
           },
           error: (error) => {

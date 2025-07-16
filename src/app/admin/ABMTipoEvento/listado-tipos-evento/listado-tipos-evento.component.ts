@@ -124,7 +124,7 @@ export class ListadoTiposEventoComponent {
           });
           Toast.fire({
             icon: "success",
-            title: "Tipo de evento habilitado correctamente",
+            title: "Tipo de evento deshabilitado correctamente",
           });
           },
           error: (error) => {

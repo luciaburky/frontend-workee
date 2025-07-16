@@ -123,7 +123,7 @@ export class ListadoEstadosBusquedaLaboralComponent {
           });
           Toast.fire({
             icon: "success",
-            title: "Estado de búsqueda laboral habilitado correctamente",
+            title: "Estado de búsqueda laboral deshabilitado correctamente",
           });
           },
           error: (error) => {
