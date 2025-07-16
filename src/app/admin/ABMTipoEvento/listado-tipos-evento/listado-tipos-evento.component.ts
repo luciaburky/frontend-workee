@@ -97,7 +97,7 @@ export class ListadoTiposEventoComponent {
   // Deshabilitacion de idTipoEvento
   deshabilitarTipoEvento(idTipoEvento: number) {
      Swal.fire({
-      text: "¿Desea habilitar el parámetro?",
+      text: "¿Desea deshabilitar el parámetro?",
       icon: "error",
       iconColor: "#FF5252",
       showCancelButton: true,

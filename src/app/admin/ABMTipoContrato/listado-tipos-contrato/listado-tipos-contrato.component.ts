@@ -96,7 +96,7 @@ export class ListadoTiposContratoComponent {
   // Deshabilitacion de TipoContrato
   deshabilitarTipoContrato(idTipoContrato: number) {
       Swal.fire({
-      text: "¿Desea habilitar el parámetro?",
+      text: "¿Desea deshabilitar el parámetro?",
       icon: "error",
       iconColor: "#FF5252",
       showCancelButton: true,

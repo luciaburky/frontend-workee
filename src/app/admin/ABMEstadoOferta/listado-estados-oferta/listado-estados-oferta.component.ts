@@ -97,7 +97,7 @@ export class ListadoEstadosOfertaComponent {
   // Deshabilitacion de EstadoOferta
   deshabilitarEstado(idEstado: number) {
       Swal.fire({
-      text: "¿Desea habilitar el parámetro?",
+      text: "¿Desea deshabilitar el parámetro?",
       icon: "error",
       iconColor: "#FF5252",
       showCancelButton: true,
