@@ -32,5 +32,6 @@ export const routes: Routes = [
     { path: 'modalidades', component: ListadoModalidadesComponent },
     { path: 'tiposHabilidad', component: ListadoTiposHabilidadComponent },
     { path: 'rubros', component: ListadoRubrosComponent },
+    { path: 'etapas', component: ListadoEtapasComponent },
 
 ];
