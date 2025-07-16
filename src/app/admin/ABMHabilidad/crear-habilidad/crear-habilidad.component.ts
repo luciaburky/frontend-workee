@@ -29,7 +29,7 @@ export class CrearHabilidadComponent {
   ) {
     this.habilidadForm = new FormGroup({
       habilidad: new FormControl('', [Validators.required]),
-      tipoHabilidad: new FormControl('', [Validators.required])
+      tipoHabilidad: new FormControl(null, [Validators.required])
     });
   }
 

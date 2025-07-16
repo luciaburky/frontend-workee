@@ -5,5 +5,5 @@ export class Habilidad {
     nombreHabilidad?: string;
     fechaHoraAlta?: string;
     fechaHoraBaja?: string | null;
-    idTipoHabilidad?: TipoHabilidad; 
+    tipoHabilidad?: TipoHabilidad; 
 }

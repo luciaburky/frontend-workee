@@ -27,11 +27,13 @@
                     class="form-control"
                     id="tipoHabilidad"
                     formControlName="tipoHabilidad"
-                    [ngClass]="{ 'is-invalid': isCampoInvalido('tipoHabilidad') }">
-                        <option value="">Seleccione el tipo de habilidad</option>
-                        <option *ngFor="let tipo of tiposHabilidad" [value]="tipo.id">
-                            {{ tipo.nombreTipoHabilidad }}
-                        </option>
+                    [ngClass]="{
+                        'is-invalid': isCampoInvalido('tipoHabilidad'),
+                        'placeholder': habilidadForm.get('tipoHabilidad')?.value === null || habilidadForm.get('tipoHabilidad')?.value === ''
+                    }"
+                    >
+                    <option [ngValue]="null" disabled class="placeholder-option">Seleccione el tipo de habilidad</option>
+                    <option *ngFor="let tipo of tiposHabilidad" [ngValue]="tipo.id">{{ tipo.nombreTipoHabilidad }}</option>
                 </select>
                 @if (isCampoInvalido('tipoHabilidad')) {
                     <div class="invalid-feedback">

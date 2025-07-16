@@ -10,3 +10,11 @@
   font-size: 16px;
   cursor: pointer;
 }
+
+select.form-control {
+  color: #212529;
+}
+
+select.form-control.placeholder {
+  color: #6c757d !important;
+}

@@ -44,7 +44,7 @@ export class ModificarHabilidadComponent {
               this.habilidadService.findById(id).subscribe({
                 next: (habilidad) => {
                   const tipoActual = this.tiposHabilidad.find(
-                    (t) => t.id === habilidad.idTipoHabilidad?.nombreTipoHabilidad
+                    (t) => t.id === habilidad.tipoHabilidad?.id
                   );
 
                   this.habilidadForm.patchValue({
