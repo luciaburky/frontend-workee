@@ -13,6 +13,8 @@ import { ListadoRubrosComponent } from './admin/ABMRubro/listado-rubros/listado-
 import { ListadoHabilidadesComponent } from './admin/ABMHabilidad/listado-habilidades/listado-habilidades.component';
 import { ListadoEtapasComponent } from './admin/ABMEtapa/listado-etapas/listado-etapas.component';
 import { VisualizarPerfilEmpresaComponent } from './modulos/empresa/visualizar-perfil-empresa/visualizar-perfil-empresa.component';
+import { ListadoEmpleadosComponent } from './modulos/empresa/empleados/listado-empleados/listado-empleados.component';
+import { CrearEmpleadoComponent } from './modulos/empresa/empleados/crear-empleado/crear-empleado.component';
 
 export const routes: Routes = [
     // { path: 'buscar-ofertas', component: BuscarComponent },
@@ -38,6 +40,8 @@ export const routes: Routes = [
     { path: 'habilidades', component: ListadoHabilidadesComponent },
     { path: 'etapas', component: ListadoEtapasComponent },
     { path: 'perfil-empresa/:id', component: VisualizarPerfilEmpresaComponent },
+    { path: 'empresas', component: VisualizarPerfilEmpresaComponent },
     { path: 'empleados', component: ListadoEmpleadosComponent },
+    { path: 'empleados/crear', component: CrearEmpleadoComponent }
 
 ];

@@ -21,6 +21,24 @@ export class EmpleadoService {
   cantidadActivos(): Observable<number> {
     return this.http.get<number>(`${this.url}/contarEmpleados/1`);
   }
+  
+  crearEmpleado(nombreEmpleadoEmpresa: string,
+                apellidoEmpleadoEmpresa: string,
+                puestoEmpleadoEmpresa: string,
+                correoEmpleadoEmpresa: string,
+                contrasenia: string,
+                repetirContrasenia: string) {
+    const body = {
+      "nombreEmpleadoEmpresa": nombreEmpleadoEmpresa,
+      "apellidoEmpleadoEmpresa": apellidoEmpleadoEmpresa,
+      "puestoEmpleadoEmpresa": puestoEmpleadoEmpresa,
+      "correoEmpleadoEmpresa": correoEmpleadoEmpresa,
+      "contrasenia": contrasenia,
+      "repetirContrasenia": repetirContrasenia,
+      "idEmpresa": 1
+    }
+    return this.http.post(this.url,body);
+  }
 
   // findAllActivos(): Observable<TipoHabilidad[]> {
   //   return this.http.get<any[]>(`${this.url}/activos`);
@@ -49,12 +67,6 @@ export class EmpleadoService {
   //   return this.idSubject.asObservable();
   // }
   
-  // crearTipoHabilidad(nombreTipoHabilidad: string){
-  //   const body = {
-  //     "nombreTipoHabilidad": nombreTipoHabilidad
-  //   }
-  //   return this.http.post(this.url,body);
-  // }
   
   // modificarTipoHabilidad(idTipoHabilidad: number, nombreTipoHabilidad: string) {
   //   const body = {
