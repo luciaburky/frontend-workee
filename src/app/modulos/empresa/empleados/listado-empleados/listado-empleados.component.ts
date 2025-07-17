@@ -50,10 +50,10 @@ export class ListadoEmpleadosComponent implements OnInit {
 
   obtenerEmpleadosPaginados(): UsuarioEmpleadoRequest[] {
     const inicio = (this.paginaActual - 1) * this.elementosPorPagina;
-    console.log(inicio);
+    // console.log(inicio);
     const fin = inicio + this.elementosPorPagina;
-    console.log(fin);
-    console.log(this.empleadoList.slice(inicio, fin));
+    // console.log(fin);
+    // console.log(this.empleadoList.slice(inicio, fin));
     return this.empleadoList.slice(inicio, fin);
   }
 
