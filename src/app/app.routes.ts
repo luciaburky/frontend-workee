@@ -38,6 +38,6 @@ export const routes: Routes = [
     { path: 'habilidades', component: ListadoHabilidadesComponent },
     { path: 'etapas', component: ListadoEtapasComponent },
     { path: 'perfil-empresa/:id', component: VisualizarPerfilEmpresaComponent },
-    { path: 'empresas', component: VisualizarPerfilEmpresaComponent }
+    { path: 'empleados', component: ListadoEmpleadosComponent },
 
 ];
