@@ -1,6 +1,6 @@
 /* This should be at the very top of your CSS file or style block */
 body {
-  background-color: #e1f0fa; /* Light blue background */
+  background-color: #e1f0fa;
 }
 
 .perfil-wrapper {
@@ -9,7 +9,7 @@ body {
   border-radius: 10px;
   max-width: 900px;
   margin: 3rem auto;
-  font-family: 'Lato', 'Segoe UI', sans-serif;
+  font-family: 'Lato', sans-serif;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
