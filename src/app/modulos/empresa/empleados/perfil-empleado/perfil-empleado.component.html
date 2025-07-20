@@ -9,7 +9,7 @@
       <p>Gestiona la información de tus empleados</p>
     </div>
     @if (!modoEdicion) {
-      <button type="button" class="boton" (click)="modoEdicion=true">
+      <button type="button" class="boton" (click)="modificarEmpleado()">
         <span class="material-symbols-outlined">edit</span>
         Editar
       </button>
@@ -26,7 +26,7 @@
         <input 
           type="text"
           class="form-control"
-          formControlName="nombreEmpleado"
+          name="nombreEmpleado"
           [value]="empleado.nombreEmpleadoEmpresa"
           readonly>
       </div>
@@ -35,7 +35,7 @@
         <input 
           type="text"
           class="form-control"
-          formControlName="apellidoEmpleado"
+          name="apellidoEmpleado"
           [value]="empleado.apellidoEmpleadoEmpresa"
           readonly>
       </div>
@@ -46,8 +46,8 @@
         <input 
           type="text"
           class="form-control"
-          formControlName="puestoEmpleado"
-          [value]="empleado.puestoEmpleadoEmpresa"
+          name="puestoEmpleado"
+          [(ngModel)]="empleado.puestoEmpleadoEmpresa"
           [readonly]="!modoEdicion">
       </div>
       <div class="form-group">
@@ -55,7 +55,7 @@
         <input 
           type="text"
           class="form-control"
-          formControlName="correoEmpleado"
+          name="correoEmpleado"
           [value]="empleado.correoEmpleadoEmpresa"
           readonly>
       </div>
@@ -68,7 +68,7 @@
       <span class="material-symbols-outlined">delete</span>
       Eliminar cuenta
     </button>
-    <button type="button" class="boton-guardar ml-auto" (click)="modificarEmpleado()">
+    <button type="button" class="boton-guardar ml-auto" (click)="enviarDatos()">
       <span class="material-symbols-outlined">save</span>
       Guardar cambios
     </button>

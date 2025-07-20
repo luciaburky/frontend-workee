@@ -40,6 +40,20 @@ export class EmpleadoService {
     return this.http.post(this.url,body);
   }
 
+  modificarEmpleado(puestoEmpleadoEmpresa: string, idEmpleado: number) {
+    const body = {
+      "nombreEmpleadoEmpresa": null,
+      "apellidoEmpleadoEmpresa": null,
+      "puestoEmpleadoEmpresa": puestoEmpleadoEmpresa,
+      "correoEmpleadoEmpresa": null,
+      "contrasenia": null,
+      "repetirContrasenia": null,
+      "idEmpresa": 1
+    }
+    console.log(body);
+    return this.http.put(`${this.url}/actualizarPerfilPorAdmin/${idEmpleado}`,body);
+  }
+
   setId(id: number) {
     this.idSubject.next(id);
   }
