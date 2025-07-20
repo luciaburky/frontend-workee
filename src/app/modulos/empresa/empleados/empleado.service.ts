@@ -40,16 +40,24 @@ export class EmpleadoService {
     return this.http.post(this.url,body);
   }
 
+  setId(id: number) {
+    this.idSubject.next(id);
+  }
+  
+  getId(){
+    return this.idSubject.asObservable();
+  }
+  
+  findById(idEmpleado: number): Observable<UsuarioEmpleadoRequest> {
+    return this.http.get<UsuarioEmpleadoRequest>(`${this.url}/${idEmpleado}`);
+  }
+
+  eliminarEmpleado(idEmpleado: number) {
+    return this.http.delete<void>(`${this.url}/${idEmpleado}`);
+  }
+  
   // findAllActivos(): Observable<TipoHabilidad[]> {
   //   return this.http.get<any[]>(`${this.url}/activos`);
-  // }
-  
-  // findById(idTipoHabilidad: number): Observable<TipoHabilidad> {
-  //   return this.http.get<TipoHabilidad>(`${this.url}/${idTipoHabilidad}`);
-  // }
-  
-  // deshabilitar(idTipoHabilidad: number) {
-  //   return this.http.delete<void>(`${this.url}/${idTipoHabilidad}`);
   // }
   
   // habilitar(idTipoHabilidad: number) {
@@ -57,14 +65,6 @@ export class EmpleadoService {
   //     "idTipoHabilidad": idTipoHabilidad
   //   }
   //   return this.http.put<TipoHabilidad>(`${this.url}/habilitar/${idTipoHabilidad}`, body);
-  // }
-  
-  // setId(id: number) {
-  //   this.idSubject.next(id);
-  // }
-  
-  // getId(){
-  //   return this.idSubject.asObservable();
   // }
   
   
