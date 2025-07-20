@@ -15,6 +15,7 @@ import { ListadoEtapasComponent } from './admin/ABMEtapa/listado-etapas/listado-
 import { VisualizarPerfilEmpresaComponent } from './modulos/empresa/visualizar-perfil-empresa/visualizar-perfil-empresa.component';
 import { ListadoEmpleadosComponent } from './modulos/empresa/empleados/listado-empleados/listado-empleados.component';
 import { CrearEmpleadoComponent } from './modulos/empresa/empleados/crear-empleado/crear-empleado.component';
+import { PerfilEmpleadoComponent } from './modulos/empresa/empleados/perfil-empleado/perfil-empleado.component';
 
 export const routes: Routes = [
     // { path: 'buscar-ofertas', component: BuscarComponent },
@@ -42,6 +43,7 @@ export const routes: Routes = [
     { path: 'perfil-empresa/:id', component: VisualizarPerfilEmpresaComponent },
     { path: 'empresas', component: VisualizarPerfilEmpresaComponent },
     { path: 'empleados', component: ListadoEmpleadosComponent },
-    { path: 'empleados/crear', component: CrearEmpleadoComponent }
+    { path: 'empleados/crear', component: CrearEmpleadoComponent },
+    { path: 'empleados/perfil/:idEmpleado', component: PerfilEmpleadoComponent }
 
 ];

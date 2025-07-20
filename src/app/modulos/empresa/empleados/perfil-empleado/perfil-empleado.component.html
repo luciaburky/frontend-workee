@@ -1,0 +1,76 @@
+<div class="perfil-wrapper">
+  <button type="button" class="boton" (click)="volverAListado()">
+      <span class="material-symbols-outlined">arrow_back</span>
+      Volver
+  </button>
+  <div class="perfil-header">
+    <div>
+      <h1>{{empleado.nombreEmpleadoEmpresa}} {{empleado.apellidoEmpleadoEmpresa}}</h1>
+      <p>Gestiona la información de tus empleados</p>
+    </div>
+    @if (!modoEdicion) {
+      <button type="button" class="boton" (click)="modoEdicion=true">
+        <span class="material-symbols-outlined">edit</span>
+        Editar
+      </button>
+    }
+  </div>
+  <form>
+  <div class="form-grid-logo">
+    <div class="logo-seccion">
+      <img [src]="'assets/img/foto-perfil.png'" alt="foto" class="foto" />
+    </div>
+    <div class="al-lado m-0 p-0">
+      <div class="form-group">
+        <label for="nombreEmpleado" class="p-0 my-0 mb-2">Nombre</label>
+        <input 
+          type="text"
+          class="form-control"
+          formControlName="nombreEmpleado"
+          [value]="empleado.nombreEmpleadoEmpresa"
+          readonly>
+      </div>
+      <div class="form-group">
+        <label for="apellidoEmpleado" class="p-0 my-0 mb-2 mt-3">Apellido</label>
+        <input 
+          type="text"
+          class="form-control"
+          formControlName="apellidoEmpleado"
+          [value]="empleado.apellidoEmpleadoEmpresa"
+          readonly>
+      </div>
+    </div>
+    <div class="abajo m-0 full-width">
+      <div class="form-group">
+        <label for="puestoEmpleado" class="p-0 my-0 mb-2">Puesto</label>
+        <input 
+          type="text"
+          class="form-control"
+          formControlName="puestoEmpleado"
+          [value]="empleado.puestoEmpleadoEmpresa"
+          [readonly]="!modoEdicion">
+      </div>
+      <div class="form-group">
+        <label for="correoEmpleado" class="p-0 my-0 mb-2">Correo electrónico</label>
+        <input 
+          type="text"
+          class="form-control"
+          formControlName="correoEmpleado"
+          [value]="empleado.correoEmpleadoEmpresa"
+          readonly>
+      </div>
+    </div>
+  </div>
+</form>
+<div class="modo-edicion">
+@if (modoEdicion) {
+    <button type="button" class="boton-eliminar" (click)="eliminarCuenta()">
+      <span class="material-symbols-outlined">delete</span>
+      Eliminar cuenta
+    </button>
+    <button type="button" class="boton-guardar ml-auto" (click)="modificarEmpleado()">
+      <span class="material-symbols-outlined">save</span>
+      Guardar cambios
+    </button>
+  }
+</div>
