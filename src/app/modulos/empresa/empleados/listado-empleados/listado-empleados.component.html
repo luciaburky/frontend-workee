@@ -1,19 +1,20 @@
 <div class="listado-wrapper">
     <div class="listado-header">
-        <h2 class="titulo">Empleados</h2>
+        <div>
+            <h1>Empleados</h1>
+            <p class="pt-2">Gestiona a tus empleados</p>
+            <p>Empleados registrados: {{cantEmpleadosActivos}}</p>
+        </div>
         <button type="button" class="boton-nuevo" (click)="crearEmpleado()">
             <span class="material-symbols-outlined">add</span>
             Nuevo Empleado
         </button>
     </div>
-    <div class="listado-subtitulo">
-        <p class="subtitulo">Gestiona a tus empleados</p>
-        <p class="subtitulo">Empleados registrados: {{cantEmpleadosActivos}}</p>
-    </div>
+
     <div class="listado-contenido row row-cols-1 row-cols-md-2 g-4">
         @for (empleado of obtenerEmpleadosPaginados(); track $index) {
             <div class="col">
-                <div class="card d-flex flex-row align-items-center p-3" (click)="modificarEmpleado(empleado.id!)" role="button">
+                <div class="card d-flex flex-row align-items-center p-3" (click)="visualizarEmpleado(empleado.id!)" role="button">
                     <img 
                     [src]="'assets/img/foto-perfil.png'"
                     alt="{{empleado.nombreEmpleadoEmpresa}} {{empleado.apellidoEmpleadoEmpresa}}" 

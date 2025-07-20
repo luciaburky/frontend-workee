@@ -33,11 +33,13 @@ export class ListadoEmpleadosComponent implements OnInit {
   }
 
   crearEmpleado(): void {
-    this.router.navigate([`empleados/crear`])
+    this.router.navigate([`empleados/crear`]);
   }
-
-  modificarEmpleado(idEmpleado: number) {}
-
+  
+  visualizarEmpleado(idEmpleado: number) {
+    // this.empleadoService.setId(idEmpleado);
+    this.router.navigate([`empleados/perfil`,idEmpleado]);
+  }
 
   // Para paginacion
   get totalPaginas(): number {

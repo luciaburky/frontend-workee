@@ -3,42 +3,34 @@
     padding: 3rem;
     padding-bottom: 1rem;
     border-radius: 10px;
-    max-width: 1000px;
-    margin: 2rem auto;
+    max-width: 900px;
+    margin: 3rem auto;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-}
-
-.listado-subtitulo {
-    padding: 6px;
-    gap: 8px;
 }
 
 .listado-header {  
     display: flex;
     justify-content: space-between;
     align-items: center;
-    align-content: center;
-    padding: 6px;
-    border-radius: 10px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 1.5rem;
 }
 
-.titulo {
-    font-size: 24px;
-    font-weight: bold;
-    color: #333;
-    align-items: center;
-    display: flex;
-    margin-bottom: 0px !important;
+.listado-header h1 {
+  font-size: 1.8rem;
+  margin: 0;
+  color: #333;
+}
+
+.listado-header p {
+  font-size: 0.95rem;
+  color: #777;
+  margin: 0;
 }
 
 .listado-contenido {
     padding: 6px;
     margin-top: 6px;
-}
-
-.subtitulo {
-    color: #697077;
-    margin-bottom: 2px !important;
 }
 
 .card {
