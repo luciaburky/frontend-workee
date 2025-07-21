@@ -1,0 +1,149 @@
+<div class="perfil-wrapper">
+  <div class="perfil-header">
+    <div>
+      <h1>Mi perfil</h1>
+      <p>Gestiona la información de tu empresa</p>
+    </div>
+    @if (!modoEdicion) {
+      <button type="button" class="boton" (click)="modificarEmpresa()">
+        <span class="material-symbols-outlined">edit</span>
+        Editar
+      </button>
+    } @else {
+      <button type="button" class="boton" (click)="volver()">
+        <span class="material-symbols-outlined">arrow_back</span>
+        Volver
+      </button>
+    }
+  </div>
+
+  <form>
+    <div class="form-grid-logo">
+      <div class="logo-seccion">
+        <img [src]="'assets/img/foto-perfil.png'" alt="logo" class="logo" />
+        <label for="logo">Editar logo</label>
+      </div>
+      <div class="al-lado m-0 p-0">
+        <div class="form-group">
+          <label for="nombreEmpresa" class="p-0 my-0 mb-2">Nombre</label>
+          <input 
+            type="text"
+            class="form-control"
+            name="nombreEmpresa"
+            [(ngModel)]="empresa.nombreEmpresa"
+            [readonly]="!modoEdicion">
+        </div>
+        <div class="form-group">
+          <label for="rubroEmpresa" class="p-0 my-0 mb-2 mt-3">Rubro</label>
+          <select 
+            class="form-control"
+            name="rubroEmpresa"
+            [disabled]="!modoEdicion"
+            [(ngModel)]="empresa.rubro"
+            id="rubroEmpresa"
+            [compareWith]="compararRubros">
+            @for (rubro of rubros; track rubro.id) {
+              <option [ngValue]="rubro">
+                {{ rubro.nombreRubro }}
+              </option>
+            }
+          </select>
+        </div>
+      </div>
+      <div class="abajo m-0 full-width">
+        <div class="form-group">
+          <label for="telefonoEmpresa" class="p-0 my-0 mb-2">Teléfono de contacto</label>
+          <input 
+            type="text"
+            class="form-control"
+            name="telefonoEmpresa"
+            [readonly]="!modoEdicion"
+            [(ngModel)]="empresa.telefonoEmpresa">
+        </div>
+        <div class="form-group">
+          <label for="direccionEmpresa" class="p-0 my-0 mb-2">Dirección Legal</label>
+          <input 
+            type="text"
+            class="form-control"
+            name="direccionEmpresa"
+            [readonly]="!modoEdicion"
+            [(ngModel)]="empresa.direccionEmpresa">
+        </div>
+        <div class="form-group">
+          <label for="paisEmpresa" class="p-0 my-0 mb-2">País</label>
+          <input 
+            type="text"
+            class="form-control"
+            name="paisEmpresa"
+            readonly
+            [value]="empresa.provincia?.idPais">
+        </div>
+        <div class="form-group">
+          <label for="provinciaEmpresa" class="p-0 my-0 mb-2">Provincia</label>
+          <input 
+            type="text"
+            class="form-control"
+            name="provinciaEmpresa"
+            readonly
+            [value]="empresa.provincia?.nombreProvincia">
+        </div>
+        <div class="form-group">
+          <label for="emailEmpresa" class="p-0 my-0 mb-2">Correo Electrónico</label>
+          <input 
+            type="text"
+            class="form-control"
+            name="emailEmpresa"
+            readonly
+            [value]="empresa.emailEmpresa">
+        </div>
+        <div class="form-group">
+          <label for="NIFEmpresa" class="p-0 my-0 mb-2">Número de identificación fiscal</label>
+          <input 
+            type="text"
+            class="form-control"
+            name="NIFEmpresa"
+            readonly
+            [value]="empresa.numeroIdentificacionFiscal">
+        </div>
+        <div class="form-group">
+          <label for="descripcionEmpresa" class="p-0 my-0 mb-2">Descripción</label>
+          <textarea 
+            type="text"
+            class="form-control"
+            name="descripcionEmpresa"
+            [readonly]="!modoEdicion"
+            [(ngModel)]="empresa.descripcionEmpresa"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="sitioWebEmpresa" class="p-0 my-0 mb-2">Sitio Web Oficial (URL)</label>
+          <input 
+            type="text"
+            class="form-control"
+            name="sitioWebEmpresa"
+            [readonly]="!modoEdicion"
+            [value]="empresa.sitioWebEmpresa">
+        </div>
+        <div class="form-group">
+          <label for="contrasenia" class="p-0 my-0 mb-2">Contraseña</label>
+          <input 
+            type="password"
+            class="form-control"
+            name="contrasenia"
+            [readonly]="!modoEdicion"
+            [(ngModel)]="empresa.contrasenia">
+        </div>
+      </div>
+    </div>
+  </form>
+  <div class="modo-edicion">
+    @if (modoEdicion) {
+    <button type="button" class="boton-eliminar" (click)="eliminarCuenta()">
+      <span class="material-symbols-outlined">delete</span>
+      Eliminar cuenta
+    </button>
+    <button type="button" class="boton-guardar ml-auto" (click)="enviarDatos()">
+      <span class="material-symbols-outlined">save</span>
+      Guardar cambios
+    </button>
+    }
+  </div>
