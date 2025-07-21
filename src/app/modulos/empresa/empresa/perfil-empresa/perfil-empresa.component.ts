@@ -18,6 +18,7 @@ import Swal from 'sweetalert2';
 })
 export class PerfilEmpresaComponent implements OnInit {
   empresa: Empresa = {};
+  empresaOriginal: Empresa = {};
   modoEdicion = false;
   rubros: Rubro[] = [];
 
@@ -33,6 +34,7 @@ export class PerfilEmpresaComponent implements OnInit {
     this.empresaService.findById(id).subscribe({
       next: (data) => {
         this.empresa = data;
+        this.empresaOriginal = JSON.parse(JSON.stringify(data));
       },
       error: (error) => {
         console.error('Error al obtener empresa', error);
@@ -47,12 +49,11 @@ export class PerfilEmpresaComponent implements OnInit {
         console.error('Error al obtener rubros', error);
       }
     })
-
-    console.log(this.rubros);
   }
 
   modificarEmpresa() {
     this.modoEdicion = true;
+    
   }
 
   eliminarCuenta() {
@@ -134,6 +135,7 @@ export class PerfilEmpresaComponent implements OnInit {
                                             this.empresa.repetirContrasenia ?? ''
         ).subscribe({
           next: () => {
+            this.empresaOriginal = JSON.parse(JSON.stringify(this.empresa));
             this.modoEdicion = false;
             Swal.fire({
               toast: true,
@@ -146,6 +148,9 @@ export class PerfilEmpresaComponent implements OnInit {
           },
           error: (error) => {
             console.error('Error al modificar empresa', error);
+            // TODO: agregar algun msj de error cuando no se envia? por ejemplo si ingrsa 
+            // un string en el telefono no se va a enviar, pero no se si vale la pena hacer
+            // esa validacion por ejemploy mostrar de que no se envio por eso 
           }
         })
     }});
@@ -169,6 +174,7 @@ export class PerfilEmpresaComponent implements OnInit {
         }
       }).then((result) => {
         if (result.isConfirmed) {
+          this.empresa = JSON.parse(JSON.stringify(this.empresaOriginal));
           this.modoEdicion = false;
       }});
     }
