@@ -16,6 +16,10 @@ export class RubroService {
   findAll(): Observable<Rubro[]> {
     return this.http.get<Rubro[]>(this.url);
   }
+
+  findAllActivos(): Observable<Rubro[]> {
+    return this.http.get<Rubro[]>(`${this.url}/activos`);
+  }
   
   findById(idRubro:number): Observable<Rubro> {
     return this.http.get<Rubro>(`${this.url}/${idRubro}`);
