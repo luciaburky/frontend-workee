@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { EmpleadoService } from '../empleado.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -16,6 +16,13 @@ export class PerfilEmpleadoComponent implements OnInit {
   puestoOriginal: string = ''; // en esta variable se guarda el puesto original del empleado recibido desde la BD, sin ningun cambio
   idEmpleado!: number;
   modoEdicion = false;
+  
+  // CON ESTA VARIABLE, la idea es que cuando se trate del usuario empleado, aparezcan los campos que el mismo puede editar (no el admin)
+  // si el empleado ha ingresado en su perfil, esta variable esta en true
+  @Input() esEmpleado: boolean = true;
+  verContrasenia: boolean = false;
+  mostrarCampoRepetir: boolean = false;
+  repetirContrasenia: string = '';
 
   constructor(
     private empleadoService: EmpleadoService,
@@ -88,24 +95,80 @@ export class PerfilEmpleadoComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         const nuevoPuesto = this.empleado.puestoEmpleadoEmpresa;
-        this.empleadoService.modificarEmpleado(nuevoPuesto ?? '', this.idEmpleado).subscribe({
+        if (!this.esEmpleado) {
+          // El administrador es quien esta modificando el perfil del empleado
+          this.empleadoService.modificarEmpleadoComoEmpresa(nuevoPuesto ?? '', this.idEmpleado).subscribe({
+            next: () => {
+              this.puestoOriginal = nuevoPuesto ?? '';
+              this.modoEdicion = false;
+              Swal.fire({
+                toast: true,
+                position: "top-end",
+                icon: "success",
+                title: "La cuenta del empleado se modificó correctamente",
+                timer: 3000,
+                showConfirmButton: false,
+              });
+            },
+            error: (error) => {
+              console.error('Error al modificar empleado', error);
+            }
+          })
+        } else {
+          // El empleado es quien esta modificando su perfil
+          const contrasenia = this.empleado.contrasenia ?? '';
+          const repetirContrasenia = this.repetirContrasenia ?? '';
+          if (contrasenia) {
+            if (contrasenia.length < 8) {
+              Swal.fire({
+                toast: true,
+                icon: 'warning',
+                title: 'La contraseña debe tener al menos 8 caracteres',
+                position: 'top-end',
+                timer: 3000,
+                showConfirmButton: false
+              });
+              return;
+            }
+          }
+          if (contrasenia !== repetirContrasenia) {
+            Swal.fire({
+              toast: true,
+              icon: 'warning',
+              title: 'Las contraseñas no coinciden',
+              position: 'top-end',
+              timer: 3000,
+              showConfirmButton: false
+            });
+            return;
+          }
+          this.empleadoService.modificarEmpleadoComoEmpleado(
+          this.empleado.nombreEmpleadoEmpresa ?? '',
+          this.empleado.apellidoEmpleadoEmpresa ?? '',
+          nuevoPuesto ?? '',
+          contrasenia,
+          repetirContrasenia,
+          this.idEmpleado
+        ).subscribe({
           next: () => {
             this.puestoOriginal = nuevoPuesto ?? '';
             this.modoEdicion = false;
+            this.repetirContrasenia = '';
+            this.mostrarCampoRepetir = false;
             Swal.fire({
               toast: true,
               position: "top-end",
               icon: "success",
-              title: "La cuenta del empleado se modificó correctamente",
+              title: "Tu perfil ha sido actualizado correctamente",
               timer: 3000,
               showConfirmButton: false,
             });
           },
-          error: (error) => {
-            console.error('Error al modificar empleado', error);
-          }
-        })
-    }});
+          error: (error) => console.error('Error al modificar empleado', error)
+          });
+        }
+        }
+      });
   }
 
   eliminarCuenta() {

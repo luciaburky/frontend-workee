@@ -40,7 +40,7 @@ export class EmpleadoService {
     return this.http.post(this.url,body);
   }
 
-  modificarEmpleado(puestoEmpleadoEmpresa: string, idEmpleado: number) {
+  modificarEmpleadoComoEmpresa(puestoEmpleadoEmpresa: string, idEmpleado: number) {
     const body = {
       "nombreEmpleadoEmpresa": null,
       "apellidoEmpleadoEmpresa": null,
@@ -52,6 +52,25 @@ export class EmpleadoService {
     }
     console.log(body);
     return this.http.put(`${this.url}/actualizarPerfilPorAdmin/${idEmpleado}`,body);
+  }
+
+  modificarEmpleadoComoEmpleado(nombreEmpleadoEmpresa: string,
+                                apellidoEmpleadoEmpresa: string,
+                                puestoEmpleadoEmpresa: string,
+                                contrasenia: string,
+                                repetirContrasenia: string,
+                                idEmpleado: number) {
+    const body = {
+      "nombreEmpleadoEmpresa": nombreEmpleadoEmpresa,
+      "apellidoEmpleadoEmpresa": apellidoEmpleadoEmpresa,
+      "puestoEmpleadoEmpresa": puestoEmpleadoEmpresa,
+      "correoEmpleadoEmpresa": null,
+      "contrasenia": contrasenia,
+      "repetirContrasenia": repetirContrasenia,
+      "idEmpresa": 1
+    }
+    console.log(body);
+    return this.http.put(`${this.url}/actualizarPerfilPropio/${idEmpleado}`,body);
   }
 
   setId(id: number) {
