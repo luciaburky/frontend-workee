@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { UsuarioEmpleadoRequest } from './usuario-empleado-request';
+import { Empleado } from './empleado';
 
 @Injectable({
   providedIn: 'root'
@@ -14,8 +14,8 @@ export class EmpleadoService {
 
   constructor(private http: HttpClient) { };
 
-  findAll(): Observable<UsuarioEmpleadoRequest[]> {
-    return this.http.get<UsuarioEmpleadoRequest[]>(`${this.url}/traerTodos/1`);
+  findAll(): Observable<Empleado[]> {
+    return this.http.get<Empleado[]>(`${this.url}/traerTodos/1`);
   }
 
   cantidadActivos(): Observable<number> {
@@ -35,7 +35,8 @@ export class EmpleadoService {
       "correoEmpleadoEmpresa": correoEmpleadoEmpresa,
       "contrasenia": contrasenia,
       "repetirContrasenia": repetirContrasenia,
-      "idEmpresa": 1
+      "idEmpresa": 1,
+      "urlFotoPerfil": "urlFoto"
     }
     return this.http.post(this.url,body);
   }
@@ -56,14 +57,13 @@ export class EmpleadoService {
 
   modificarEmpleadoComoEmpleado(nombreEmpleadoEmpresa: string,
                                 apellidoEmpleadoEmpresa: string,
-                                puestoEmpleadoEmpresa: string,
                                 contrasenia: string,
                                 repetirContrasenia: string,
                                 idEmpleado: number) {
     const body = {
       "nombreEmpleadoEmpresa": nombreEmpleadoEmpresa,
       "apellidoEmpleadoEmpresa": apellidoEmpleadoEmpresa,
-      "puestoEmpleadoEmpresa": puestoEmpleadoEmpresa,
+      "puestoEmpleadoEmpresa": null,
       "correoEmpleadoEmpresa": null,
       "contrasenia": contrasenia,
       "repetirContrasenia": repetirContrasenia,
@@ -81,8 +81,8 @@ export class EmpleadoService {
     return this.idSubject.asObservable();
   }
   
-  findById(idEmpleado: number): Observable<UsuarioEmpleadoRequest> {
-    return this.http.get<UsuarioEmpleadoRequest>(`${this.url}/${idEmpleado}`);
+  findById(idEmpleado: number): Observable<Empleado> {
+    return this.http.get<Empleado>(`${this.url}/${idEmpleado}`);
   }
 
   eliminarEmpleado(idEmpleado: number) {

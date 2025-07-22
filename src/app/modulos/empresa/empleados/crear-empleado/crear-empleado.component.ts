@@ -75,7 +75,18 @@ export class CrearEmpleadoComponent implements OnInit {
           })
         },
         error: (error) => {
-          console.log(error.error.message);
+          if (error.error.message === "El correo ingresado ya se encuentra en uso") {
+            console.log("entre al if")
+            Swal.fire({
+              toast: true,
+              position: "top-end",
+              icon: "warning",
+              title: "El correo ingresado se encuentra en uso, ingrese otro",
+              timer: 3000,
+              showConfirmButton: false,
+            })
+          }
+          // console.log(error.error.message);
           if (error.status === 400 && error.error.message === "Debe ser un correo válido") {
             this.backendEmailInvalido = true;
             this.empleadoForm.get('correoEmpleado')?.setErrors({ backend: true });

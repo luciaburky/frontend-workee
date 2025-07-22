@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { EmpleadoService } from '../empleado.service';
-import { UsuarioEmpleadoRequest } from '../usuario-empleado-request';
+import { Empleado } from '../empleado';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 
@@ -13,7 +13,7 @@ import { Router } from '@angular/router';
 export class ListadoEmpleadosComponent implements OnInit {
   
   cantEmpleadosActivos!: number;
-  empleadoList: UsuarioEmpleadoRequest[] = [];
+  empleadoList: Empleado[] = [];
   paginaActual: number = 1;
   elementosPorPagina: number = 8;
   
@@ -50,7 +50,7 @@ export class ListadoEmpleadosComponent implements OnInit {
     return Array.from({ length: this.totalPaginas }, (_, i) => i + 1);
   }
 
-  obtenerEmpleadosPaginados(): UsuarioEmpleadoRequest[] {
+  obtenerEmpleadosPaginados(): Empleado[] {
     const inicio = (this.paginaActual - 1) * this.elementosPorPagina;
     // console.log(inicio);
     const fin = inicio + this.elementosPorPagina;

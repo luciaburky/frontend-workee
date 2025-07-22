@@ -59,7 +59,7 @@
           class="form-control"
           name="puestoEmpleado"
           [(ngModel)]="empleado.puestoEmpleadoEmpresa"
-          [readonly]="!modoEdicion">
+          [readonly]="esEmpleado || !modoEdicion">
       </div>
       <div class="form-group">
         <label for="correoEmpleado" class="p-0 my-0 mb-2">Correo electrónico</label>
@@ -67,7 +67,7 @@
           type="text"
           class="form-control"
           name="correoEmpleado"
-          [value]="empleado.correoEmpleadoEmpresa"
+          [value]="empleado.usuario?.correoUsuario"
           readonly>
       </div>
     
@@ -79,9 +79,9 @@
             [type]="verContrasenia ? 'text' : 'password'"
             class="form-control"
             name="contrasenia"
-            [(ngModel)]="empleado.contrasenia"
+            [(ngModel)]="empleado.usuario!.contraseniaUsuario"
             [readonly]="!modoEdicion"
-            (input)="mostrarCampoRepetir = !!empleado.contrasenia"/>
+            (input)="mostrarCampoRepetir = !!empleado.usuario?.contraseniaUsuario"/>
           <span class="input-group-text" (click)="verContrasenia = !verContrasenia" style="cursor: pointer;">
             <span class="material-symbols-outlined">
               {{ verContrasenia ? 'visibility' : 'visibility_off' }}

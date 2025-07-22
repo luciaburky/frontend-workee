@@ -1,4 +1,6 @@
-export class UsuarioEmpleadoRequest {
+import { Usuario } from "../../seguridad/usuario";
+
+export class Empleado {
     id?: number;
     nombreEmpleadoEmpresa?: string;
     apellidoEmpleadoEmpresa?: string;
@@ -6,9 +8,5 @@ export class UsuarioEmpleadoRequest {
     fechaHoraAlta?: string;
     fechaHoraBaja?: string | null;
     idEmpresa?: number;
-    correoEmpleadoEmpresa?: string;
-    contrasenia?: string;
-    repetirContrasenia?: string;
-    // urlFoto????
+    usuario?: Usuario;
 }
-

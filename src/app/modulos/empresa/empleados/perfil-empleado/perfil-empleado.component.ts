@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { EmpleadoService } from '../empleado.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { UsuarioEmpleadoRequest } from '../usuario-empleado-request';
+import { Empleado } from '../empleado';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -12,7 +12,19 @@ import Swal from 'sweetalert2';
   styleUrl: './perfil-empleado.component.css'
 })
 export class PerfilEmpleadoComponent implements OnInit {
-  empleado: UsuarioEmpleadoRequest = {};
+  empleado: Empleado = {
+    id: 0,
+    nombreEmpleadoEmpresa: '',
+    apellidoEmpleadoEmpresa: '',
+    puestoEmpleadoEmpresa: '',
+    usuario: {
+      id: 0,
+      correoUsuario: '',
+      contraseniaUsuario: '',
+      urlFotoUsuario: '',
+    }
+  };
+
   puestoOriginal: string = ''; // en esta variable se guarda el puesto original del empleado recibido desde la BD, sin ningun cambio
   idEmpleado!: number;
   modoEdicion = false;
@@ -36,6 +48,7 @@ export class PerfilEmpleadoComponent implements OnInit {
     this.empleadoService.findById(this.idEmpleado).subscribe({
       next: (data) => {
         this.empleado = { ...data };
+        console.log(data)
         this.puestoOriginal = data.puestoEmpleadoEmpresa ?? '';
       },
       error: (error) => {
@@ -116,7 +129,7 @@ export class PerfilEmpleadoComponent implements OnInit {
           })
         } else {
           // El empleado es quien esta modificando su perfil
-          const contrasenia = this.empleado.contrasenia ?? '';
+          const contrasenia = this.empleado.usuario?.contraseniaUsuario ?? '';
           const repetirContrasenia = this.repetirContrasenia ?? '';
           if (contrasenia) {
             if (contrasenia.length < 8) {
@@ -145,7 +158,6 @@ export class PerfilEmpleadoComponent implements OnInit {
           this.empleadoService.modificarEmpleadoComoEmpleado(
           this.empleado.nombreEmpleadoEmpresa ?? '',
           this.empleado.apellidoEmpleadoEmpresa ?? '',
-          nuevoPuesto ?? '',
           contrasenia,
           repetirContrasenia,
           this.idEmpleado
