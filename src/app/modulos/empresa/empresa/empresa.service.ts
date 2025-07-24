@@ -7,7 +7,7 @@ import { Empresa } from './empresa';
 @Injectable({
   providedIn: 'root',
 })
-export class ServiceVisualizarPerfilEmpresaService {
+export class EmpresaService {
   private url = 'http://localhost:9090/empresas';
 
   constructor(private http: HttpClient) {}
@@ -41,7 +41,8 @@ export class ServiceVisualizarPerfilEmpresaService {
     return this.http.put(`${this.url}/modificarPerfil/${idEmpresa}`, body);
   }
 
-  eliminarEmpresa() {
-    
+  eliminarEmpresa(idEmpresa: number) {
+    return this.http.delete<void>(`${this.url}/${idEmpresa}`);
   }
+  
 }

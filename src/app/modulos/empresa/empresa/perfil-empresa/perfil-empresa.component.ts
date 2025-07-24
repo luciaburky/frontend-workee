@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { ServiceVisualizarPerfilEmpresaService } from '../empresa.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { EmpresaService } from '../empresa.service';
 import { Empresa } from '../empresa';
 import { RubroService } from '../../../../admin/ABMRubro/rubro.service';
 import { ProvinciaService } from '../../../../admin/ABMProvincia/provincia.service';
@@ -18,15 +18,38 @@ import Swal from 'sweetalert2';
 })
 export class PerfilEmpresaComponent implements OnInit {
   empresa: Empresa = {};
-  empresaOriginal: Empresa = {};
+  idEmpresa = 0;
+  empresaOriginal: Empresa = {
+    id: 0,
+    nombreEmpresa: '',
+    descripcionEmpresa: '',
+    numeroIdentificacionFiscal: '',
+    telefonoEmpresa: 0,
+    emailEmpresa: '',
+    direccionEmpresa: '',
+    sitioWebEmpresa: '',
+    usuario: {
+      id: 0,
+      correoUsuario: '',
+      contraseniaUsuario: '',
+      urlFotoUsuario: '',
+    }
+  };
   modoEdicion = false;
   rubros: Rubro[] = [];
 
+  repetirContrasenia = '';
+  idProvincia? = 0;
+  nombrePais? = '';
+  verContrasenia: boolean = false;
+  mostrarCampoRepetir: boolean = false;
+
   constructor(
-    private empresaService: ServiceVisualizarPerfilEmpresaService,
+    private empresaService: EmpresaService,
     private route: ActivatedRoute,
+    private router: Router,
     private rubroService: RubroService,
-    // private provinciaService: ProvinciaService
+    private provinciaService: ProvinciaService
   ) {}
 
   ngOnInit(): void {
@@ -35,11 +58,23 @@ export class PerfilEmpresaComponent implements OnInit {
       next: (data) => {
         this.empresa = data;
         this.empresaOriginal = JSON.parse(JSON.stringify(data));
+        this.idProvincia = this.empresa.provincia?.id;
+        this.idEmpresa = this.empresa.id ?? 0;
+        console.log(this.empresa.usuario?.contraseniaUsuario)
       },
       error: (error) => {
         console.error('Error al obtener empresa', error);
       }
     });
+
+    if (this.idProvincia !== undefined && this.idProvincia !== null) {
+      this.provinciaService.findById(this.idProvincia).subscribe({
+        next: (provincia) => {
+          this.nombrePais = provincia.pais?.nombrePais;
+          console.log(this.nombrePais)
+        }
+      });
+    }
     
     this.rubroService.findAllActivos().subscribe({
       next: (data) => {
@@ -71,41 +106,41 @@ export class PerfilEmpresaComponent implements OnInit {
       customClass: {
         title: 'titulo-chico',
     }})
-  // .then((result) => {
-  //       if (result.isConfirmed) {
-  //         this.empresaService.eliminarEmpresa()
-          // .subscribe({
-            // next: () => {
-            //   this.modoEdicion = false;
-            //   this.volver();
+  .then((result) => {
+        if (result.isConfirmed) {
+          this.empresaService.eliminarEmpresa(this.idEmpresa).
+          subscribe({
+            next: () => {
+              this.modoEdicion = false;
+              this.volver();
               // TODO: QUE PONEMOS ACA?
-              // Swal.fire({
-              //   toast: true,
-              //   position: "top-end",
-              //   icon: "success",
-              //   title: "La empresa ha sido eliminada exitosamente.",
-              //   timer: 3000,
-              //   showConfirmButton: false,
-              // })
-            // 
-      //       },
-      //       error: (error) => {
-      //         console.error('Error al eliminar empleado', error);
-      //         if(error.error.message === "Empleado asociado a una etapa de oferta") {
-      //           // TODO: CAMBIAR MESSAGE DE ERROR SEGUN EL ERROR QUE SE AGREGUE EN EL BACK
-      //           Swal.fire({
-      //             toast: true,
-      //             position: "top-end",
-      //             icon: "warning",
-      //             title: "¡El empleado está asociado a una etapa actualmente!",
-      //             text: "No se puede eliminar un empleado que está asignado a una etapa en una oferta no finalizada",
-      //             timer: 3000,
-      //             showConfirmButton: false,
-      //           })
-      //           }
-      //       }
-      //     })
-      // }});
+              Swal.fire({
+                toast: true,
+                position: "top-end",
+                icon: "success",
+                title: "La empresa ha sido eliminada exitosamente.",
+                timer: 3000,
+                showConfirmButton: false,
+              })
+              this.router.navigate([`login`])    
+            },
+            error: (error) => {
+              console.error('Error al modificar empleado', error)
+              if(error.error.message === "Empleado asociado a una etapa de oferta") {
+                // TODO: CAMBIAR MESSAGE DE ERROR SEGUN EL ERROR QUE SE AGREGUE EN EL BACK
+                Swal.fire({
+                  toast: true,
+                  position: "top-end",
+                  icon: "warning",
+                  title: "¡El empleado está asociado a una etapa actualmente!",
+                  text: "No se puede eliminar un empleado que está asignado a una etapa en una oferta no finalizada",
+                  timer: 3000,
+                  showConfirmButton: false,
+                })
+                }
+            }
+          })
+      }});
   }
 
   enviarDatos() {
@@ -124,6 +159,8 @@ export class PerfilEmpresaComponent implements OnInit {
       }
     }).then((result) => {
       if (result.isConfirmed) {
+        const contrasenia = this.empresa.usuario?.contraseniaUsuario ?? '';
+        const repetirContrasenia = this.repetirContrasenia ?? '';
         this.empresaService.modificarEmpresa(this.empresa.id!,
                                             this.empresa.nombreEmpresa ?? '',
                                             this.empresa.descripcionEmpresa ?? '', 
@@ -131,8 +168,8 @@ export class PerfilEmpresaComponent implements OnInit {
                                             this.empresa.telefonoEmpresa ?? 0,
                                             this.empresa.direccionEmpresa ?? '',
                                             this.empresa.sitioWebEmpresa ?? '',
-                                            this.empresa.contrasenia ?? '',
-                                            this.empresa.repetirContrasenia ?? ''
+                                            contrasenia,
+                                            repetirContrasenia
         ).subscribe({
           next: () => {
             this.empresaOriginal = JSON.parse(JSON.stringify(this.empresa));
@@ -148,7 +185,30 @@ export class PerfilEmpresaComponent implements OnInit {
           },
           error: (error) => {
             console.error('Error al modificar empresa', error);
-            // TODO: agregar algun msj de error cuando no se envia? por ejemplo si ingrsa 
+            if(error.error.message === "Las contraseñas deben coincidir") {
+              Swal.fire({
+                toast: true,
+                icon: 'warning',
+                title: 'Las contraseñas no coinciden',
+                position: 'top-end',
+                timer: 3000,
+                showConfirmButton: false
+              });
+            }
+            if(error.error.message === "La contraseña debe tener al menos 8 caracteres") {
+              Swal.fire({
+                toast: true,
+                icon: 'warning',
+                title: 'La contraseña debe tener al menos 8 caracteres',
+                position: 'top-end',
+                timer: 3000,
+                showConfirmButton: false
+              });
+            }
+            
+            
+          
+              // TODO: agregar algun msj de error cuando no se envia? por ejemplo si ingrsa 
             // un string en el telefono no se va a enviar, pero no se si vale la pena hacer
             // esa validacion por ejemploy mostrar de que no se envio por eso 
           }
@@ -179,6 +239,28 @@ export class PerfilEmpresaComponent implements OnInit {
       }});
     }
   }
+
+  // async editarFoto() {
+  //   const { value: file } = await Swal.fire({
+  //     title: "Select image",
+  //     input: "file",
+  //     inputAttributes: {
+  //       "accept": "image/*",
+  //       "aria-label": "Upload your profile picture"
+  //     }
+  //   });
+  //   if (file) {
+  //     const reader = new FileReader();
+  //     reader.onload = (e) => {
+  //       Swal.fire({
+  //         title: "Your uploaded picture",
+  //         imageUrl: e.target.result,
+  //         imageAlt: "The uploaded picture"
+  //       });
+  //     };
+  //     reader.readAsDataURL(file);
+  //   }
+  // }
 
   compararRubros = (r1: Rubro, r2: Rubro): boolean => {
     return r1 && r2 ? r1.id === r2.id : r1 === r2;

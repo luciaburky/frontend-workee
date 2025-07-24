@@ -1,5 +1,6 @@
 import { Provincia } from "../../../admin/ABMProvincia/provincia";
 import { Rubro } from "../../../admin/ABMRubro/rubro";
+import { Usuario } from "../../seguridad/usuario";
 
 export class Empresa {
     id?: number;
@@ -13,6 +14,7 @@ export class Empresa {
     sitioWebEmpresa?: string;
     provincia?: Provincia;
     rubro?: Rubro;
-    contrasenia?: string;
-    repetirContrasenia?: string;
+    usuario?: Usuario;
+    // contrasenia?: string;
+    // repetirContrasenia?: string;
 }
