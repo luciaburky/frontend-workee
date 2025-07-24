@@ -1,0 +1,196 @@
+import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Etapa } from '../etapa';
+import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { EtapaService } from '../etapa.service';
+import { ModalService } from '../../../compartidos/modal/modal.service';
+import Swal from 'sweetalert2';
+import { RecargarService } from '../../recargar.service';
+import { CrearEtapaComponent } from '../crear-etapa/crear-etapa.component';
+import { ModificarEtapaComponent } from '../modificar-etapa/modificar-etapa.component';
+
+@Component({
+  selector: 'app-listado-etapas',
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  templateUrl: './listado-etapas.component.html',
+  styleUrl: './listado-etapas.component.css'
+})
+export class ListadoEtapasComponent {
+  etapaList: Etapa[] = [];
+  modalRef?: NgbModalRef;
+  paginaActual: number = 1;
+  elementosPorPagina: number = 10;
+
+  constructor(
+    private etapaService: EtapaService,
+    private modalService: ModalService,
+    private recargarService: RecargarService,
+  ) {}
+
+  ngOnInit(): void {    
+    this.etapaService.findAll().subscribe(etapas => {
+      this.etapaList = etapas;
+    });
+
+    this.recargar();
+    this.recargarService.recargar$.subscribe(() => {
+      this.recargar();
+    })
+  }
+
+  // Creacion de Etapa
+  crearEtapa() {
+    this.modalRef = this.modalService.open(CrearEtapaComponent, {
+      centered: true,
+    });
+  }
+  
+  // Modificacion de Etapa
+  modificarEtapa(idEtapa: number) {
+    this.etapaService.setId(idEtapa);
+    console.log("id etapa: ", idEtapa)
+    this.modalRef = this.modalService.open(ModificarEtapaComponent, {
+      centered: true,
+    });
+  }
+  
+  // Habilitacion de Etapa
+  habilitarEtapa(idEtapa: number) {
+    Swal.fire({
+      text: "¿Desea habilitar el parámetro?",
+      icon: "success",
+      iconColor: "#70DC73",
+      showCancelButton: true,
+      confirmButtonColor: "#70DC73",
+      cancelButtonColor: "#697077",
+      confirmButtonText: "Sí, habilitar",
+      cancelButtonText: "Volver",
+      reverseButtons: true,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.etapaService.habilitar(idEtapa).subscribe({
+          next: (response) => {
+          this.recargar();
+          const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.onmouseenter = Swal.stopTimer;
+              toast.onmouseleave = Swal.resumeTimer;
+            }
+          });
+          Toast.fire({
+            icon: "success",
+            title: "Etapa habilitada correctamente",
+          });
+          }
+        })
+    } else {
+
+    }});
+  }
+  
+  // Deshabilitacion de Etapa
+  deshabilitarEtapa(idEtapa: number) {
+      Swal.fire({
+      text: "¿Desea deshabilitar el parámetro?",
+      icon: "error",
+      iconColor: "#FF5252",
+      showCancelButton: true,
+      confirmButtonColor: "#FF5252",
+      cancelButtonColor: "#697077",
+      confirmButtonText: "Sí, deshabilitar",
+      cancelButtonText: "Volver",
+      reverseButtons: true,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.etapaService.deshabilitar(idEtapa).subscribe({
+          next: (response) => {
+            this.recargar();
+            const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.onmouseenter = Swal.stopTimer;
+              toast.onmouseleave = Swal.resumeTimer;
+            }
+          });
+          Toast.fire({
+            icon: "success",
+            title: "Estado de usuario deshabilitado correctamente",
+          });
+          },
+          error: (error) => {
+            // TODO: REVISAR CON SWAGGER
+            if(error.error.message === "La entidad ya se encuentra deshabilitada") {
+              const Toast = Swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                  toast.onmouseenter = Swal.stopTimer;
+                  toast.onmouseleave = Swal.resumeTimer;
+                }
+              });
+              Toast.fire({
+                icon: "warning",
+                title: "La etapa ya se encuentra deshabilitada",
+              });
+            }
+          }
+        })
+    } else {
+
+    }});
+  }
+
+  recargar(): void {
+    this.etapaService.findAll().subscribe(etapas => {
+      this.etapaList = etapas;
+    });
+  }
+
+  // Para paginacion
+  get totalPaginas(): number {
+    return Math.ceil(this.etapaList.length / this.elementosPorPagina);
+  }
+
+  get paginas(): number[] {
+    return Array.from({ length: this.totalPaginas }, (_, i) => i + 1);
+  }
+
+  obtenerEtapasPaginadas(): Etapa[] {
+    const inicio = (this.paginaActual - 1) * this.elementosPorPagina;
+    const fin = inicio + this.elementosPorPagina;
+    return this.etapaList.slice(inicio, fin);
+  }
+
+  avanzarPagina(): void {
+    if (this.paginaActual < this.totalPaginas) {
+      this.paginaActual++;
+    }
+  }
+  
+  retrocederPagina(): void {
+    if (this.paginaActual > 1) {
+      this.paginaActual--;
+    }
+  }
+
+  irAPagina(pagina: number): void {
+    if (pagina >= 1 && pagina <= this.totalPaginas) {
+      this.paginaActual = pagina;
+    }
+  }
+
+
+}

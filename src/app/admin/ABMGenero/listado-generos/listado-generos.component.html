@@ -1,0 +1,81 @@
+<div class="container">
+    <div class="titulo-wrapper">
+        <h2 class="titulo-listado">Géneros</h2>
+    </div>
+    <div class="busqueda-acciones">
+        <button type="button" class="boton-nuevo" (click)="crearGenero()">
+            <span class="material-symbols-outlined">add</span>
+            Nuevo Género
+        </button>
+    </div>
+    @if (generoList.length === 0) {
+            <div class="alert alert-warning">
+                ¡No hay géneros cargados en el sistema!
+            </div>
+    } @else {
+        <table class="table align-middle">
+        <thead>
+            <tr>
+                <th scope="col">GÉNERO</th>
+                <th scope="col">ESTADO</th>
+                <th scope="col">ACCIONES</th>
+            </tr>
+        </thead>
+                <tbody>
+                    @for (genero of obtenerGenerosPaginados(); track $index) {
+                        <tr>
+                            <td> {{ genero.nombreGenero }} </td>
+                            <td> 
+                                <span class="estado-badge"
+                                [ngClass]=" { 'habilitado': !genero.fechaHoraBaja, 'deshabilitado': genero.fechaHoraBaja }">
+                                    {{ genero.fechaHoraBaja ? 'DESHABILITADO' : 'HABILITADO'}}
+                                </span>
+                            </td>
+                            <td>
+                                <button id="icon-button" class="icon-button-celeste" (click)="modificarGenero(genero.id!)" title="Modificar">
+                                    <span class="material-symbols-outlined">
+                                        edit
+                                    </span>
+                                </button>
+                                @if (!genero.fechaHoraBaja) {
+                                    <button id="icon-button" class="icon-button-rojo" (click)="deshabilitarGenero(genero.id!)" title="Deshabilitar" >
+                                        <span class="material-symbols-outlined">
+                                            disabled_by_default
+                                        </span>
+                                    </button>
+                                } @else {
+                                    <button id="icon-button" class="icon-button-verde" (click)="habilitarGenero(genero.id!)" title="Habilitar" >
+                                        <span class="material-symbols-outlined">
+                                            check_box
+                                        </span>
+                                    </button>
+                                }
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+            </table>
+        }
+    <!-- tuve que usar ngIf porque no me funcionaba solo con @if -->
+    <nav *ngIf="totalPaginas > 1">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" [class.disabled]="paginaActual === 1">
+            <button class="page-link" (click)="retrocederPagina()">Anterior</button>
+            </li>
+
+            <!-- tuve que usar ngFor porque no me funcionaba solo con @for -->
+            <li 
+            *ngFor="let pagina of paginas"
+            class="page-item" 
+            [class.active]="paginaActual === pagina">
+                <button class="page-link" (click)="irAPagina(pagina)">
+                    {{ pagina }}
+                </button>
+            </li>
+
+            <li class="page-item" [class.disabled]="paginaActual === totalPaginas">
+                <button class="page-link" (click)="avanzarPagina()">Siguiente</button>
+            </li>
+        </ul>
+    </nav>
+</div>
