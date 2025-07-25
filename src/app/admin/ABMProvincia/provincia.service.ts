@@ -22,6 +22,10 @@ export class ProvinciaService {
   findAll(): Observable<Provincia[]> {
     return this.http.get<Provincia[]>(this.url);
   }
+
+  findAllActivas(): Observable<Provincia[]> {
+    return this.http.get<Provincia[]>(`${this.url}/activas`);
+  }
   
   findById(idProvincia: number): Observable<Provincia> {
     return this.http.get<Provincia>(`${this.url}/${idProvincia}`);
