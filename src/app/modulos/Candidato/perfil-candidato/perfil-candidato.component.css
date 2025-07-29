@@ -186,27 +186,35 @@ form .form-grid {
   flex-direction: column;
 }
 
+#icon-button {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
 
 form .habilidades {
   display: flex;
-  flex-wrap: wrap;
   gap: 0.8rem;
-  margin-top: 0.5rem;
+  flex-wrap: wrap;
+  align-items: center;
 }
 
 form .habilidades .tag {
-  background-color: #e9f0f7;
-  color: #007bff;
+  background-color: #E1F0FA;
+  color: #31A5DD;
+  padding-top: 0.3rem;
+  padding-bottom: 0.3rem;
+  padding-left: 0.4rem;
+  padding-right: 0.4rem;
+  border-radius: 8px;
   font-size: 0.85rem;
-  padding: 0.4rem 0.9rem;
-  border-radius: 18px;
   font-weight: 500;
-  border: 1px solid #cce0f2;
 }
 
-.correo-contraseña-CV-EDBL .form-group {
-  margin-bottom: 1rem;
-}
 
 form .form-grid:last-of-type {
   margin-bottom: 2rem;
@@ -250,7 +258,7 @@ form .form-grid:last-of-type {
   margin-left: 0.8rem;
 }
 
-.cv-acciones .editar-cv {
+.editar-cv {
   color: #31A5DD;
 }
 
