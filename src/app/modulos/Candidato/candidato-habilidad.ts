@@ -5,5 +5,5 @@ export class CandidatoHabilidad {
     fechaHoraAlta?: string;
     fechaHoraBaja?: string | null;
     // id_candidato?: number;
-    // habilidad?: Habilidad;
+    habilidad?: Habilidad;
 }

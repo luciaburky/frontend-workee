@@ -47,5 +47,5 @@ export const routes: Routes = [
     { path: 'empleados/crear', component: CrearEmpleadoComponent },
     { path: 'empleados/perfil/:idEmpleado', component: PerfilEmpleadoComponent },
     { path: 'login', component: LoginPageComponent },
-    { path: 'candidato', component: PerfilCandidatoComponent },
+    { path: 'candidato/perfil/:idCandidato', component: PerfilCandidatoComponent },
 ];

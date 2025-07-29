@@ -10,7 +10,7 @@ export class Candidato {
     fechaHoraBaja?: string | null;
     nombreCandidato?: string;
     apellidoCandidato?: string;
-    // fechaDeNacimiento?: 
+    fechaDeNacimiento?: string;
     habilidades?: CandidatoHabilidad[];
     estadoBusqueda?: EstadoBusquedaLaboral;
     genero?: Genero;
