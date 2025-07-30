@@ -3,6 +3,7 @@ import { Genero } from "../../admin/ABMGenero/genero";
 import { Provincia } from "../../admin/ABMProvincia/provincia";
 import { Usuario } from "../seguridad/usuario";
 import { CandidatoHabilidad } from "./candidato-habilidad";
+import { CV } from "./perfil-candidato/cv";
 
 export class Candidato {
     id?: number;
@@ -16,4 +17,5 @@ export class Candidato {
     genero?: Genero;
     provincia?: Provincia;
     usuario?: Usuario;
+    cv?: CV;
 }

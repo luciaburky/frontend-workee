@@ -33,7 +33,7 @@
                     </button>
                 }
             </div>
-            <div class="flex-grow-1 border rounded p-3" style="max-height: 300px; overflow-y: auto;">
+            <div class="flex-grow-1 border rounded p-3" style="max-height: 250px; overflow-y: auto;">
                 @if (habilidadList.length === 0) {
                     <div class="sin-resultados">
                         <img src="assets\sin-resultados.png" alt="No hay resultados" class="sin-resultados-img">
@@ -55,27 +55,30 @@
                 }
             </div>
         </div>
-        @if (habilidadesSeleccionadas.length != 0) {
-            <div class="border habilidades-seleccionadas">
-                <h5 class="mb-2">Habilidades seleccionadas</h5>
-                @for (tipo of tipoHabilidadList; track $index) {
-                    @if (habilidadesSeleccionadasPorTipo(tipo).length > 0) {
-                        <strong>{{ tipo.nombreTipoHabilidad }}</strong>
-                        <div class="mt-1 mb-2 d-flex flex-wrap gap-2">
-                        @for (habilidad of habilidadesSeleccionadasPorTipo(tipo); track $index) {
-                            <span class="badge">
-                                {{ habilidad.nombreHabilidad }}
-                                <button type="button" class="btn-close btn-close-black ms-1 btn-quitar" aria-label="Eliminar" 
-                                        (click)="quitarHabilidad(habilidad)"></button>
-                            </span>
-                        }
-                        </div>
-                    }
-                }
+        <div *ngIf="habilidadesSeleccionadas.length !== 0" class="border habilidades-seleccionadas">
+        <h5 class="mb-2">Habilidades seleccionadas</h5>
+            <div *ngFor="let tipo of tipoHabilidadList; trackBy: trackByTipo">
+                <ng-container *ngIf="habilidadesSeleccionadasPorTipo(tipo).length > 0">
+                <strong>{{ tipo.nombreTipoHabilidad }}</strong>
+                <div class="mt-1 mb-2 d-flex flex-wrap gap-2">
+                    <span *ngFor="let hab of habilidadesSeleccionadasPorTipo(tipo); trackBy: trackByHabilidad" class="badge">
+                    {{ hab.habilidad?.nombreHabilidad }}
+                    <button type="button" class="btn-close btn-close-black ms-1 btn-quitar" aria-label="Eliminar" 
+                            (click)="quitarHabilidad(hab)"></button>
+                    </span>
+                </div>
+                </ng-container>
             </div>
-            <button type="button" class="boton-guardar ml-auto" >
+        </div>
+        <div class="fin-modal">
+            <button type="button" class="boton-volver-gris" (click)="dismissModal()">
+                <span class="material-symbols-outlined">arrow_back</span>
+                Volver
+            </button>
+            <button type="button" class="boton-guardar ml-auto" (click)="volverAPerfil()" >
                 <span class="material-symbols-outlined">save</span>
                 Guardar cambios
             </button>
-        }
+        </div>
+    </div>
 </div>

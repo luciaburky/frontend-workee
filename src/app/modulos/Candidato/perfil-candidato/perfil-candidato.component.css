@@ -275,20 +275,13 @@ form .form-grid:last-of-type {
 }
 
 .badge {
-  /* display: inline-block;
-  padding: 0.3rem 0.8rem;
-  border-radius: 20px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  white-space: nowrap; */
   display: inline-block;
   padding: 6px 12px;
   border-radius: 20px;
   font-weight: bold;
   font-size: 14px;
   border: 2px solid transparent;
+  align-self: flex-start; 
 }
 
 .badge.no-disponible {
@@ -307,4 +300,53 @@ form .form-grid:last-of-type {
   background-color: #D3FBCF;
   color: #28a745;
   border-color: #28a745;
+}
+
+.titulo-habilidades {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.foto-container {
+  position: relative;
+  width: 150px;
+  height: 150px;
+}
+
+.foto {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #ddd;
+}
+
+.icono-editar {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background-color: white;
+  border: 1px solid black;
+  border-radius: 50%;
+  padding: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 200px;
+}
+
+.icono-editar:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+  
+}
+.icono-foto:hover {
+    color: white;
+}
+
+.icono-editar span {
+  font-size: 20px;
 }
