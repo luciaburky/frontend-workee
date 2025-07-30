@@ -223,9 +223,9 @@ export class PerfilCandidatoComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         let habilidadesAEnviar: number[] = [];
-        console.log("habilidades que ya tiene: ", this.candidato.habilidades?.map(habilidad => habilidad.habilidad?.id) || [])
+        // console.log("habilidades que ya tiene: ", this.candidato.habilidades?.map(habilidad => habilidad.habilidad?.id).filter((id): id is number => id !== undefined))
         if (this.habilidadesSeleccionadasID.length === 0) {
-          habilidadesAEnviar = this.candidato.habilidades?.map(habilidad => habilidad.habilidad?.id) || [];
+          habilidadesAEnviar = (this.candidato.habilidades?.map(habilidad => habilidad.habilidad?.id).filter((id): id is number => id !== undefined)) || [];
         } else {
           habilidadesAEnviar = this.habilidadesSeleccionadasID;
         }
