@@ -327,8 +327,8 @@ form .form-grid:last-of-type {
   position: absolute;
   bottom: 0;
   right: 0;
-  background-color: white;
-  border: 1px solid black;
+  background-color: rgba(255, 255, 255, 0.8);
+  border: 1px solid #93999e;
   border-radius: 50%;
   padding: 6px;
   cursor: pointer;
@@ -337,16 +337,18 @@ form .form-grid:last-of-type {
   align-items: center;
   justify-content: center;
   font-size: 200px;
+  .icono-foto {
+    color: #898d90;
+  }
 }
 
 .icono-editar:hover {
-  background-color: rgba(0, 0, 0, 0.8);
-  
-}
-.icono-foto:hover {
+  background-color: #93999e;
+  .icono-foto {
     color: white;
+  }
 }
 
 .icono-editar span {
-  font-size: 20px;
+  font-size: 24px;
 }
