@@ -16,6 +16,8 @@ import { PerfilEmpresaComponent } from './modulos/empresa/empresa/perfil-empresa
 import { ListadoEmpleadosComponent } from './modulos/empresa/empleados/listado-empleados/listado-empleados.component';
 import { CrearEmpleadoComponent } from './modulos/empresa/empleados/crear-empleado/crear-empleado.component';
 import { PerfilEmpleadoComponent } from './modulos/empresa/empleados/perfil-empleado/perfil-empleado.component';
+import { RegistroEmpresaComponent } from './modulos/seguridad/Registro/Registro Empresa/registro-empresa.component';
+import { RegistroComponent } from './modulos/seguridad/Registro/registro.component';
 
 export const routes: Routes = [
     // { path: 'buscar-ofertas', component: BuscarComponent },
@@ -43,6 +45,9 @@ export const routes: Routes = [
     { path: 'empresas/perfil/:id', component: PerfilEmpresaComponent },
     { path: 'empleados', component: ListadoEmpleadosComponent },
     { path: 'empleados/crear', component: CrearEmpleadoComponent },
-    { path: 'empleados/perfil/:idEmpleado', component: PerfilEmpleadoComponent }
+    { path: 'empleados/perfil/:idEmpleado', component: PerfilEmpleadoComponent },
+    { path: 'registro', component: RegistroComponent},
+    { path: 'registro-empresa', component: RegistroEmpresaComponent },
+
 
 ];

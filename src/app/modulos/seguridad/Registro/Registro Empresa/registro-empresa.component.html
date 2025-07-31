@@ -1,0 +1,186 @@
+<form [formGroup]="empresaForm">
+    @if (numeropaginaregistro == 1) {}
+    <div class="form-grid">
+        <div class="form-group">
+                <label for="nombreEmpresa" class="my-1">
+                    Nombre
+                    <span class="required">
+                        *
+                    </span>
+                </label>
+                <input 
+                    required
+                    type="text"
+                    class="form-control" 
+                    placeholder="Ingresar..."
+                    aria-label="Ingresar..."
+                    formControlName="nombreEmpresa"
+                    [ngClass]="{ 'is-invalid': isCampoInvalido('nombreEmpresa') }">
+                @if (isCampoInvalido('nombreEmpresa')) {
+                    <div class="invalid-feedback">
+                        El campo “Nombre” no puede estar vacío
+                    </div>
+                }            
+        </div>
+        <div class="form-group">
+            <div class="form-group">
+                <label for="rubroEmpresa" class="p-0 my-0 mb-2">Rubro</label>
+                    <select
+                    class="form-select"
+                    formControlName="rubroEmpresa"
+                    [compareWith]="compararRubro"
+                    >
+                    @for (rubro of rubros; track rubro.id) {
+                        <option [ngValue]="rubro">
+                        {{ rubro.nombreRubro }}
+                        </option>
+                    }
+                    </select>
+
+                    @if (isCampoInvalido('rubroEmpresa')) {
+                    <div class="invalid-feedback">
+                        El campo "Rubro" es obligatorio
+                    </div>
+                    }
+
+            </div>
+        </div>
+        <div class="form-group">
+                <label for="telefonoEmpresa" class="my-1">
+                    Telefono de contacto
+                    <span class="required">
+                        *
+                    </span>
+                </label>
+                <input 
+                    required
+                    type="text"
+                    class="form-control" 
+                    placeholder="Ingresar..."
+                    aria-label="Ingresar..."
+                    formControlName="telefonoEmpresa"
+                    [ngClass]="{ 'is-invalid': isCampoInvalido('telefonoEmpresa') }">
+                @if (isCampoInvalido('telefonoEmpresa')) {
+                    <div class="invalid-feedback">
+                        El campo “Telefono de contacto” no puede estar vacío
+                    </div>
+                }            
+        </div>
+        <div class="form-group">
+                <label for="numeroidentificacionfiscalEmpresa" class="my-1">
+                    Numero de identificación fiscal (NIF)
+                    <span class="required">
+                        *
+                    </span>
+                </label>
+                <input 
+                    required
+                    type="number"
+                    class="form-control" 
+                    placeholder="Ingresar..."
+                    aria-label="Ingresar..."
+                    formControlName="numeroidentificacionfiscalEmpresa"
+                    [ngClass]="{ 'is-invalid': isCampoInvalido('numeroidentificacionfiscalEmpresa') }">
+                @if (isCampoInvalido('numeroidentificacionfiscalEmpresa')) {
+                    <div class="invalid-feedback">
+                        El campo “Numero de identificación fiscal (NIF)” no puede estar vacío
+                    </div>
+                }            
+        </div>
+
+        <div class="row m-0 pt-2">
+            <label for="correoEmpresa" class="p-0 my-1">
+                Correo electrónico
+                <span class="required">
+                    *
+                </span>
+            </label>
+            <input 
+            required
+            type="email"
+            class="form-control" 
+            placeholder="ejemplo@gmail.com"
+            aria-label="ejemplo@gmail.com"
+            formControlName="emailEmpresa"
+            [ngClass]="{ 'is-invalid': isCampoInvalido('correoEmpresa') }">
+            @if (isCampoInvalido('correoEmpresa')) {
+                <div class="invalid-feedback p-0">
+                    @if (empresaForm.get('correoEmpresa')?.hasError('required')) {
+                        El campo “Correo electrónico” no puede estar vacío
+                    } @else if (backendEmailInvalido) {
+                        El correo electrónico ingresado no es válido
+                    }
+                </div>
+            }
+        </div>
+
+        <div class="row m-0 pt-2">
+        <label for="contraseniaEmpresa" class="p-0 my-1">
+            Contraseña <span class="required">*</span>
+        </label>
+        <div class="input-group p-0">
+            <input
+            required
+            [type]="verContrasenia ? 'text' : 'password'"
+            class="form-control"
+            placeholder="Ingresar..."
+            aria-label="Ingresar..."
+            formControlName="contrasenia"
+            [ngClass]="{ 'is-invalid': isCampoInvalido('contraseniaEmpresa') }">
+            <span class="input-group-text" (click)="verContrasenia = !verContrasenia" style="cursor: pointer;">
+                <span class="material-symbols-outlined">
+                    {{ verContrasenia ? 'visibility' : 'visibility_off' }}
+                </span>
+            </span>
+        </div>
+        @if (isCampoInvalido('contraseniaEmpresa')) {
+            <div class="invalid-feedback d-block p-0">
+                @if (empresaForm.get('contraseniaEmpresa')?.hasError('required')) {
+                    El campo “Contraseña” no puede estar vacío
+                } @else if (backendContraseniaCorta) {
+                    La contraseña ingresada debe superar los 8 caracteres
+                }
+            </div>
+        }
+        </div>
+        <div class="row m-0 pt-2">
+        <label for="repetirContraseniaEmpresa" class="p-0 my-1">
+            Repetir contraseña <span class="required">*</span>
+        </label>
+        <div class="input-group p-0">
+            <input
+            required
+            [type]="verContrasenia ? 'text' : 'password'"
+            class="form-control"
+            placeholder="Ingresar..."
+            aria-label="Ingresar..."
+            formControlName="repetirContrasenia"
+            [ngClass]="{ 'is-invalid': isCampoInvalido('repetirContraseniaEmpresa') }"
+            />
+            <span class="input-group-text" (click)="verContrasenia = !verContrasenia" style="cursor: pointer;">
+            <span class="material-symbols-outlined">
+                {{ verContrasenia ? 'visibility' : 'visibility_off' }}
+            </span>
+            </span>
+        </div>
+        @if (isCampoInvalido('repetirContraseniaEmpresa')) {
+            <div class="invalid-feedback d-block p-0">
+                @if (empresaForm.get('contraseniaEmpresa')?.hasError('required')) {
+                    El campo “Contraseña” no puede estar vacío
+                } @else if (backendContraseniaCorta) {
+                    La contraseña ingresada debe superar los 8 caracteres
+                }
+            </div>
+        }
+        </div>
+
+        <div class="col m-0 pt-2">
+            <button>
+                <span class="material-symbols-outlined clickable-icon" (click)="siguientepagina()">arrow_forward</span>
+            </button>
+        </div>
+    
+
+    </div>    
+
+</form>
