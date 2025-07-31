@@ -17,6 +17,10 @@ export class EstadoBusquedaLaboralService {
     return this.http.get<EstadoBusquedaLaboral[]>(this.url);
   }
   
+  findAllActivos(): Observable<EstadoBusquedaLaboral[]> {
+    return this.http.get<EstadoBusquedaLaboral[]>(`${this.url}/activos`);
+  }
+  
   findById(idEstadoBusquedaLaboral:number): Observable<EstadoBusquedaLaboral> {
     return this.http.get<EstadoBusquedaLaboral>(`${this.url}/${idEstadoBusquedaLaboral}`);
   }

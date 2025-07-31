@@ -16,6 +16,10 @@ private url: string = 'http://localhost:9090/generos';
   findAll(): Observable<Genero[]> {
     return this.http.get<Genero[]>(this.url);
   }
+
+  findAllActivos(): Observable<Genero[]> {
+    return this.http.get<Genero[]>(`${this.url}/activos`);
+  }
   
   findById(idGenero: number): Observable<Genero> {
     return this.http.get<Genero>(`${this.url}/${idGenero}`);

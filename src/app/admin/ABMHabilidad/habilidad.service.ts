@@ -18,6 +18,10 @@ export class HabilidadService {
   findAll(): Observable<Habilidad[]> {
     return this.http.get<Habilidad[]>(this.url);
   }
+
+  findAllActivas(): Observable<Habilidad[]> {
+    return this.http.get<Habilidad[]>(`${this.url}/activas`);
+  }
   
   findById(idHabilidad: number): Observable<Habilidad> {
     return this.http.get<Habilidad>(`${this.url}/${idHabilidad}`);
