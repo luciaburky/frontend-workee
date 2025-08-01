@@ -1,0 +1,49 @@
+<aside class="sidebar">
+  <div class="logo">
+    <img [src]="'assets/logoo.png'" alt="foto workee">
+  </div>
+  <nav>
+    <ul>
+      @for (item of menuItems; track item) {
+        <li *ngIf="isVisible(item)">
+          <div
+            class="menu-item"
+            [class.expandable]="item.children"
+            (click)="item.children ? toggleExpand(item.label!) : null"
+            [routerLink]="!item.children ? item.route : null"
+            routerLinkActive="active"
+          >
+            <span class="material-symbols-outlined">
+              {{ item.icon }}
+            </span>
+            <span>{{ item.label }}</span>
+            @if (item.children) {
+              <span class="material-symbols-outlined arrow"
+                [class.expanded]="isExpanded(item.label!)">
+                expand_more
+              </span>
+            }
+            <!-- <mat-icon
+              *ngIf="item.children"
+              class="arrow"
+              [class.expanded]="isExpanded(item.label!)"
+            >
+              expand_more
+            </mat-icon> -->
+          </div>
+
+          <ul class="submenu" *ngIf="item.children && isExpanded(item.label!)">
+            <li *ngFor="let child of item.children">
+              <a
+                [routerLink]="child.route"
+                routerLinkActive="router-link-active"
+              >
+                {{ child.label }}
+              </a>
+            </li>
+          </ul>
+        </li>
+      }
+    </ul>
+  </nav>
+</aside>

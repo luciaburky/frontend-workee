@@ -18,6 +18,7 @@ import { PerfilEmpleadoComponent } from './modulos/empresa/empleados/perfil-empl
 import { PerfilEmpresaComponent } from './modulos/empresa/empresa/perfil-empresa/perfil-empresa.component';
 import { LoginPageComponent } from './modulos/seguridad/Login/login-page/login-page.component';
 import { PerfilCandidatoComponent } from './modulos/Candidato/perfil-candidato/perfil-candidato.component';
+import { SidebarComponent } from './compartidos/sidebar/sidebar.component';
 
 export const routes: Routes = [
     // { path: 'buscar-ofertas', component: BuscarComponent },
@@ -48,4 +49,6 @@ export const routes: Routes = [
     { path: 'empleados/perfil/:idEmpleado', component: PerfilEmpleadoComponent },
     { path: 'login', component: LoginPageComponent },
     { path: 'candidato/perfil/:idCandidato', component: PerfilCandidatoComponent },
+    { path: 'sidebar', component: SidebarComponent },
+    
 ];
