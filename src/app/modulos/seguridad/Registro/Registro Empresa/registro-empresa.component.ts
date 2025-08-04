@@ -10,7 +10,9 @@ import { Pais } from '../../../../admin/ABMPais/pais';
 import { Provincia } from '../../../../admin/ABMProvincia/provincia';
 import { Rubro } from '../../../../admin/ABMRubro/rubro';
 import { FormsModule } from '@angular/forms';
-
+import { EmpresaService } from '../../../empresa/empresa/empresa.service';
+import Swal from 'sweetalert2';
+import { dir } from 'console';
 
 @Component({
   selector: 'app-registro-empresa',
@@ -35,17 +37,14 @@ export class RegistroEmpresaComponent implements OnInit{
   provinciaSeleccionada?: Provincia;
   rubroSeleccionado?: Rubro;
 
-
-
-
 constructor(
 
     private router: Router,
     private registroservice: registroserviceempresa,
     private paisService: PaisService,
     private provinciaService: ProvinciaService,
-    private rubroService: RubroService
-    
+    private rubroService: RubroService,
+    private empresaService: EmpresaService,
     
 
   ) {
@@ -54,17 +53,18 @@ constructor(
       nombreEmpresa: new FormControl('', [Validators.required]),
       descripcionEmpresa: new FormControl('', [Validators.required]),
       telefonoEmpresa: new FormControl('', [Validators.required]),
-      direccionEmpresa: new FormControl('', [Validators.required, Validators.email]),
+      direccionEmpresa: new FormControl('', [Validators.required,]),
       numeroIdentificacionFiscal: new FormControl('', [Validators.required, Validators.minLength(8)]),
       urlFotoPerfil: new FormControl('', [Validators.required]),
       urlDocumentoLegal: new FormControl('', [Validators.required]),
       rubroEmpresa: new FormControl(null, [Validators.required]),
-
+      sitioWebEmpresa: new FormControl(''),
       emailEmpresa: new FormControl('', [Validators.required, Validators.email]),
       contrasenia: new FormControl('', [Validators.required, Validators.minLength(8)]),
       repetirContrasenia: new FormControl('', [Validators.required, Validators.minLength(8)]),
-
-
+      paisEmpresa: new FormControl(null, Validators.required),
+      provinciaEmpresa: new FormControl(null, Validators.required),
+      terminosCondiciones: new FormControl(false, [Validators.requiredTrue]),
     })
   }
 
@@ -82,14 +82,11 @@ constructor(
       }
     })
 
-
-
-
     this.provinciaService.findAll().subscribe({
       next: (data) => {
         this.provincias = data;
-        // console.log(this.provincias)
-      },
+        console.log('Provincias cargadas:', this.provincias);
+        },
       error: (error) => {
         console.error('Error al obtener provincias', error);
       }
@@ -107,22 +104,8 @@ constructor(
       }
     })
     
-
-
-
-
-
-
   }
-  enviarDatos() {
-    this.backendEmailInvalido = false;
-    const rubroSeleccionado: Rubro = this.empresaForm.get('rubroEmpresa')?.value;
 
-    
-    // if (this.empleadoForm.invalid) {
-    //   this.empleadoForm.markAllAsTouched();
-    //   return;
-    };
 
   
   isCampoInvalido(nombreCampo: string): boolean {
@@ -132,7 +115,10 @@ constructor(
   }
 
 
-  enviardatos() {
+  enviarDatos() {
+
+    this.backendEmailInvalido = false;
+    
     const nombreEmpresa  = this.empresaForm.get('nombreEmpresa')?.value;
     const descripcionEmpresa = this.empresaForm.get('descripcionEmpresa')?.value;
     const telefonoEmpresa = this.empresaForm.get('telefonoEmpresa')?.value;
@@ -143,8 +129,48 @@ constructor(
     const repetirContrasenia = this.empresaForm.get('repetirContrasenia')?.value;
     const urlFotoPerfil = this.empresaForm.get('urlFotoPerfil')?.value;
     const urlDocumentoLegal = this.empresaForm.get('urlDocumentoLegal')?.value;
-    
+    const sitioWebEmpresa = this.empresaForm.get('sitioWebEmpresa')?.value;
+    const rubroSeleccionado = this.empresaForm.get('rubroEmpresa')?.value.id;
+    const provinciaSeleccionada = this.empresaForm.get('provinciaEmpresa')?.value.id;
 
+    console.log('Datos enviados');
+
+    if (this.empresaForm.invalid) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Formulario incompleto',
+        text: 'Por favor, complete todos los campos obligatorios y acepte los Términos y Condiciones.',
+      });
+      return;
+    }
+
+this.empresaService.registrarEmpresa(
+  nombreEmpresa,
+  descripcionEmpresa,
+  telefonoEmpresa,
+  direccionEmpresa,
+  rubroSeleccionado.id,
+  numeroIdentificacionFiscal,
+  emailEmpresa,
+  contrasenia,
+  repetirContrasenia,
+  provinciaSeleccionada.id,
+  urlFotoPerfil,
+  urlDocumentoLegal,
+  sitioWebEmpresa
+).subscribe(() => {
+  this.submitForm = true;
+  Swal.fire({
+    toast: true,
+    position: "top-end",
+    icon: "success",
+    title: "La empresa se ha registrado correctamente",
+    timer: 3000,
+    showConfirmButton: false,
+  });
+});
+          
+      
   }
 
 
@@ -157,7 +183,7 @@ constructor(
   filtrarProvinciasPorPais(paisSeleccionado: Pais | null) {
     if (!paisSeleccionado) {
       this.provinciasDePais = [];
-      // this.candidato.provincia = undefined; // limpiar si no hay país seleccionado
+      const pais = this.empresaForm.get('paisEmpresa')?.value;
       return;
     }
 
@@ -174,5 +200,48 @@ constructor(
 
   siguientepagina() {
     this.numeropaginaregistro++;}
+
+  paginaAnterior() {
+    this.numeropaginaregistro--;}
+
+  editarCV() {
+    console.log("Editar CV");
+  }
+
+  eliminarCV() {
+    console.log("Eliminar CV");
+  }
+
+  verterminosycondiciones() {
+  Swal.fire({
+    title: 'Términos y Condiciones',
+    html: `
+      <div style="text-align: left; max-height: 300px; overflow-y: auto; font-size: 14px;">
+        <p><strong>1. Introducción</strong></p>
+        <p>Al registrarse como empresa, usted acepta cumplir con estos términos y condiciones...</p>
+
+        <p><strong>2. Responsabilidades</strong></p>
+        <p>La empresa es responsable de la veracidad de la información ingresada...</p>
+
+        <p><strong>3. Uso de la información</strong></p>
+        <p>Los datos proporcionados serán utilizados únicamente para fines comerciales internos...</p>
+
+        <p><strong>4. Modificaciones</strong></p>
+        <p>Nos reservamos el derecho de modificar estos términos en cualquier momento sin previo aviso...</p>
+
+        <p><strong>5. Aceptación</strong></p>
+        <p>Al continuar con el proceso de registro, usted acepta estos términos en su totalidad.</p>
+      </div>
+    `,
+    showCloseButton: true,
+    focusConfirm: false,
+    confirmButtonText: 'Aceptar',
+    width: '600px',
+    customClass: {
+      popup: 'swal2-border-radius',
+    }
+  });
+}
+
 
 }

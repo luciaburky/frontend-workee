@@ -23,5 +23,10 @@
 .clickable-icon {
     cursor: pointer; /* To indicate it's clickable */
     font-size: 48px; /* Adjust as needed for icon size */
-    /* Add any other styling you want for the icons */
+    color: initial; /* Default color for icons */
+    transition: color 0.3s ease; /* Smooth transition for color change */
+}
+
+.clickable-icon.active-mode {
+    color: #31A5DD; /* Blue color when active */
 }

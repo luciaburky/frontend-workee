@@ -10,11 +10,11 @@
     <div class="container text-center">
       <div class="row">
         <div class="col d-flex flex-column align-items-center">
-          <span class="material-symbols-outlined clickable-icon" (click)="modo = 'candidato'">boy</span>
+          <span class="material-symbols-outlined clickable-icon" [class.active-mode]="modo === 'candidato'" (click)="modo = 'candidato'">boy</span>
           <p>Candidato</p>
         </div>
         <div class="col d-flex flex-column align-items-center">
-          <span class="material-symbols-outlined clickable-icon" (click)="modo = 'empresa'">domain</span>
+          <span class="material-symbols-outlined clickable-icon" [class.active-mode]="modo === 'empresa'" (click)="modo = 'empresa'">domain</span>
           <p>Empresa</p>
         </div>
       </div>
