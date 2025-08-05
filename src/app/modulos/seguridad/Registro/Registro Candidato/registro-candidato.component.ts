@@ -8,7 +8,7 @@ import { Provincia } from '../../../../admin/ABMProvincia/provincia';
 import { PaisService } from '../../../../admin/ABMPais/pais.service';
 import { ProvinciaService } from '../../../../admin/ABMProvincia/provincia.service';
 import { GeneroService } from '../../../../admin/ABMGenero/genero.service';
-import { CandidatoService } from '../../../../modulos/Candidato/candidato.service';
+//import { CandidatoService } from '../../../../modulos/Candidato/candidato.service';
 import { EstadoBusquedaLaboralService } from '../../../../admin/ABMEstadoBusquedaLaboral/estado-busqueda-laboral.service';
 import { EstadoBusquedaLaboral } from '../../../../admin/ABMEstadoBusquedaLaboral/estado-busqueda-laboral';
 import { Genero } from '../../../../admin/ABMGenero/genero';
@@ -20,6 +20,7 @@ import { SeleccionHabilidadesComponent } from '../../../Candidato/perfil-candida
 import { Habilidad } from '../../../../admin/ABMHabilidad/habilidad';
 import { HabilidadService } from '../../../../admin/ABMHabilidad/habilidad.service';
 import { CandidatoHabilidad } from '../../../Candidato/candidato-habilidad';
+import { AuthService } from '../../auth.service';
 
 
 
@@ -64,7 +65,7 @@ constructor(
   private provinciaService: ProvinciaService,
   private generoService: GeneroService,
   private estadoBusquedaService: EstadoBusquedaLaboralService,
-  private candidatoService: CandidatoService,
+  private authService: AuthService,
   private modalService: ModalService,
   private habilidadService: HabilidadService
 
@@ -88,7 +89,7 @@ constructor(
 }
 
 ngOnInit(): void {
-  this.generoService.findAll().subscribe({ //CAMBIAR A FINDALL ACTIVE
+  this.generoService.findAllActivos().subscribe({ //CAMBIAR A FINDALL ACTIVE
       next: (data) => {
         this.generos = data;
         // console.log(this.paises)
@@ -98,7 +99,7 @@ ngOnInit(): void {
       }
   })
 
-  this.paisService.findAll().subscribe({
+  this.paisService.findAllActivos().subscribe({
       next: (data) => {
         this.paises = data;
         // console.log(this.paises)
@@ -108,7 +109,7 @@ ngOnInit(): void {
       }
   })
 
-  this.provinciaService.findAll().subscribe({
+  this.provinciaService.findAllActivas().subscribe({
       next: (data) => {
         this.provincias = data;
         },
@@ -117,7 +118,7 @@ ngOnInit(): void {
       }
   })
 
-  this.estadoBusquedaService.findAll().subscribe({ //CAMBIAR A FINDALL ACTIVE
+  this.estadoBusquedaService.findAllActivos().subscribe({
       next: (data) => {
         this.estadosBusquedas = data;
         // console.log(this.provincias)
@@ -186,7 +187,7 @@ enviarDatos() {
         return; // detener el submit
     }
 
-    this.candidatoService.registrarCandidato(
+    this.authService.registrarCandidato(
       nombreCandidato,
       apellidoCandidato,
       fechaDeNacimiento,

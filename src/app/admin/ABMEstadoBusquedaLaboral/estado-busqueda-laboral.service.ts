@@ -7,7 +7,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class EstadoBusquedaLaboralService {
-  private url: string = 'http://localhost:9090/estados-busqueda';
+  private url: string = 'http://localhost:9090/estadosBusqueda';
   
   idSubject = new BehaviorSubject<number | null>(null);
 

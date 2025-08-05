@@ -10,9 +10,10 @@ import { Pais } from '../../../../admin/ABMPais/pais';
 import { Provincia } from '../../../../admin/ABMProvincia/provincia';
 import { Rubro } from '../../../../admin/ABMRubro/rubro';
 import { FormsModule } from '@angular/forms';
-import { EmpresaService } from '../../../empresa/empresa/empresa.service';
+//import { EmpresaService } from '../../../empresa/empresa/empresa.service';
 import Swal from 'sweetalert2';
 import { dir } from 'console';
+import { AuthService } from '../../auth.service';
 
 @Component({
   selector: 'app-registro-empresa',
@@ -45,7 +46,7 @@ constructor(
     private paisService: PaisService,
     private provinciaService: ProvinciaService,
     private rubroService: RubroService,
-    private empresaService: EmpresaService,
+    private authService: AuthService,
     
 
   ) {
@@ -73,7 +74,7 @@ constructor(
   
   ngOnInit(): void {
 
-      this.paisService.findAll().subscribe({
+      this.paisService.findAllActivos().subscribe({
       next: (data) => {
         this.paises = data;
         // console.log(this.paises)
@@ -83,7 +84,7 @@ constructor(
       }
     })
 
-    this.provinciaService.findAll().subscribe({
+    this.provinciaService.findAllActivas().subscribe({
       next: (data) => {
         this.provincias = data;
         },
@@ -168,7 +169,7 @@ constructor(
     }
 
 
-this.empresaService.registrarEmpresa(
+this.authService.registrarEmpresa(
   nombreEmpresa,
   descripcionEmpresa,
   telefonoEmpresa,

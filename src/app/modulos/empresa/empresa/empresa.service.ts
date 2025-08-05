@@ -44,39 +44,5 @@ export class EmpresaService {
   eliminarEmpresa(idEmpresa: number) {
     return this.http.delete<void>(`${this.url}/${idEmpresa}`);
   }
-
-  registrarEmpresa(
-    nombreEmpresa: string,
-    descripcionEmpresa: string,
-    telefonoEmpresa: number,
-    direccionEmpresa: string,
-    idRubro: number,
-    numeroIdentificacionFiscal: string,
-    emailEmpresa: string,
-    contrasenia: string,
-    repetirContrasenia: string,
-    idProvincia: number,
-    urlFotoPerfil: string,
-    urlDocumentoLegal: string,
-    sitioWebEmpresa: string
-  ) {
-  const body = {
-      sitioWebEmpresa,
-      nombreEmpresa,
-      descripcionEmpresa,
-      telefonoEmpresa,
-      direccionEmpresa,
-      idRubro,
-      numeroIdentificacionFiscal,
-      emailEmpresa,
-      contrasenia,
-      repetirContrasenia,
-      idProvincia,
-      urlFotoPerfil,
-      urlDocumentoLegal
-  };
-    return this.http.post(`${this.url}`, body);
-  }
-
   
 }

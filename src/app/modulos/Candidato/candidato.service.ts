@@ -41,35 +41,5 @@ export class CandidatoService {
     return this.http.put(`${this.url}/${idCandidato}`, body);
   }
 
-  registrarCandidato(
-    nombreCandidato: string,
-    apellidoCandidato: string,
-    fechaDeNacimiento: Date,
-    idProvincia: number,
-    idEstadoBusqueda: number,
-    idGenero: number,
-    idHabilidades: number[],
-    enlaceCV: string,
-    correoCandidato: string,
-    contrasenia: string,
-    repetirContrasenia: string,
-    urlFotoPerfil: string
-  ) {
-    const body = {
-      nombreCandidato,
-      apellidoCandidato,
-      fechaDeNacimiento,
-      idProvincia,
-      idEstadoBusqueda,
-      idGenero,
-      idHabilidades,
-      enlaceCV,
-      correoCandidato,
-      contrasenia,
-      repetirContrasenia,
-      urlFotoPerfil
-    };
-    return this.http.post(`${this.url}`, body);;
-  }
 
 }
