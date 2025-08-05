@@ -16,6 +16,10 @@ export class PaisService {
   findAll(): Observable<Pais[]> {
     return this.http.get<Pais[]>(this.url);
   }
+
+  findAllActivos(): Observable<Pais[]> {
+    return this.http.get<Pais[]>(`${this.url}/activos`);
+  }
   
   findById(idPais:number): Observable<Pais> {
     return this.http.get<Pais>(`${this.url}/${idPais}`);
