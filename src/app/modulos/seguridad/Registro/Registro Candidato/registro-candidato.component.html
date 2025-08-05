@@ -26,7 +26,7 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Apellido<span class="required">*</span></label>
-                    <input type="number" required placeholder="Ingresar..." class="form-control"
+                    <input type="text" required placeholder="Ingresar..." class="form-control"
                         formControlName="apellidoCandidato"
                         [ngClass]="{ 'is-invalid': isCampoInvalido('apellidoCandidato') }" />
                     @if (isCampoInvalido('apellidoCandidato')) {
@@ -34,15 +34,12 @@
                     }
                 </div>
                 <div class="form-group">
-                    <label>Genero <span class="required">*</span></label>
+                    <label>Genero</label>
                     <select class="form-select" formControlName="generoCandidato" [compareWith]="compararGenero">
                     @for (genero of generos; track genero.id) {
                         <option [ngValue]="genero">{{ genero.nombreGenero }}</option>
                     }
                     </select>
-                    @if (isCampoInvalido('generoCandidato')) {
-                    <div class="invalid-feedback">El campo "Genero" es obligatorio</div>
-                    }
                 </div>
             </div>
         </div>
@@ -183,13 +180,47 @@
             </div>
         </div>
         <div class="form-group">
-                <label>Estado de busqueda laboral</label>
-                <select class="form-select" formControlName="estadoBusquedaCandidato">
-                @for (estadobusqueda of estadosBusquedas; track estadobusqueda.id) {
-                <option [ngValue]="estadobusqueda">{{ estadobusqueda.nombreEstadoBusqueda }}</option>
+          <div class="titulo-habilidades">
+            <label>Habilidades</label>
+            
+              <button id="icon-button" (click)="seleccionarHabilidades()">
+                <span class="material-symbols-outlined editar-cv" title="Editar habilidades">edit</span>
+              </button>
+            
+          </div>
+          <div class="habilidades">
+            @for (hab of habilidadesParaMostrar; track $index) {
+              <span class="tag"> {{hab.habilidad?.nombreHabilidad}} </span>
+            }
+          </div>
+        </div> 
+        <div class="form-group">
+            <label class="p-0 my-0 mb-2">Estado de búsqueda laboral</label>
+            <span
+                class="badge"
+                [ngClass]="{
+                'no-disponible': candidato.estadoBusqueda?.nombreEstadoBusqueda === 'No disponible',
+                'escucho-ofertas': candidato.estadoBusqueda?.nombreEstadoBusqueda === 'Escucho ofertas',
+                'buscando-activamente': candidato.estadoBusqueda?.nombreEstadoBusqueda === 'Buscando activamente'
+                }"
+            >
+                {{ candidato.estadoBusqueda?.nombreEstadoBusqueda?.toUpperCase() }}
+            </span>
+
+            <select
+                class="form-select"
+                id="estadoBusqueda"
+                formControlName="estadoBusquedaCandidato"
+                [compareWith]="compararEstadoBusqueda"
+            >
+                @for (estado of estadosBusquedas; track estado.id) {
+                <option [ngValue]="estado">
+                    {{ estado.nombreEstadoBusqueda }}
+                </option>
                 }
-                </select>
+            </select>
         </div>
+
 
         <!-- Checkbox de Términos -->
         <div class="form-check mb-3">

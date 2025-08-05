@@ -135,7 +135,7 @@ constructor(
     const emailEmpresa = this.empresaForm.get('emailEmpresa')?.value;
     const contrasenia = this.empresaForm.get('contrasenia')?.value;
     const repetirContrasenia = this.empresaForm.get('repetirContrasenia')?.value;
-    const urlFotoPerfil = 'https://github.com'; // Placeholder, se puede cambiar por un input de archivo
+    const urlFotoPerfil = 'https://github.com'; //CAMBIAR
     const urlDocumentoLegal = this.empresaForm.get('urlDocumentoLegal')?.value;
     const sitioWebEmpresa = this.empresaForm.get('sitioWebEmpresa')?.value; 
     const rubroSeleccionado = this.empresaForm.get('rubroEmpresa')?.value.id;
