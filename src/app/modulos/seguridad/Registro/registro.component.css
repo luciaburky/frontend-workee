@@ -27,6 +27,7 @@
     transition: color 0.3s ease; /* Smooth transition for color change */
 }
 
-.clickable-icon.active-mode {
-    color: #31A5DD; /* Blue color when active */
+.clickable-icon.active-mode,
+.nav-registro p.active-mode {
+  color: #31A5DD; /* Blue color when active */
 }

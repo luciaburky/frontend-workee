@@ -11,17 +11,23 @@
       <div class="row">
         <div class="col d-flex flex-column align-items-center">
           <span class="material-symbols-outlined clickable-icon" [class.active-mode]="modo === 'candidato'" (click)="modo = 'candidato'">boy</span>
-          <p>Candidato</p>
+          <p [class.active-mode]="modo === 'candidato'">Candidato</p>
         </div>
         <div class="col d-flex flex-column align-items-center">
-          <span class="material-symbols-outlined clickable-icon" [class.active-mode]="modo === 'empresa'" (click)="modo = 'empresa'">domain</span>
-          <p>Empresa</p>
+          <span
+            class="material-symbols-outlined clickable-icon"
+            [class.active-mode]="modo === 'empresa'"
+            (click)="modo = 'empresa'"
+            >domain</span
+          >
+          <p [class.active-mode]="modo === 'empresa'">Empresa</p>
         </div>
       </div>
     </div>
   </div>
 
   @if (modo === 'candidato') {
+    <app-registro-candidato></app-registro-candidato>
     } @else {
     <app-registro-empresa></app-registro-empresa>
   }
