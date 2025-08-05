@@ -7,6 +7,7 @@ import { CommonModule } from '@angular/common';
 import { RubroService } from '../../../admin/ABMRubro/rubro.service';
 import { Rubro } from '../../../admin/ABMRubro/rubro';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-busqueda-empresas',
@@ -46,6 +47,38 @@ export class BusquedaEmpresasComponent implements OnInit{
   ) {}
   
   ngOnInit(): void {
+    window.addEventListener('beforeunload', () => {
+      sessionStorage.clear();
+    });
+    
+    const listaGuardada = sessionStorage.getItem('empresaList');
+    const textoGuardado = sessionStorage.getItem('texto');
+    const filtrosUbicacionGuardados = sessionStorage.getItem('filtrosUbicacion');
+    const filtrosRubroGuardados = sessionStorage.getItem('filtrosRubro');
+    const filtrosOfertaGuardados = sessionStorage.getItem('filtrosOferta');
+    
+    if (listaGuardada) {
+      this.empresaList = JSON.parse(listaGuardada);
+      console.log(this.empresaList)
+      this.busquedaRealizada = true;
+    }
+
+    if (textoGuardado) {
+      this.texto = JSON.parse(textoGuardado);
+    }
+
+    if (filtrosUbicacionGuardados) {
+      this.filtrosSeleccionadosUbicacion = JSON.parse(filtrosUbicacionGuardados);
+    }
+
+    if (filtrosRubroGuardados) {
+      this.filtrosSeleccionadosRubros = JSON.parse(filtrosRubroGuardados);
+    }
+
+    if (filtrosOfertaGuardados) {
+      this.filtrosSeleccionadosOfertas = JSON.parse(filtrosOfertaGuardados);
+    }
+
     this.busquedaService.filtroUbicacion().subscribe(data => {
       this.filtrosUbicacion = data;
       this.filtrosUbicacion = this.filtrosUbicacion.map(f => ({
@@ -70,6 +103,11 @@ export class BusquedaEmpresasComponent implements OnInit{
     this.busquedaService.buscarPorNombre(texto).subscribe(data => {
       this.empresaList = data;
       console.log("empresas que coinciden con el texto ", texto, ": ", this.empresaList);
+      sessionStorage.setItem('texto',JSON.stringify(this.texto));
+      sessionStorage.setItem('empresaList', JSON.stringify(this.empresaList));
+      sessionStorage.setItem('filtrosUbicacion', JSON.stringify(this.filtrosSeleccionadosUbicacion));
+      sessionStorage.setItem('filtrosRubro', JSON.stringify(this.filtrosSeleccionadosRubros));
+      sessionStorage.setItem('filtrosOferta', JSON.stringify(this.filtrosSeleccionadosOfertas));
     });
   }
   
@@ -80,6 +118,11 @@ export class BusquedaEmpresasComponent implements OnInit{
     this.busquedaRealizada = true;
     this.busquedaService.filtrarEmpresas(this.texto, idsRubros, idsProvincias).subscribe(data => {
       this.empresaList = data;
+      sessionStorage.setItem('texto',JSON.stringify(this.texto));
+      sessionStorage.setItem('empresaList', JSON.stringify(this.empresaList));
+      sessionStorage.setItem('filtrosUbicacion', JSON.stringify(this.filtrosSeleccionadosUbicacion));
+      sessionStorage.setItem('filtrosRubro', JSON.stringify(this.filtrosSeleccionadosRubros));
+      sessionStorage.setItem('filtrosOferta', JSON.stringify(this.filtrosSeleccionadosOfertas));
     })
   }
 
