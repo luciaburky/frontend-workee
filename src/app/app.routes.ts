@@ -15,9 +15,14 @@ import { ListadoTiposHabilidadComponent } from './admin/ABMTipoHabilidad/listado
 import { CrearEmpleadoComponent } from './modulos/empresa/empleados/crear-empleado/crear-empleado.component';
 import { ListadoEmpleadosComponent } from './modulos/empresa/empleados/listado-empleados/listado-empleados.component';
 import { PerfilEmpleadoComponent } from './modulos/empresa/empleados/perfil-empleado/perfil-empleado.component';
+
 import { PerfilEmpresaComponent } from './modulos/empresa/empresa/perfil-empresa/perfil-empresa.component';
 import { LoginPageComponent } from './modulos/seguridad/Login/login-page/login-page.component';
 import { PerfilCandidatoComponent } from './modulos/Candidato/perfil-candidato/perfil-candidato.component';
+
+import { RegistroEmpresaComponent } from './modulos/seguridad/Registro/Registro Empresa/registro-empresa.component';
+import { RegistroComponent } from './modulos/seguridad/Registro/registro.component';
+import { RegistroCandidatoComponent } from './modulos/seguridad/Registro/Registro Candidato/registro-candidato.component';
 
 export const routes: Routes = [
     // { path: 'buscar-ofertas', component: BuscarComponent },
@@ -46,6 +51,11 @@ export const routes: Routes = [
     { path: 'empleados', component: ListadoEmpleadosComponent },
     { path: 'empleados/crear', component: CrearEmpleadoComponent },
     { path: 'empleados/perfil/:idEmpleado', component: PerfilEmpleadoComponent },
+
     { path: 'login', component: LoginPageComponent },
     { path: 'candidato/perfil/:idCandidato', component: PerfilCandidatoComponent },
+  
+    { path: 'registro', component: RegistroComponent},
+    { path: 'registro-empresa', component: RegistroEmpresaComponent },
+    { path: 'registro-candidato', component: RegistroCandidatoComponent },
 ];
