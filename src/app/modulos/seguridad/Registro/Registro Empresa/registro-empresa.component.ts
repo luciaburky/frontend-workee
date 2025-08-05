@@ -16,8 +16,8 @@ import { dir } from 'console';
 
 @Component({
   selector: 'app-registro-empresa',
-  standalone: true, // asegúrate de que esto esté presente si es un componente standalone
-  imports: [CommonModule, ReactiveFormsModule, FormsModule], // <-- IMPORTS necesarios
+  standalone: true, 
+  imports: [CommonModule, ReactiveFormsModule, FormsModule],
   templateUrl: './registro-empresa.component.html',
   styleUrl: './registro-empresa.component.css'
 })
@@ -27,6 +27,7 @@ export class RegistroEmpresaComponent implements OnInit{
   backendEmailInvalido = false;
   verContrasenia: boolean = false;
   backendContraseniaCorta = false;
+  backendContraseniasNoCoinciden = false;
   numeropaginaregistro: number = 1;
 
   paises: Pais[] =[];
@@ -55,8 +56,8 @@ constructor(
       telefonoEmpresa: new FormControl('', [Validators.required]),
       direccionEmpresa: new FormControl('', [Validators.required,]),
       numeroIdentificacionFiscal: new FormControl('', [Validators.required, Validators.minLength(8)]),
-      urlFotoPerfil: new FormControl('', [Validators.required]),
-      urlDocumentoLegal: new FormControl('', [Validators.required]),
+      urlFotoPerfil: new FormControl(''),
+      urlDocumentoLegal: new FormControl(''),
       rubroEmpresa: new FormControl(null, [Validators.required]),
       sitioWebEmpresa: new FormControl(''),
       emailEmpresa: new FormControl('', [Validators.required, Validators.email]),
@@ -85,7 +86,6 @@ constructor(
     this.provinciaService.findAll().subscribe({
       next: (data) => {
         this.provincias = data;
-        console.log('Provincias cargadas:', this.provincias);
         },
       error: (error) => {
         console.error('Error al obtener provincias', error);
@@ -95,7 +95,6 @@ constructor(
     console.time('Carga rubros');
     this.rubroService.findAllActivos().subscribe({
       next: (data) => {
-        console.timeEnd('Carga rubros');
         this.rubros = data;
         // console.log(this.provincias)
       },
@@ -109,7 +108,6 @@ constructor(
 
   
   isCampoInvalido(nombreCampo: string): boolean {
-
     const control = this.empresaForm.get(nombreCampo);
     return !!(control && control.invalid && (control.touched || this.submitForm));
   }
@@ -118,6 +116,16 @@ constructor(
   enviarDatos() {
 
     this.backendEmailInvalido = false;
+    this.submitForm = true;
+
+    if (this.empresaForm.invalid) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Formulario incompleto',
+        text: 'Por favor, complete todos los campos obligatorios y acepte los Términos y Condiciones.',
+      });
+      return;
+    }
     
     const nombreEmpresa  = this.empresaForm.get('nombreEmpresa')?.value;
     const descripcionEmpresa = this.empresaForm.get('descripcionEmpresa')?.value;
@@ -127,9 +135,9 @@ constructor(
     const emailEmpresa = this.empresaForm.get('emailEmpresa')?.value;
     const contrasenia = this.empresaForm.get('contrasenia')?.value;
     const repetirContrasenia = this.empresaForm.get('repetirContrasenia')?.value;
-    const urlFotoPerfil = this.empresaForm.get('urlFotoPerfil')?.value;
+    const urlFotoPerfil = 'https://github.com'; // Placeholder, se puede cambiar por un input de archivo
     const urlDocumentoLegal = this.empresaForm.get('urlDocumentoLegal')?.value;
-    const sitioWebEmpresa = this.empresaForm.get('sitioWebEmpresa')?.value;
+    const sitioWebEmpresa = this.empresaForm.get('sitioWebEmpresa')?.value; 
     const rubroSeleccionado = this.empresaForm.get('rubroEmpresa')?.value.id;
     const provinciaSeleccionada = this.empresaForm.get('provinciaEmpresa')?.value.id;
 
@@ -144,32 +152,68 @@ constructor(
       return;
     }
 
+    if (contrasenia !== repetirContrasenia) {
+      this.backendContraseniasNoCoinciden = true;
+      this.empresaForm.get('contrasenia')?.setErrors({ backend: true });
+      this.empresaForm.get('repetirContrasenia')?.setErrors({ backend: true });
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: "error",
+        title: "Las contraseñas no coinciden",
+        timer: 3000,
+        showConfirmButton: false,
+      });
+      return; // detener el submit
+    }
+
+
 this.empresaService.registrarEmpresa(
   nombreEmpresa,
   descripcionEmpresa,
   telefonoEmpresa,
   direccionEmpresa,
-  rubroSeleccionado.id,
+  rubroSeleccionado,
   numeroIdentificacionFiscal,
   emailEmpresa,
   contrasenia,
   repetirContrasenia,
-  provinciaSeleccionada.id,
+  provinciaSeleccionada,
   urlFotoPerfil,
   urlDocumentoLegal,
   sitioWebEmpresa
-).subscribe(() => {
-  this.submitForm = true;
-  Swal.fire({
-    toast: true,
-    position: "top-end",
-    icon: "success",
-    title: "La empresa se ha registrado correctamente",
-    timer: 3000,
-    showConfirmButton: false,
-  });
-});
-          
+).subscribe({
+  next: () => {
+    this.submitForm = true;
+    Swal.fire({
+      toast: true,
+      position: "top-end",
+      icon: "success",
+      title: "La empresa se ha registrado correctamente",
+      timer: 3000,
+      showConfirmButton: false,
+    });
+  },
+  error: (error: any) => {
+      if (error.error.message === "El correo ingresado ya se encuentra en uso") {
+        Swal.fire({
+          toast: true,
+          position: "top-end",
+          icon: "warning",
+          title: "El correo ingresado se encuentra en uso, ingrese otro",
+          timer: 3000,
+          showConfirmButton: false,
+        })
+      }
+      if (error.status === 400 && error.error.message === "Debe ser un correo válido") {
+        this.backendEmailInvalido = true;
+        this.empresaForm.get('emailEmpresa')?.setErrors({ backend: true });
+      } else if (error.status === 400 && error.error.message === "La contraseña debe tener al menos 8 caracteres") {
+        this.backendContraseniaCorta = true;
+        this.empresaForm.get('contrasenia')?.setErrors({ backend: true });
+      }
+    }
+  });      
       
   }
 
