@@ -41,7 +41,8 @@ export class BusquedaEmpresasComponent implements OnInit{
 
   constructor(
     private busquedaService: BusquedaService,
-    private rubroService: RubroService
+    private rubroService: RubroService,
+    private router: Router
   ) {}
   
   ngOnInit(): void {
@@ -80,6 +81,10 @@ export class BusquedaEmpresasComponent implements OnInit{
     this.busquedaService.filtrarEmpresas(this.texto, idsRubros, idsProvincias).subscribe(data => {
       this.empresaList = data;
     })
+  }
+
+  irADetalle(idEmpresa: number) {
+    this.router.navigate([`buscar-empresas/detalle`,idEmpresa]);
   }
 
   // Para paginacion
