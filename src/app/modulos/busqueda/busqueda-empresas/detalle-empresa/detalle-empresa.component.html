@@ -1,126 +1,108 @@
 <div class="perfil-wrapper">
-    <button type="button" class="boton" (click)="volverAListado()">
-        <span class="material-symbols-outlined">arrow_back</span>
-        Volver
-    </button>
-    <div class="perfil-header">
-        <div class="logo-seccion">
-            <img [src]="'assets/img/foto-empresa.png'" alt="foto" class="foto" />
-        </div>
-        <div class="info">
-            <div class="info-al-lado">
-                <h1>{{empresa.nombreEmpresa}}</h1>
-                <p>{{empresa.rubro?.nombreRubro}}</p>
-                <div class="ubicacion">
-                    <span class="material-symbols-outlined">location_on</span>
-                    <p>{{empresa.provincia?.nombreProvincia}}, {{empresa.provincia?.pais?.nombrePais}}</p>
-                </div>
-            </div>
-            <a 
-            [href]="getSitioWebConProtocolo(empresa.sitioWebEmpresa!)" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            class="boton-sitio-web">
-                <span class="material-symbols-outlined">link</span>
-                Sitio web
-            </a>
-        </div>
+  <button type="button" class="boton" (click)="volverAListado()">
+      <span class="material-symbols-outlined">arrow_back</span>
+      Volver
+  </button>
+  <div class="perfil-header">
+    <div class="logo-seccion">
+        <img [src]="'assets/img/foto-empresa.png'" alt="foto" class="foto" />
     </div>
-</div>
-  <!-- <form> -->
-  <!-- <div class="form-grid-logo">
-    
-    <div class="al-lado m-0 p-0">
-      <div class="form-group">
-        <label for="nombreEmpleado" class="p-0 my-0 mb-2">Nombre</label>
-        <input 
-          type="text"
-          class="form-control"
-          name="nombreEmpleado"
-          [value]="empleado.nombreEmpleadoEmpresa"
-          [readonly]="!esEmpleado || !modoEdicion">
+    <div class="info">
+      <div class="info-al-lado">
+          <h1>{{empresa.nombreEmpresa}}</h1>
+          <p>{{empresa.rubro?.nombreRubro}}</p>
+          <div class="ubicacion">
+              <span class="material-symbols-outlined">location_on</span>
+              <p>{{empresa.provincia?.nombreProvincia}}, {{empresa.provincia?.pais?.nombrePais}}</p>
+          </div>
       </div>
-      <div class="form-group">
-        <label for="apellidoEmpleado" class="p-0 my-0 mb-2 mt-3">Apellido</label>
-        <input 
-          type="text"
-          class="form-control"
-          name="apellidoEmpleado"
-          [value]="empleado.apellidoEmpleadoEmpresa"
-          [readonly]="!esEmpleado || !modoEdicion">
-      </div>
-    </div>
-    <div class="abajo m-0 full-width">
-      <div class="form-group">
-        <label for="puestoEmpleado" class="p-0 my-0 mb-2">Puesto</label>
-        <input 
-          type="text"
-          class="form-control"
-          name="puestoEmpleado"
-          [(ngModel)]="empleado.puestoEmpleadoEmpresa"
-          [readonly]="esEmpleado || !modoEdicion">
-      </div>
-      <div class="form-group">
-        <label for="correoEmpleado" class="p-0 my-0 mb-2">Correo electrónico</label>
-        <input 
-          type="text"
-          class="form-control"
-          name="correoEmpleado"
-          [value]="empleado.usuario?.correoUsuario"
-          readonly>
-      </div>
-    
-    @if (esEmpleado) {
-      <div class="form-group full-width">
-        <label for="contrasenia" class="p-0 my-0 mb-2">Contraseña</label>
-        <div class="input-group">
-          <input
-            [type]="verContrasenia ? 'text' : 'password'"
-            class="form-control"
-            name="contrasenia"
-            [(ngModel)]="empleado.usuario!.contraseniaUsuario"
-            [readonly]="!modoEdicion"
-            (input)="mostrarCampoRepetir = !!empleado.usuario?.contraseniaUsuario"/>
-          <span class="input-group-text" (click)="verContrasenia = !verContrasenia" style="cursor: pointer;">
-            <span class="material-symbols-outlined">
-              {{ verContrasenia ? 'visibility' : 'visibility_off' }}
-            </span>
-          </span>
-        </div>
-      </div>
-      @if (mostrarCampoRepetir) {
-      <div class="form-group full-width">
-        <label for="repetirContrasenia" class="p-0 my-0 mb-2">Repetir contraseña</label>
-        <div class="input-group">
-          <input
-            [type]="verContrasenia ? 'text' : 'password'"
-            class="form-control"
-            name="repetirContrasenia"
-            [(ngModel)]="repetirContrasenia"
-            [readonly]="!modoEdicion"/>
-          <span class="input-group-text" (click)="verContrasenia = !verContrasenia" style="cursor: pointer;">
-            <span class="material-symbols-outlined">
-              {{ verContrasenia ? 'visibility' : 'visibility_off' }}
-            </span>
-          </span>
-        </div>
-      </div>
-    }
-  }
+      <a 
+      [href]="getSitioWebConProtocolo(empresa.sitioWebEmpresa!)" 
+      target="_blank" 
+      rel="noopener noreferrer"
+      class="boton-sitio-web">
+          <span class="material-symbols-outlined">link</span>
+          Sitio web
+      </a>
     </div>
   </div>
-</form>
-<div class="modo-edicion">
-@if (modoEdicion) {
-  @if (!esEmpleado) {
-    <button type="button" class="boton-eliminar" (click)="eliminarCuenta()">
-      <span class="material-symbols-outlined">delete</span>
-      Eliminar cuenta
-    </button>
-  }  
-    <button type="button" class="boton-guardar ml-auto" (click)="enviarDatos()">
-      <span class="material-symbols-outlined">save</span>
-      Guardar cambios
-    </button>
+  <div class="descripcion-empresa">
+    <h5>Acerca de la empresa</h5>
+    <p> {{empresa.descripcionEmpresa}} </p>
+  </div>
+</div>
+<div class="ofertas-empresa">
+  <h1>Ofertas abiertas</h1>
+  <div class="scroll">
+    <!-- @for (oferta of ofertas; track $index) { -->
+    <div class="tarjeta-oferta" role="button">
+      <div class="logo-container">
+          <img [src]="'assets/img/foto-empresa.png'" alt="Logo de {{ empresa.nombreEmpresa }}" />
+      </div>
+      <div class="contenido">
+        <div class="oferta-header">
+          <h5 class="nombre-oferta">Desarrollador Frontend</h5>
+          <div class="publicacion-oferta">
+            <span class="material-symbols-outlined">schedule</span>
+            <p>Publicado: 10/05/2025</p>
+          </div>
+        </div>
+        <p class="rubro-ubicacion">
+          Electrónica Mendoza
+        </p>
+        <p class="rubro-ubicacion">
+          Híbrido • Tiempo parcial
+        </p>
+        <div class="ubicacion-oferta">
+          <span class="material-symbols-outlined">location_on</span>
+          <p>Mendoza, Argentina</p>
+        </div>
+        <p class="descripcion-oferta">
+          Necesitamos un diseñador UX/UI con experiencia en diseño de interfaces y experiencia de usuario para productos digitales. Queremos que sea una persona proactiva y con ganas de aprender, ya que es un contrato de prácticas y con disponibilidad de lunes a miércoles. Es un trabajo divertido que cuenta con buenos
+        </p>
+      </div>
+    </div>
+    <!-- } -->
+  </div>
+</div>
+
+<!-- !!!!!!!!!!!!!!!!!!!! -->
+<!-- !!!!!!!!!!!!!!!!!!!! -->
+<!-- !!!!!!!!!!!!!!!!!!!! -->
+<!-- !!!!!!!!!!!!!!!!!!!! -->
+<!-- !!!!!!!!!!!!!!!!!!!! -->
+<!-- VERSION PARA CUANDO TENGAMOS LAS OFERTAS -->
+<!-- <div class="ofertas-empresa">
+  <h1>Ofertas abiertas</h1>
+  <div class="scroll">
+    @for (oferta of ofertas; track $index) {
+    <div class="tarjeta-oferta" role="button">
+      <div class="logo-container">
+          <img [src]="'{{ empresa.usuario.urlFotoPerfil }}'" alt="Logo de {{ empresa.nombreEmpresa }}" />
+      </div>
+      <div class="contenido">
+        <div class="oferta-header">
+          <h5 class="nombre-oferta">{{oferta.nombreOferta}}</h5>
+          <div class="publicacion-oferta">
+            <span class="material-symbols-outlined">schedule</span>
+            <p>Publicado: {{ oferta.fechaAltaOferta }}</p>
+          </div>
+        </div>
+        <p class="rubro-ubicacion">
+          {{oferta.empresa.nombreEmpresa}}
+        </p>
+        <p class="rubro-ubicacion">
+          {{oferta.modalidadOferta.nombreModalidadOferta}} • {{oferta.tipoContratoOferta.nombretipoContratoOferta}}
+        </p>
+        <div class="ubicacion-oferta">
+          <span class="material-symbols-outlined">location_on</span>
+          <p>{{oferta.empresa.provincia?.nombreProvincia}}, {{oferta.empresa.provincia?.pais?.nombrePais}}</p>
+        </div>
+        <p class="descripcion-oferta">
+            {{oferta.descripcionOferta}}
+        </p>
+      </div>
+    </div>
   }
+  </div>
 </div> -->
