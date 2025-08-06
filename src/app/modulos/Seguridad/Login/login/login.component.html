@@ -3,40 +3,53 @@
     <h1 class="titulo-login">¡Hola nuevamente!</h1>
     <p class="subtitulo-login">Inicia sesión para continuar con tu experiencia Workee.</p>
 
-    <form class="login-form">
+
+    <form [formGroup]="loginForm" class="login-form">
       <div class="form-group">
-        <label for="username">Correo electrónico</label>
-        <input
-          type="email"
-          id="username"
-          name="username"
-          placeholder="ejemplo@gmail.com"
-          required
-          formControlName="email"
-        />
+        <label>Correo electrónico <span class="required"></span></label>
+        <input type="email" required placeholder="ejemplo@gmail.com" class="form-control"
+               formControlName="correo"
+               [ngClass]="{ 'is-invalid': isCampoInvalido('correo') }" />
+        @if (isCampoInvalido('correo')) {
+          <div class="invalid-feedback">
+            @if (loginForm.get('correo')?.hasError('required')) {
+              El campo “Correo electrónico” no puede estar vacío
+            } @else if (backendEmailInvalido) {
+              El correo electrónico ingresado no es válido
+            }
+          </div>
+        }
       </div>
-
       <div class="form-group">
-        <label for="password">Contraseña</label>
-        <input
-          type="password"
-          id="password"
-          name="password"
-          placeholder="Ingresar..."
-          required
-          formControlName="password"
-        />
-        <span class="password-eyes">👁️</span>
+        <label>Contraseña <span class="required"></span></label>
+        <div class="password-input-container">
+          <input [type]="verContrasenia ? 'text' : 'password'" required placeholder="Ingresar..." class="form-control"
+                formControlName="contrasenia"
+                [ngClass]="{ 'is-invalid': isCampoInvalido('contrasenia') }" />
+          <span class="password-toggle-icon" (click)="verContrasenia = !verContrasenia">
+            <span class="material-symbols-outlined">{{ verContrasenia ? 'visibility' : 'visibility_off' }}</span>
+          </span>
+        </div>
+        @if (isCampoInvalido('contrasenia')) {
+          <div class="invalid-feedback d-block">
+            @if (loginForm.get('contrasenia')?.hasError('required')) {
+              El campo “Contraseña” no puede estar vacío
+            }
+          </div>
+        }
+        <a href="#" class="forgot-password">¿Olvidaste tu contraseña?</a>
       </div>
 
-      <div class="forgot-password">
-        <a href="#">¿Olvidaste tu contraseña?</a>
-      </div>
-
-      <button type="submit" class="botoniniciarsesion">Iniciar sesión</button>
+      <button 
+        type="button" 
+        class="botoniniciarsesion"
+        (click)="enviarDatos()"
+        >
+        Iniciar sesión
+      </button>
     </form>
     <div class="bottom-text">
-        ¿No tienes una cuenta? <a href="#">Regístrate</a>
+        ¿No tienes una cuenta? <a href="/registro">Regístrate</a>
     </div>
     <div class="card p-3 my-4 mx-auto" style="max-width: 500px;"> 
       <div class="d-flex align-items-center">

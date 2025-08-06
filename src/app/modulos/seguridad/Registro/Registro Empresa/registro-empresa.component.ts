@@ -144,15 +144,6 @@ constructor(
 
     console.log('Datos enviados');
 
-    if (this.empresaForm.invalid) {
-      Swal.fire({
-        icon: 'warning',
-        title: 'Formulario incompleto',
-        text: 'Por favor, complete todos los campos obligatorios y acepte los Términos y Condiciones.',
-      });
-      return;
-    }
-
     if (contrasenia !== repetirContrasenia) {
       this.backendContraseniasNoCoinciden = true;
       this.empresaForm.get('contrasenia')?.setErrors({ backend: true });

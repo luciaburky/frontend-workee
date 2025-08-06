@@ -23,6 +23,7 @@ import { PerfilCandidatoComponent } from './modulos/Candidato/perfil-candidato/p
 import { RegistroEmpresaComponent } from './modulos/seguridad/Registro/Registro Empresa/registro-empresa.component';
 import { RegistroComponent } from './modulos/seguridad/Registro/registro.component';
 import { RegistroCandidatoComponent } from './modulos/seguridad/Registro/Registro Candidato/registro-candidato.component';
+import { PaginaInicioComponent } from './compartidos/Pagina Incio/pagina-inicio.component';
 
 export const routes: Routes = [
     // { path: 'buscar-ofertas', component: BuscarComponent },
@@ -51,6 +52,7 @@ export const routes: Routes = [
     { path: 'empleados', component: ListadoEmpleadosComponent },
     { path: 'empleados/crear', component: CrearEmpleadoComponent },
     { path: 'empleados/perfil/:idEmpleado', component: PerfilEmpleadoComponent },
+    { path: 'inicio', component: PaginaInicioComponent},
 
     { path: 'login', component: LoginPageComponent },
     { path: 'candidato/perfil/:idCandidato', component: PerfilCandidatoComponent },

@@ -74,6 +74,21 @@ export class AuthService {
   };
     return this.http.post(`${this.url}/registroEmpresa`, body);
   }
+
+
+  login(
+    correo: string,
+    contrasenia: string
+  ) {
+    const body = {
+    correo,
+    contrasenia
+    }
+    return this.http.post(`${this.url}/login`, body);
+  }
+
+
+
 }
 
 

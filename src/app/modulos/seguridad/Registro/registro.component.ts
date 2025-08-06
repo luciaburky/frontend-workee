@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { RegistroEmpresaComponent } from "./Registro Empresa/registro-empresa.component";
 import { CommonModule } from '@angular/common';
 import { RegistroCandidatoComponent } from "./Registro Candidato/registro-candidato.component";
+import { NavbarloginComponent } from '../Login/navbarlogin/navbarlogin.component';
 
 @Component({
   selector: 'app-registro',
@@ -9,7 +10,8 @@ import { RegistroCandidatoComponent } from "./Registro Candidato/registro-candid
   imports: [
     CommonModule,
     RegistroEmpresaComponent,
-    RegistroCandidatoComponent
+    RegistroCandidatoComponent,
+    NavbarloginComponent
 ],
   templateUrl: './registro.component.html',
   styleUrls: ['./registro.component.css']

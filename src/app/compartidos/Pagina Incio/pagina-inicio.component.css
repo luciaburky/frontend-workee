@@ -1,0 +1,253 @@
+.inicio-container {
+  font-family: 'Lato', sans-serif;
+  text-align: center;
+  background: radial-gradient(circle at top, #ffffff 0%, #31A5DD 100%);
+  padding: 4rem 2rem;
+}
+
+.hero {
+  background: transparent;
+  padding-bottom: 4rem;
+}
+
+.hero h1 {
+  font-size: 2.8rem;
+  font-weight: 800;
+}
+
+.highlight-blue {
+  color: #31A5DD;
+}
+
+.hero p {
+  margin: 1rem 0;
+  color: #333;
+  font-size: 1.1rem;
+}
+
+.hero-buttons {
+  margin: 2rem 0;
+}
+
+.btn-blue {
+  background-color: #31A5DD;
+  color: white;
+  padding: 0.8rem 2rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.btn-blue:hover {
+  background-color: #2690c3;
+}
+
+.btn-outline-blue {
+  background-color: white;
+  color: #31A5DD;
+  padding: 0.8rem 2rem;
+  border: 2px solid #31A5DD;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-outline-blue:hover {
+  background-color: #f0f8fc;
+}
+
+.roles-cards {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 2.5rem;
+}
+
+.card {
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 2rem;
+  border-radius: 12px;
+  max-width: 280px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  backdrop-filter: blur(8px);
+}
+
+.card h3 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 1.3rem;
+}
+
+.card span.material-symbols-outlined {
+  font-size: 1.8rem;
+  color: #31A5DD;
+}
+
+.funciona {
+  background: #f3faff;
+  padding: 4rem 2rem;
+  border-radius: 60px;
+  margin-top: 4rem;
+}
+
+.funciona h2 {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+}
+
+.funciona-grid {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  text-align: left;
+  flex-wrap: wrap;
+}
+
+.funciona-col {
+  max-width: 400px;
+}
+
+.step {
+  list-style: none;
+  padding-left: 0;
+  counter-reset: li;
+}
+
+.step li {
+  margin-bottom: 1.5rem;
+}
+
+.step.green li::before {
+  content: counter(li);
+  counter-increment: li;
+  background: #10C036;
+  color: white;
+  border-radius: 100%;
+  padding: 0.3rem 0.8rem;
+  margin-right: 0.7rem;
+  font-weight: bold;
+}
+
+.step.orange li::before {
+  content: counter(li);
+  counter-increment: li;
+  background: #FFAE00;
+  color: white;
+  border-radius: 100%;
+  padding: 0.3rem 0.8rem;
+  margin-right: 0.7rem;
+  font-weight: bold;
+}
+
+.benefits {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 3rem;
+  flex-wrap: wrap;
+}
+
+.benefit {
+  background: white;
+  padding: 1rem 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+/* 1. Mejora visual para la sección "¿Cómo funciona Workee?" */
+.funciona {
+  background: #f3faff;
+  padding: 3rem 2rem;
+  border-radius: 30px;
+  margin: 4rem auto;
+  max-width: 1000px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.funciona h2 {
+  font-size: 1.8rem;
+  margin-bottom: 2rem;
+}
+
+.funciona-col h3 {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+.step li {
+  margin-bottom: 1.2rem;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+/* 2. Mejora de las tarjetas de beneficios */
+.benefits {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.benefit {
+  background: white;
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  font-weight: 500;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-width: 200px;
+}
+
+.benefit .material-symbols-outlined {
+  font-size: 1.8rem;
+  color: #31A5DD;
+}
+
+.funciona .material-symbols-outlined {
+  font-size: 1.8rem;
+  color: #31A5DD;
+}
+
+.icon-circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #E1F0FA;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+}
+
+.icon-circle .material-symbols-outlined {
+  font-size: 1.6rem;
+  color: #31A5DD;
+}
+
+.title-with-icon {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+.title-with-icon .material-symbols-outlined {
+  font-size: 1.8rem;
+  color: #31A5DD;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
