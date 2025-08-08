@@ -1,0 +1,59 @@
+<div class="perfil-wrapper">
+    <button type="button" class="boton" (click)="volverAListado()">
+        <span class="material-symbols-outlined">arrow_back</span>
+        Volver
+    </button>
+    <div class="perfil-header">
+        <div class="logo-seccion">
+            <img [src]="'assets/img/foto-empresa.png'" alt="foto" class="foto" />
+        </div>
+        <div class="info">
+                <div class="nombre-boton">
+                    <h1>{{candidato.nombreCandidato}} {{candidato.apellidoCandidato}}</h1>
+                    <button 
+                    class="boton-enviar-oferta">
+                        <span class="material-symbols-outlined">send</span>
+                        Enviar oferta
+                    </button>
+                </div>
+                <span
+                    class="badge"
+                    [ngClass]="{
+                    'no-disponible': candidato.estadoBusqueda?.nombreEstadoBusqueda === 'No disponible',
+                    'escucho-ofertas': candidato.estadoBusqueda?.nombreEstadoBusqueda === 'Escucho ofertas',
+                    'buscando-activamente': candidato.estadoBusqueda?.nombreEstadoBusqueda === 'Buscando activamente'
+                    }"
+                    >
+                    {{ candidato.estadoBusqueda?.nombreEstadoBusqueda?.toUpperCase() }}
+                </span>
+                <div class="datos">
+                    <span class="material-symbols-outlined">location_on</span>
+                    <p>{{candidato.provincia?.nombreProvincia}}, {{candidato.provincia?.pais?.nombrePais}}</p>
+                </div>
+                <div class="datos">
+                    <span class="material-symbols-outlined">boy</span>
+                    <p>{{candidato.genero?.nombreGenero}}</p>
+                </div>
+                <div class="datos">
+                    <span class="material-symbols-outlined">calendar_month</span>
+                    <p>{{edadCandidato}} años</p>
+                </div>
+                </div>
+
+        </div>
+    <div class="seccion-abajo">
+        <div class="seccion-habilidades">
+            <h5 class="pb-10">Habilidades</h5>
+            <div class="habilidades">
+            @for (hab of candidato.habilidades; track $index) {
+                <span class="tag"> {{hab.habilidad?.nombreHabilidad}} </span>
+            }
+        </div>
+        <div class="seccion-cv">
+            <h5 class="pb-10">Currículum Vitae</h5>
+            <div class="cv">
+                
+            </div>
+        </div>
+    </div>
+</div>
