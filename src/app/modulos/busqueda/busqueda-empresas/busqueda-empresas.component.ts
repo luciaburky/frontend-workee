@@ -23,7 +23,6 @@ export class BusquedaEmpresasComponent implements OnInit{
     "Sí", "No"
   ];
 
-  empresaListOriginal: Empresa[] = [];
   empresaList: Empresa[] = [];
 
   texto: string = '';
@@ -100,7 +99,7 @@ export class BusquedaEmpresasComponent implements OnInit{
 
   buscarPorNombre(texto: string): void {
     this.busquedaRealizada = true;
-    this.busquedaService.buscarPorNombre(texto).subscribe(data => {
+    this.busquedaService.buscarEmpresasPorNombre(texto).subscribe(data => {
       this.empresaList = data;
       console.log("empresas que coinciden con el texto ", texto, ": ", this.empresaList);
       sessionStorage.setItem('texto',JSON.stringify(this.texto));
