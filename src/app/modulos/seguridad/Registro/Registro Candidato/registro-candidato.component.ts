@@ -21,6 +21,7 @@ import { Habilidad } from '../../../../admin/ABMHabilidad/habilidad';
 import { HabilidadService } from '../../../../admin/ABMHabilidad/habilidad.service';
 import { CandidatoHabilidad } from '../../../Candidato/candidato-habilidad';
 import { AuthService } from '../../auth.service';
+import { Storage, ref, uploadBytes, getDownloadURL, StorageReference} from '@angular/fire/storage';
 
 
 
@@ -58,6 +59,10 @@ export class RegistroCandidatoComponent {
   habilidades: CandidatoHabilidad[] = []; // listado de habilidades seleccionadas por el usuario
   candidato: any = {}; // necesario solo para hacer `this.candidato.habilidades ?? []`
 
+  urlFoto = '';
+  file!: File;
+  imgRef!: StorageReference;
+
 
 constructor(
   private router: Router,
@@ -67,7 +72,8 @@ constructor(
   private estadoBusquedaService: EstadoBusquedaLaboralService,
   private authService: AuthService,
   private modalService: ModalService,
-  private habilidadService: HabilidadService
+  private habilidadService: HabilidadService,
+  private storage: Storage
 
 ) {
   this.candidatoForm = new FormGroup({
@@ -137,56 +143,158 @@ ngOnInit(): void {
 
 }
 
-enviarDatos() {
-    this.backendEmailInvalido = false;
-    this.submitForm = true;
+// enviarDatos() {
+//     this.backendEmailInvalido = false;
+//     this.submitForm = true;
 
-    if (this.candidatoForm.invalid) {
-      Swal.fire({
-        icon: 'warning',
-        title: 'Formulario incompleto',
-        text: 'Por favor, complete todos los campos obligatorios y acepte los Términos y Condiciones.',
-      });
-      return;
+//     if (this.candidatoForm.invalid) {
+//       Swal.fire({
+//         icon: 'warning',
+//         title: 'Formulario incompleto',
+//         text: 'Por favor, complete todos los campos obligatorios y acepte los Términos y Condiciones.',
+//       });
+//       return;
+//     }
+
+//     const nombreCandidato = this.candidatoForm.get('nombreCandidato')?.value;
+//     const apellidoCandidato = this.candidatoForm.get('apellidoCandidato')?.value;
+//     const fechaDeNacimiento = this.candidatoForm.get('fechaDeNacimiento')?.value;
+//     const provinciaSeleccionada = this.candidatoForm.get('provinciaCandidato')?.value.id;
+//     const estadoBusquedaSeleccionado = this.candidatoForm.get('estadoBusquedaCandidato')?.value.id;
+//     const generoSeleccionado = this.candidatoForm.get('generoCandidato')?.value.id; 
+//     const habilidadesCandidato = this.candidatoForm.get(['habilidadesCandidato'])?.value.id; 
+//     const enlaceCV = this.candidatoForm.get('CVCandidato')?.value;
+//     const correoCandidato = this.candidatoForm.get('correoCandidato')?.value; 
+//     const contrasenia = this.candidatoForm.get('contrasenia')?.value;
+//     const repetirContrasenia = this.candidatoForm.get('repetirContrasenia')?.value;
+//     const urlFotoPerfil = this.candidatoForm.get('urlFoto')?.value; 
+
+//     if (this.candidatoForm.invalid) {
+//       Swal.fire({
+//         icon: 'warning',
+//         title: 'Formulario incompleto',
+//         text: 'Por favor, complete todos los campos obligatorios y acepte los Términos y Condiciones.',
+//       });
+//       return;
+//     }
+
+//     if (contrasenia !== repetirContrasenia) {
+//       this.backendContraseniasNoCoinciden = true;
+//       this.candidatoForm.get('contrasenia')?.setErrors({ backend: true });
+//       this.candidatoForm.get('repetirContrasenia')?.setErrors({ backend: true });
+//       Swal.fire({
+//           toast: true,
+//           position: "top-end",
+//           icon: "error",
+//           title: "Las contraseñas no coinciden",
+//           timer: 3000,
+//           showConfirmButton: false,
+//       });
+//         return; // detener el submit
+//     }
+
+//     this.authService.registrarCandidato(
+//       nombreCandidato,
+//       apellidoCandidato,
+//       fechaDeNacimiento,
+//       provinciaSeleccionada,
+//       estadoBusquedaSeleccionado,
+//       generoSeleccionado,
+//       this.habilidadesSeleccionadasID,
+//       enlaceCV,
+//       correoCandidato,
+//       contrasenia,
+//       repetirContrasenia,
+//       urlFotoPerfil
+
+
+
+//     ).subscribe({
+//       next: () => {
+//         this.submitForm = true;
+//         Swal.fire({
+//           toast: true,
+//           position: "top-end",
+//           icon: "success",
+//           title: "Te has registrado correctamente",
+//           timer: 3000,
+//           showConfirmButton: false,
+//         });
+//       },
+//       error: (error: any) => {
+//           if (error.error.message === "El correo ingresado ya se encuentra en uso") {
+//             Swal.fire({
+//               toast: true,
+//               position: "top-end",
+//               icon: "warning",
+//               title: "El correo ingresado se encuentra en uso, ingrese otro",
+//               timer: 3000,
+//               showConfirmButton: false,
+//             })
+//           }
+//           if (error.status === 400 && error.error.message === "Debe ser un correo válido") {
+//             this.backendEmailInvalido = true;
+//             this.candidatoForm.get('emailEmpresa')?.setErrors({ backend: true });
+//           } else if (error.status === 400 && error.error.message === "La contraseña debe tener al menos 8 caracteres") {
+//             this.backendContraseniaCorta = true;
+//             this.candidatoForm.get('contrasenia')?.setErrors({ backend: true });
+//           }
+//         }
+//       });      
+
+// }
+
+async enviarDatos() {
+  this.backendEmailInvalido = false;
+  this.submitForm = true;
+
+  if (this.candidatoForm.invalid) {
+    Swal.fire({
+      icon: 'warning',
+      title: 'Formulario incompleto',
+      text: 'Por favor, complete todos los campos obligatorios y acepte los Términos y Condiciones.',
+    });
+    return;
+  }
+
+  const contrasenia = this.candidatoForm.get('contrasenia')?.value;
+  const repetirContrasenia = this.candidatoForm.get('repetirContrasenia')?.value;
+
+  if (contrasenia !== repetirContrasenia) {
+    this.backendContraseniasNoCoinciden = true;
+    this.candidatoForm.get('contrasenia')?.setErrors({ backend: true });
+    this.candidatoForm.get('repetirContrasenia')?.setErrors({ backend: true });
+    Swal.fire({
+      toast: true,
+      position: "top-end",
+      icon: "error",
+      title: "Las contraseñas no coinciden",
+      timer: 3000,
+      showConfirmButton: false,
+    });
+    return;
+  }
+
+  try {
+    let urlFotoPerfil = '';
+
+    // Subir la imagen si existe
+    if (this.file) {
+      const snapshot = await uploadBytes(this.imgRef, this.file);
+      urlFotoPerfil = await getDownloadURL(snapshot.ref);
     }
 
+    // Obtener valores del formulario
     const nombreCandidato = this.candidatoForm.get('nombreCandidato')?.value;
     const apellidoCandidato = this.candidatoForm.get('apellidoCandidato')?.value;
     const fechaDeNacimiento = this.candidatoForm.get('fechaDeNacimiento')?.value;
     const provinciaSeleccionada = this.candidatoForm.get('provinciaCandidato')?.value.id;
     const estadoBusquedaSeleccionado = this.candidatoForm.get('estadoBusquedaCandidato')?.value.id;
     const generoSeleccionado = this.candidatoForm.get('generoCandidato')?.value.id; 
-    const habilidadesCandidato = this.candidatoForm.get(['habilidadesCandidato'])?.value.id; 
     const enlaceCV = this.candidatoForm.get('CVCandidato')?.value;
-    const correoCandidato = this.candidatoForm.get('correoCandidato')?.value; 
-    const contrasenia = this.candidatoForm.get('contrasenia')?.value;
-    const repetirContrasenia = this.candidatoForm.get('repetirContrasenia')?.value;
-    const urlFotoPerfil = this.candidatoForm.get('urlFotoPerfil')?.value; 
+    const correoCandidato = this.candidatoForm.get('correoCandidato')?.value;
 
-    if (this.candidatoForm.invalid) {
-      Swal.fire({
-        icon: 'warning',
-        title: 'Formulario incompleto',
-        text: 'Por favor, complete todos los campos obligatorios y acepte los Términos y Condiciones.',
-      });
-      return;
-    }
-
-    if (contrasenia !== repetirContrasenia) {
-      this.backendContraseniasNoCoinciden = true;
-      this.candidatoForm.get('contrasenia')?.setErrors({ backend: true });
-      this.candidatoForm.get('repetirContrasenia')?.setErrors({ backend: true });
-      Swal.fire({
-          toast: true,
-          position: "top-end",
-          icon: "error",
-          title: "Las contraseñas no coinciden",
-          timer: 3000,
-          showConfirmButton: false,
-      });
-        return; // detener el submit
-    }
-
+    // Llamar al servicio
     this.authService.registrarCandidato(
       nombreCandidato,
       apellidoCandidato,
@@ -200,12 +308,8 @@ enviarDatos() {
       contrasenia,
       repetirContrasenia,
       urlFotoPerfil
-
-
-
     ).subscribe({
       next: () => {
-        this.submitForm = true;
         Swal.fire({
           toast: true,
           position: "top-end",
@@ -216,27 +320,39 @@ enviarDatos() {
         });
       },
       error: (error: any) => {
-          if (error.error.message === "El correo ingresado ya se encuentra en uso") {
-            Swal.fire({
-              toast: true,
-              position: "top-end",
-              icon: "warning",
-              title: "El correo ingresado se encuentra en uso, ingrese otro",
-              timer: 3000,
-              showConfirmButton: false,
-            })
-          }
-          if (error.status === 400 && error.error.message === "Debe ser un correo válido") {
-            this.backendEmailInvalido = true;
-            this.candidatoForm.get('emailEmpresa')?.setErrors({ backend: true });
-          } else if (error.status === 400 && error.error.message === "La contraseña debe tener al menos 8 caracteres") {
-            this.backendContraseniaCorta = true;
-            this.candidatoForm.get('contrasenia')?.setErrors({ backend: true });
-          }
+        if (error.error.message === "El correo ingresado ya se encuentra en uso") {
+          Swal.fire({
+            toast: true,
+            position: "top-end",
+            icon: "warning",
+            title: "El correo ingresado se encuentra en uso, ingrese otro",
+            timer: 3000,
+            showConfirmButton: false,
+          });
         }
-      });      
+        if (error.status === 400 && error.error.message === "Debe ser un correo válido") {
+          this.backendEmailInvalido = true;
+          this.candidatoForm.get('correoCandidato')?.setErrors({ backend: true });
+        } else if (error.status === 400 && error.error.message === "La contraseña debe tener al menos 8 caracteres") {
+          this.backendContraseniaCorta = true;
+          this.candidatoForm.get('contrasenia')?.setErrors({ backend: true });
+        }
+      }
+    });
 
+  } catch (error) {
+    console.error('Error al subir la imagen:', error);
+    Swal.fire({
+      toast: true,
+      position: 'top-end',
+      icon: 'error',
+      title: 'Error al subir la imagen',
+      showConfirmButton: false,
+      timer: 3000
+    });
+  }
 }
+
 
 isCampoInvalido(nombreCampo: string): boolean {
   const control = this.candidatoForm.get(nombreCampo);
@@ -346,5 +462,79 @@ filtrarProvinciasPorPais(paisSeleccionado: Pais | null) {
     });
   }
 
+
+  //   onFileSelected($event: any){
+  //   try{
+  //     this.file = <File>$event.target.files[0];
+  //     this.imgRef = ref(this.storage, `foto/${this.file.name}`);
+  //     if(this.file.size > 5242880){
+  //       this.candidatoForm.get('urlFoto');
+  //     }else{
+  //       this.candidatoForm.get('urlFoto');
+  //     }
+  //     if(!this.verificarFormato(this.file.name)){
+  //       this.candidatoForm.get('urlFoto');
+  //     }
+  //   }catch{
+  //     Swal.fire({
+  //       position: 'top-end',
+  //       icon: 'error',
+  //       title: 'Debe seleccionar una foto de perfil',
+  //       showConfirmButton: false,
+  //       timer: 3000
+  //     })
+  //   }
+  // }
+
+  onFileSelected($event: any) {
+  try {
+    this.file = <File>$event.target.files[0];
+    this.imgRef = ref(this.storage, `foto/${this.file.name}`);
+
+    if (this.file.size > 5242880) { // 5MB
+      this.candidatoForm.get('urlFotoPerfil')?.setErrors({ tamanioInvalido: true });
+    } else if (!this.verificarFormato(this.file.name)) {
+      this.candidatoForm.get('urlFotoPerfil')?.setErrors({ formato: true });
+    } else {
+      // Si pasa validaciones, limpiamos errores
+      this.candidatoForm.get('urlFotoPerfil')?.setErrors(null);
+    }
+
+  } catch {
+    Swal.fire({
+      position: 'top-end',
+      icon: 'error',
+      title: 'Debe seleccionar una foto de perfil',
+      showConfirmButton: false,
+      timer: 3000
+    });
+  }
+}
+
+
+  verificarFormato(nombreArchivo: string): boolean {
+    const extensionesPermitidas = /\.(jpg|jpeg|png)$/i;
+    return extensionesPermitidas.test(nombreArchivo);
+  }
+
+  // uploadBytes(this.imgRef, this.file).then(snapshot => {
+  //         getDownloadURL(snapshot.ref).then(url => {
+  //             this.urlFoto = url;
+  //             console.log(this.urlFoto);
+  //             this.candidato.usuario!.urlFotoUsuario = url;
+  //             console.log(this.candidato.usuario!.urlFotoUsuario);
+  //             console.log('URL de la imagen subida:', url);
+  //           });
+  //           }).catch(error => { 
+  //             console.error('Error al subir la imagen:', error);
+  //             Swal.fire({
+  //               toast: true,
+  //               position: 'top-end',
+  //               icon: 'error',
+  //               title: 'Error al subir la imagen',
+  //               showConfirmButton: false,
+  //               timer: 3000
+  //         });
+  //       });
 
 }

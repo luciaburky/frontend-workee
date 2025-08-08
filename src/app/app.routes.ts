@@ -24,6 +24,7 @@ import { RegistroEmpresaComponent } from './modulos/seguridad/Registro/Registro 
 import { RegistroComponent } from './modulos/seguridad/Registro/registro.component';
 import { RegistroCandidatoComponent } from './modulos/seguridad/Registro/Registro Candidato/registro-candidato.component';
 import { PaginaInicioComponent } from './compartidos/Pagina Incio/pagina-inicio.component';
+import { ConfirmacionComponent } from './modulos/seguridad/Registro/Confirmacion/confirmacion.component';
 
 export const routes: Routes = [
     // { path: 'buscar-ofertas', component: BuscarComponent },
@@ -60,4 +61,5 @@ export const routes: Routes = [
     { path: 'registro', component: RegistroComponent},
     { path: 'registro-empresa', component: RegistroEmpresaComponent },
     { path: 'registro-candidato', component: RegistroCandidatoComponent },
+    {path: 'cuentaVerificada', component: ConfirmacionComponent}
 ];

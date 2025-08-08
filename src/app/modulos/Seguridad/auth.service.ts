@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -86,6 +87,13 @@ export class AuthService {
     }
     return this.http.post(`${this.url}/login`, body);
   }
+
+  confirmarcuenta(token: string): Observable<string> {
+    return this.http.put<string>(`${this.url}/confirmarCuenta?token=${token}`, {}, {
+      responseType: 'text' as 'json'
+    });
+  }
+
 
 
 
