@@ -51,6 +51,43 @@ export class BusquedaCandidatosComponent implements OnInit {
   ) {}
   
   ngOnInit(): void {
+    window.addEventListener('beforeunload', () => {
+      sessionStorage.clear();
+    });
+
+    const listaGuardada = sessionStorage.getItem('candidatoList');
+    const textoGuardado = sessionStorage.getItem('texto');
+    const filtrosHabilidadGuardados = sessionStorage.getItem('filtrosHabilidad');
+    const filtrosEstadoGuardados = sessionStorage.getItem('filtrosEstado');
+    const filtrosPaisGuardados = sessionStorage.getItem('filtrosPais');
+    const filtrosProvinciaGuardados = sessionStorage.getItem('filtrosProvincia');
+
+    if (listaGuardada) {
+      this.candidatoList = JSON.parse(listaGuardada);
+      console.log(this.candidatoList)
+      this.busquedaRealizada = true;
+    }
+
+    if (textoGuardado) {
+      this.texto = JSON.parse(textoGuardado);
+    }
+
+    if (filtrosHabilidadGuardados) {
+      this.filtrosSeleccionadosHabilidad = JSON.parse(filtrosHabilidadGuardados);
+    }
+
+    if (filtrosEstadoGuardados) {
+      this.filtrosSeleccionadosEstado = JSON.parse(filtrosEstadoGuardados);
+    }
+
+    if (filtrosPaisGuardados) {
+      this.filtrosSeleccionadosPais = JSON.parse(filtrosPaisGuardados);
+    }
+
+    if (filtrosProvinciaGuardados) {
+      this.filtrosSeleccionadosProvincia = JSON.parse(filtrosProvinciaGuardados);
+    }
+
     this.habilidadService.findAllActivas().subscribe(data => {
       this.filtrosHabilidad = data;
       this.filtrosHabilidad = this.filtrosHabilidad.map(h => ({
@@ -84,15 +121,16 @@ export class BusquedaCandidatosComponent implements OnInit {
     this.busquedaRealizada = true;
     this.busquedaService.buscarCandidatosPorNombre(texto).subscribe(data => {
       this.candidatoList = data;
-      // sessionStorage.setItem('texto',JSON.stringify(this.texto));
-      // sessionStorage.setItem('empresaList', JSON.stringify(this.empresaList));
-      // sessionStorage.setItem('filtrosUbicacion', JSON.stringify(this.filtrosSeleccionadosUbicacion));
-      // sessionStorage.setItem('filtrosRubro', JSON.stringify(this.filtrosSeleccionadosRubros));
-      // sessionStorage.setItem('filtrosOferta', JSON.stringify(this.filtrosSeleccionadosOfertas));
+      sessionStorage.setItem('texto',JSON.stringify(this.texto));
+      sessionStorage.setItem('candidatoList', JSON.stringify(this.candidatoList));
+      sessionStorage.setItem('filtrosHabilidad', JSON.stringify(this.filtrosSeleccionadosHabilidad));
+      sessionStorage.setItem('filtrosEstado', JSON.stringify(this.filtrosSeleccionadosEstado));
+      sessionStorage.setItem('filtrosPais', JSON.stringify(this.filtrosSeleccionadosPais));
+      sessionStorage.setItem('filtrosProvincia', JSON.stringify(this.filtrosSeleccionadosProvincia));
     });
   }
 
-   filtrarEmpresas() {
+  filtrarEmpresas() {
     const idsHabilidades = this.filtrosSeleccionadosHabilidad?.length ? this.filtrosSeleccionadosHabilidad : null;
     const idsPaises = this.filtrosSeleccionadosPais?.length ? this.filtrosSeleccionadosPais : null;
     const idsProvincias = this.filtrosSeleccionadosProvincia?.length ? this.filtrosSeleccionadosProvincia : null;
@@ -103,11 +141,12 @@ export class BusquedaCandidatosComponent implements OnInit {
     this.busquedaRealizada = true;
     this.busquedaService.filtrarCandidatos(this.texto, idsProvincias, idsPaises, idsHabilidades, idsEstadosDeBusqueda).subscribe(data => {
       this.candidatoList = data;
-      // sessionStorage.setItem('texto',JSON.stringify(this.texto));
-      // sessionStorage.setItem('empresaList', JSON.stringify(this.empresaList));
-      // sessionStorage.setItem('filtrosUbicacion', JSON.stringify(this.filtrosSeleccionadosUbicacion));
-      // sessionStorage.setItem('filtrosRubro', JSON.stringify(this.filtrosSeleccionadosRubros));
-      // sessionStorage.setItem('filtrosOferta', JSON.stringify(this.filtrosSeleccionadosOfertas));
+      sessionStorage.setItem('texto',JSON.stringify(this.texto));
+      sessionStorage.setItem('candidatoList', JSON.stringify(this.candidatoList));
+      sessionStorage.setItem('filtrosHabilidad', JSON.stringify(this.filtrosSeleccionadosHabilidad));
+      sessionStorage.setItem('filtrosEstado', JSON.stringify(this.filtrosSeleccionadosEstado));
+      sessionStorage.setItem('filtrosPais', JSON.stringify(this.filtrosSeleccionadosPais));
+      sessionStorage.setItem('filtrosProvincia', JSON.stringify(this.filtrosSeleccionadosProvincia));
     })
   }
 

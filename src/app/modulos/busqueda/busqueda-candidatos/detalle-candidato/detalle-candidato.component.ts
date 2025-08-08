@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Candidato } from '../../../Candidato/candidato';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-detalle-candidato',
@@ -14,6 +15,16 @@ import { CommonModule } from '@angular/common';
 export class DetalleCandidatoComponent implements OnInit {
   candidato: Candidato = {};
   edadCandidato: number = 0;
+  dropdownAbierto: boolean = false;
+  // ofertas: Oferta[] = []
+  
+  // ARRAY USADO PARA MOSTRAR LAS OFERTAS QUE SE PUEDEN ENVIAR AL CANDIDATO
+  ofertas: string[] = [
+    'Desarrollador Backend Senior',
+    'Diseñador UX/UI',
+    'Analista Funcional',
+    'Tester QA Ssr.',
+  ];
 
   constructor(
     private candidatoService: CandidatoService,
@@ -45,5 +56,48 @@ export class DetalleCandidatoComponent implements OnInit {
     }
 
     return edad;
+  }
+
+  abrirDesplegable() {
+    this.dropdownAbierto = !this.dropdownAbierto;
+  }
+
+  enviarOferta(oferta: string) {
+    Swal.fire({
+      title: `¿Está seguro de enviar la oferta "${oferta}"?`,
+      icon: "question",
+      iconColor: "#31A5DD",
+      showCancelButton: true,
+      confirmButtonColor: "#31A5DD",
+      cancelButtonColor: "#697077",
+      confirmButtonText: "Sí, enviar",
+      cancelButtonText: "No, volver",
+      reverseButtons: true,
+      customClass: {
+        title: 'titulo-chico',
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // logica para enviar la oferta al candidato...
+        // dejo el swal para confirmar el envio de la oferta al candidato
+        Swal.fire({
+          toast: true,
+          position: "top-end",
+          icon: "success",
+          title: "La oferta se envió correctamente al candidato",
+          timer: 3000,
+          showConfirmButton: false,
+        })
+        // error en el caso de que el candidato ya este
+        // Swal.fire({
+        //   toast: true,
+        //   position: "top-end",
+        //   icon: "warning",
+        //   title: "No puede enviar esta oferta porque el candidato ya está postulado",
+        //   timer: 3000,
+        //   showConfirmButton: false,
+        // })
+
+    }});
   }
 }

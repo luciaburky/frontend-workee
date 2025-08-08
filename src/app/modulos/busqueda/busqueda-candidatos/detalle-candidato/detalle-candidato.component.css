@@ -45,7 +45,7 @@
   background-color: #E1F0FA;
   color: #31A5DD;
   border: 2px solid #31A5DD;    
-  border-radius: 32px;
+  border-radius: 30px;
   padding: 6px 12px;
   display: inline-flex;
   align-items: center;
@@ -152,4 +152,59 @@
 
 .seccion-cv {
   margin-top: 20px;
+}
+
+
+.cv-box {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  background-color: #f7f7f7;
+  border-radius: 8px;
+  padding: 0.8rem 1rem;
+  width: fit-content;
+}
+
+.cv-detalle {
+  display: flex;
+  flex-direction: column;
+}
+
+.cv-detalle p {
+  margin: 0;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.cv-detalle p a {
+  text-decoration: none;
+  color: #007bff;
+}
+
+.cv-detalle p a:hover {
+  text-decoration: underline;
+}
+
+.dropdown-menu-custom {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 0 0 10px 10px;
+  min-width: 280px;
+  padding: 10px;
+  box-shadow: 0px 4px 8px rgba(0,0,0,0.1);
+  z-index: 1000;
+  max-height: 200px;
+  overflow-y: auto; 
+}
+
+.dropdown-item-custom {
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+.dropdown-item-custom:hover {
+  background-color: #f5f5f5;
 }
