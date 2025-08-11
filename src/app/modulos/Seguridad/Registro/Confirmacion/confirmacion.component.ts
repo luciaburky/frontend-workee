@@ -8,36 +8,73 @@ import { AuthService } from '../../auth.service';
   styleUrls: ['./confirmacion.component.css']
 })
 export class ConfirmacionComponent implements OnInit {
-  estado: 'verificando' | 'verificada' | 'error' | 'token-utilizado' = 'verificando';
+  estado: 'exito' | 'usado' | 'error' | 'verificando' = 'verificando';
 
   constructor(
     private route: ActivatedRoute,
     private authService: AuthService
   ) {}
 
-ngOnInit(): void {
-  const token = this.route.snapshot.queryParamMap.get('token');
-
-  if (token) {
-    this.authService.confirmarcuenta(token).subscribe({
-      next: (resp: string) => {
-        if (resp === 'Cuenta verificada exitosamente') {
-          this.estado = 'verificada';
-        } else if (resp === 'El token ya fue utilizado') {
-          this.estado = 'token-utilizado';
-        } else {
-          console.warn("Respuesta inesperada:", resp);
+  ngOnInit() {
+    const token = this.route.snapshot.queryParamMap.get('token');
+    if (token) {
+      this.authService.confirmarcuenta(token).subscribe({
+        next: (res) => {
+          if (res.estado === 'habilitado') {
+            this.estado = 'exito';
+          } else {
+            this.estado = 'error';
+          }
+        },
+        error: () => {
           this.estado = 'error';
         }
-      },
-      error: (err) => {
-        console.error("Error al verificar cuenta", err);
-        this.estado = 'error';
-      }
-    });
-  } else {
-    this.estado = 'error';
+      });
+    } else {
+      this.estado = 'error';
+    }
   }
 }
 
-}
+// import { Component, OnInit } from '@angular/core';
+// import { ActivatedRoute } from '@angular/router';
+// import { AuthService } from '../../auth.service';
+// import { CommonModule } from '@angular/common';
+
+// @Component({
+//   selector: 'app-confirmacion',
+//   standalone: true,
+//   imports: [CommonModule],
+//   templateUrl: './confirmacion.component.html',
+//   styleUrls: ['./confirmacion.component.css']
+// })
+// export class ConfirmacionComponent implements OnInit {
+
+//   estado: 'exito' | 'usado' | 'error' | 'verificando' = 'verificando';
+
+//   constructor(
+//     private route: ActivatedRoute,
+//     private authService: AuthService
+//   ) {}
+
+  // ngOnInit() {
+  //   const token = this.route.snapshot.queryParamMap.get('token');
+  //   if (token) {
+  //     this.authService.confirmarCuenta(token).subscribe({
+  //       next: (res) => {
+  //         if (res.estado === 'habilitado') {
+  //           this.estado = 'exito';
+  //         } else {
+  //           this.estado = 'error';
+  //         }
+  //       },
+  //       error: () => {
+  //         this.estado = 'error';
+  //       }
+  //     });
+  //   } else {
+  //     this.estado = 'error';
+  //   }
+  // }
+// }
+

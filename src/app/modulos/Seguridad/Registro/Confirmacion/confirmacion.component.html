@@ -1,19 +1,8 @@
 <div class="confirmation-container">
-    @if (estado === 'verificando') {
-        <div class="card">
-            <span class="material-symbols-rounded icon loading">autorenew</span>
-            <p>Verificando tu cuenta...</p>
-        </div>
-    } @else if (estado === 'verificada') {
+    @if (estado === 'exito') {
         <div class="card" >
             <span class="material-symbols-rounded icon success">check_circle</span>
             <p>¡Tu cuenta ha sido verificada exitosamente! Ya podés iniciar sesión en Workee.</p>
-            <a href="/login" class="btn">Ir al login</a>
-        </div>
-    } @else if (estado === 'token-utilizado') {
-        <div class="card">
-            <span class="material-symbols-rounded icon error">error</span>
-            <p>El token ya fue utilizado anteriormente</p>
             <a href="/login" class="btn">Ir al login</a>
         </div>
     } @else {
@@ -23,9 +12,30 @@
             <a href="/login" class="btn">Ir al login</a>
         </div>
     }
-  
+  </div>
 
-
-
-
-</div>
+  <!-- <div class="confirmation-container">
+    @if (estado === 'exito') {
+        <div class="card">
+            <span class="material-symbols-rounded icon success">check_circle</span>
+            <p>¡Tu cuenta ha sido verificada exitosamente! Ya podés iniciar sesión en Workee.</p>
+            <a href="/login" class="btn">Ir al login</a>
+        </div>
+    } @else if (estado === 'usado') {
+        <div class="card">
+            <span class="material-symbols-rounded icon error">error</span>
+            <p>El token ya fue utilizado anteriormente</p>
+            <a href="/login" class="btn">Ir al login</a>
+        </div>
+    } @else if (estado === 'error') {
+        <div class="card">
+            <span class="material-symbols-rounded icon error">error</span>
+            <p>Ocurrió un error al verificar tu cuenta. El enlace podría ser inválido o haber expirado.</p>
+            <a href="/login" class="btn">Ir al login</a>
+        </div>
+    } @else {
+        <div class="card">
+            <p>Verificando tu cuenta...</p>
+        </div>
+    }
+</div> -->

@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { ConfirmarCuentaResponse } from "./Registro/Confirmacion/confirmar-cuenta-interface";
 
 @Injectable({
   providedIn: 'root',
@@ -76,7 +77,6 @@ export class AuthService {
     return this.http.post(`${this.url}/registroEmpresa`, body);
   }
 
-
   login(
     correo: string,
     contrasenia: string
@@ -88,14 +88,14 @@ export class AuthService {
     return this.http.post(`${this.url}/login`, body);
   }
 
-  confirmarcuenta(token: string): Observable<string> {
-    return this.http.put<string>(`${this.url}/confirmarCuenta?token=${token}`, {}, {
-      responseType: 'text' as 'json'
-    });
+// confirmarcuenta(token: string): Observable<ConfirmarCuentaResponse> {
+//   return this.http.put<ConfirmarCuentaResponse>(`${this.url}/confirmarCuenta?token=${token}`, {});
+// }
+
+confirmarcuenta(token: string) {
+  return this.http.put<ConfirmarCuentaResponse>(
+    `${this.url}/confirmarCuenta?token=${token}`, {}); 
   }
-
-
-
 
 }
 
