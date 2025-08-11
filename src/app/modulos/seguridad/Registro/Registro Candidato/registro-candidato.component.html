@@ -134,8 +134,7 @@
                 <label class="foto-label">Foto de perfil</label>
 
                 <div class="foto-container">
-                <img [src]="'assets/img/foto-perfil.png'" alt="foto" class="foto" />
-
+                <img [src]="fotoTemporal || 'assets/img/foto-perfil.png'" alt="foto" class="foto" />
                 <label for="file" class="icono-editar" title="Editar foto">
                     <span class="material-symbols-outlined icono-foto">photo_camera</span>
                 </label>
@@ -146,7 +145,7 @@
                     accept="image/jpg, image/jpeg, image/png"
                     hidden
                     class="form-control"
-                    formControlName="urlFoto"
+                    formControlName="urlFotoPerfil"
                     (change)="onFileSelected($event)"
                 />
                 </div>
@@ -195,32 +194,49 @@
                 </select>
             </div>
         </div>
-        <div class="form-group">
-            <div class="form-group cv-wrapper">
-                <label class="p-0 my-0 mb-2" for="cv">Currículum Vitae</label>
-                <div class="cv-box-contenedor">
+
+        <div class="form-group cv-wrapper">
+
+            <label for="fileCV" class="p-0 my-0 mb-2">Currículum Vitae</label>            
+            <div class="cv-drop-area" (click)="abrirSelectorCV()">
+                <span class="material-symbols-outlined cloud-icon">cloud_upload</span>
+                <p class="cv-texto">Arrastra y suelta tu CV aquí o haz clic para buscar</p>
+                <small class="cv-subtexto">Formato aceptado: PDF (máximo 5MB).</small>
+            </div>
+        
+            @if (fileCV) {
                 <div class="cv-box">
-                    <span class="material-symbols-outlined icono-pdf">description</span>
-                    <div class="cv-detalle">
-                    <p>
-                        <a href="#">
-                        CV-CamilaCitro.pdf
-                        </a>
-                    </p>
-                    <small>Actualizado el 10/05/2025</small>
-                    </div>
+                <span class="material-symbols-outlined icono-pdf">description</span>
+                <div class="cv-detalle">
+                    <p><a [href]="CVTemporal" target="_blank">{{ fileCV?.name }}</a></p>
+                    <small>Actualizado el {{ today | date:'dd/MM/yyyy' }}</small>
                 </div>
                 <div class="cv-acciones">
-                    <button id="icon-button" (click)="editarCV()">
-                    <span class="material-symbols-outlined editar-cv" title="Editar">edit</span>
-                    </button>
-                    <button id="icon-button" (click)="eliminarCV()">
+                    <button id="icon-button" type="button" (click)="eliminarCV()">
                     <span class="material-symbols-outlined eliminar-cv" title="Eliminar">delete</span>
                     </button>
                 </div>
                 </div>
-            </div>
+            }
+
+            @if (candidatoForm.get('enlaceCV')?.hasError('formato')) {
+                <p class="text-error">El formato del archivo seleccionado no es válido. Debe ser .pdf</p>
+            }
+            @if (candidatoForm.get('enlaceCV')?.hasError('tamanioInvalido') && candidatoForm.get('enlaceCV')?.touched) {
+                <p class="text-error">El documento no debe superar los 5MB.</p>
+            }
+            
+            <input
+                type="file"
+                id="fileCV"
+                accept="application/pdf"
+                hidden
+                formControlName="enlaceCV"
+                (change)="onCVSelected($event)"
+            />
         </div>
+
+
         <div class="form-group">
           <div class="titulo-habilidades">
             <label>Habilidades</label>
