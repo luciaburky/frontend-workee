@@ -216,3 +216,66 @@ body {
   border-radius: 8px;
 }
 
+.cv-drop-area {
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 30px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+}
+
+.cv-drop-area:hover {
+  border-color: #31A5DD;
+}
+
+.cloud-icon {
+  font-size: 40px;
+  color: #777;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.cv-texto {
+  margin: 0;
+  font-size: 15px;
+  color: #555;
+}
+
+.cv-subtexto {
+  color: #999;
+  font-size: 12px;
+}
+
+.cv-box {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+  border: 1px solid #eee;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.icono-pdf {
+  color: #E53935;
+  font-size: 30px;
+  margin-right: 10px;
+}
+
+.cv-detalle p {
+  margin: 0;
+  font-weight: 500;
+}
+
+.cv-detalle small {
+  color: #999;
+}
+
+.cv-acciones {
+  margin-left: auto;
+}
+
+.eliminar-cv {
+  color: #E53935;
+  cursor: pointer;
+}

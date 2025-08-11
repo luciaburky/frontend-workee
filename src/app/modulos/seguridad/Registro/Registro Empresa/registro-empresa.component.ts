@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router'; // CORREGIDO: antes estaba mal con 'express'
 import { CommonModule } from '@angular/common'; // <-- necesario para *ngIf, ngClass, etc
@@ -14,6 +14,8 @@ import { FormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
 import { dir } from 'console';
 import { AuthService } from '../../auth.service';
+import { Storage, ref, uploadBytes, getDownloadURL, StorageReference} from '@angular/fire/storage';
+
 
 @Component({
   selector: 'app-registro-empresa',
@@ -30,6 +32,8 @@ export class RegistroEmpresaComponent implements OnInit{
   backendContraseniaCorta = false;
   backendContraseniasNoCoinciden = false;
   numeropaginaregistro: number = 1;
+  logoTemporal: string = '';
+  documentoLegalTemporal: any = null;
 
   paises: Pais[] =[];
   provincias: Provincia[] = [];
@@ -38,6 +42,18 @@ export class RegistroEmpresaComponent implements OnInit{
   paisSeleccionado?: Pais;
   provinciaSeleccionada?: Provincia;
   rubroSeleccionado?: Rubro;
+  today: Date = new Date();
+
+
+    //PARA LOGO DE EMPRESA
+    urlLogo = '';
+    file!: File;
+    imgRef!: StorageReference;
+  
+    //PARA DOCUMENTO LEGAL
+    urlDocumentoLegal = '';
+    fileDocumentoLegal: any = null;
+    docRef!: StorageReference;
 
 constructor(
 
@@ -47,7 +63,8 @@ constructor(
     private provinciaService: ProvinciaService,
     private rubroService: RubroService,
     private authService: AuthService,
-    
+    private storage: Storage,   
+    private changeDetectorRef: ChangeDetectorRef
 
   ) {
 
@@ -114,7 +131,7 @@ constructor(
   }
 
 
-  enviarDatos() {
+  async enviarDatos() {
 
     this.backendEmailInvalido = false;
     this.submitForm = true;
@@ -136,8 +153,8 @@ constructor(
     const emailEmpresa = this.empresaForm.get('emailEmpresa')?.value;
     const contrasenia = this.empresaForm.get('contrasenia')?.value;
     const repetirContrasenia = this.empresaForm.get('repetirContrasenia')?.value;
-    const urlFotoPerfil = 'https://github.com'; //CAMBIAR
-    const urlDocumentoLegal = this.empresaForm.get('urlDocumentoLegal')?.value;
+    // const urlFotoPerfil = 'https://github.com'; //CAMBIAR
+    // const urlDocumentoLegal = this.empresaForm.get('urlDocumentoLegal')?.value;
     const sitioWebEmpresa = this.empresaForm.get('sitioWebEmpresa')?.value; 
     const rubroSeleccionado = this.empresaForm.get('rubroEmpresa')?.value.id;
     const provinciaSeleccionada = this.empresaForm.get('provinciaEmpresa')?.value.id;
@@ -157,6 +174,23 @@ constructor(
         showConfirmButton: false,
       });
       return; // detener el submit
+    }
+
+    try {
+    let urlFotoPerfil = '';
+    let urlDocumentoLegal = '';
+
+    // Subir la imagen si existe
+    if (this.file) {
+      this.imgRef = ref(this.storage, `logo/${this.file.name}`);
+      const snapshot = await uploadBytes(this.imgRef, this.file);
+      urlFotoPerfil = await getDownloadURL(snapshot.ref);
+    }
+
+    if (this.fileDocumentoLegal) {
+      this.docRef = ref(this.storage, `documento/${this.fileDocumentoLegal.name}`);
+      const snapshot = await uploadBytes(this.docRef, this.fileDocumentoLegal);
+      urlDocumentoLegal = await getDownloadURL(snapshot.ref);
     }
 
 
@@ -205,8 +239,19 @@ this.authService.registrarEmpresa(
         this.empresaForm.get('contrasenia')?.setErrors({ backend: true });
       }
     }
-  });      
-      
+  });    
+    }catch (error) {
+      console.error('Error al subir la imagen:', error);
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'error',
+        title: 'Error al subir la imagen',
+        showConfirmButton: false,
+        timer: 3000
+      });
+    }  
+   
   }
 
 
@@ -240,14 +285,6 @@ this.authService.registrarEmpresa(
   paginaAnterior() {
     this.numeropaginaregistro--;}
 
-  editarCV() {
-    console.log("Editar CV");
-  }
-
-  eliminarCV() {
-    console.log("Eliminar CV");
-  }
-
   verterminosycondiciones() {
   Swal.fire({
     title: 'Términos y Condiciones',
@@ -278,6 +315,83 @@ this.authService.registrarEmpresa(
     }
   });
 }
+
+onFileSelected($event: any) {
+    try {
+      this.file = <File>$event.target.files[0];
+      this.imgRef = ref(this.storage, `foto/${this.file.name}`);
+      this.logoTemporal = URL.createObjectURL(this.file); 
+
+      if (this.file.size > 5242880) {
+        this.empresaForm.get('urlFotoPerfil')?.setErrors({ tamanioInvalido: true });
+      } else if (!this.verificarFormato(this.file.name)) {
+        this.empresaForm.get('urlFotoPerfil')?.setErrors({ formato: true });
+      } else {
+        this.empresaForm.get('urlFotoPerfil')?.setErrors(null);
+      }
+
+    } catch {
+      Swal.fire({
+        position: 'top-end',
+        icon: 'error',
+        title: 'Debe seleccionar una foto de perfil',
+        showConfirmButton: false,
+        timer: 3000
+      });
+    }
+  }
+  verificarFormato(nombreArchivo: string): boolean {
+    const extensionesPermitidas = /\.(jpg|jpeg|png)$/i;
+    return extensionesPermitidas.test(nombreArchivo);
+  }
+
+
+abrirSelectorDocumentoLegal() {
+  document.getElementById('fileDocumentoLegal')?.click();
+  
+}
+
+onDocumentoLegalSelected(event: any) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  // Resetear errores previos
+  this.empresaForm.get('urlDocumentoLegal')?.setErrors(null);
+
+  // Validar formato por extensión
+  if (!file.name.toLowerCase().endsWith('.pdf')) {
+    this.empresaForm.get('urlDocumentoLegal')?.setErrors({ formato: true });
+    this.fileDocumentoLegal = null;
+    this.changeDetectorRef.detectChanges();
+    return;
+  }
+
+  // Validar tamaño
+  if (file.size > 5 * 1024 * 1024) {
+    this.empresaForm.get('urlDocumentoLegal')?.setErrors({ tamanioInvalido: true });
+    this.fileDocumentoLegal = null;
+    this.changeDetectorRef.detectChanges();
+    return;
+  }
+
+  // Guardar archivo y preview
+  this.fileDocumentoLegal = file;
+  this.documentoLegalTemporal = URL.createObjectURL(file);
+  this.empresaForm.get('urlDocumentoLegal')?.setValue(file);
+  this.empresaForm.get('urlDocumentoLegal')?.markAsTouched();
+
+  this.changeDetectorRef.detectChanges();
+}
+
+
+  eliminarDocumentoLegal() {
+    this.fileDocumentoLegal = null;
+    this.documentoLegalTemporal = null;
+    this.empresaForm.get('urlDocumentoLegal')?.reset();
+    
+    // Forzar la detección de cambios para que la UI se actualice inmediatamente
+    this.changeDetectorRef.detectChanges();
+  }
 
 
 }

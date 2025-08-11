@@ -1,4 +1,4 @@
 export interface ConfirmarCuentaResponse {
-    estado: 'habilitado' | 'usado' | 'error';
-    
+  estado: string;
+  mensaje: string;
 }
