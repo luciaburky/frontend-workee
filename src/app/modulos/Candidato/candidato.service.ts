@@ -41,4 +41,5 @@ export class CandidatoService {
     return this.http.put(`${this.url}/${idCandidato}`, body);
   }
 
+
 }
