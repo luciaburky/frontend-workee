@@ -18,6 +18,10 @@ import { PerfilEmpleadoComponent } from './modulos/empresa/empleados/perfil-empl
 import { PerfilEmpresaComponent } from './modulos/empresa/empresa/perfil-empresa/perfil-empresa.component';
 import { LoginPageComponent } from './modulos/seguridad/Login/login-page/login-page.component';
 import { PerfilCandidatoComponent } from './modulos/Candidato/perfil-candidato/perfil-candidato.component';
+import { BusquedaCandidatosComponent } from './modulos/busqueda/busqueda-candidatos/busqueda-candidatos.component';
+import { DetalleCandidatoComponent } from './modulos/busqueda/busqueda-candidatos/detalle-candidato/detalle-candidato.component';
+import { BusquedaEmpresasComponent } from './modulos/busqueda/busqueda-empresas/busqueda-empresas.component';
+import { DetalleEmpresaComponent } from './modulos/busqueda/busqueda-empresas/detalle-empresa/detalle-empresa.component';
 
 export const routes: Routes = [
     // { path: 'buscar-ofertas', component: BuscarComponent },
@@ -48,4 +52,22 @@ export const routes: Routes = [
     { path: 'empleados/perfil/:idEmpleado', component: PerfilEmpleadoComponent },
     { path: 'login', component: LoginPageComponent },
     { path: 'candidato/perfil/:idCandidato', component: PerfilCandidatoComponent },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    { path: 'buscar-candidatos', component: BusquedaCandidatosComponent },
+    { path: 'buscar-candidatos/detalle/:idCandidato', component: DetalleCandidatoComponent },
+    { path: 'buscar-empresas', component: BusquedaEmpresasComponent },
+    { path: 'buscar-empresas/detalle/:idEmpresa', component: DetalleEmpresaComponent },
 ];
