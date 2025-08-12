@@ -19,6 +19,10 @@ import { PerfilEmpleadoComponent } from './modulos/empresa/empleados/perfil-empl
 import { PerfilEmpresaComponent } from './modulos/empresa/empresa/perfil-empresa/perfil-empresa.component';
 import { LoginPageComponent } from './modulos/seguridad/Login/login-page/login-page.component';
 import { PerfilCandidatoComponent } from './modulos/Candidato/perfil-candidato/perfil-candidato.component';
+import { BusquedaCandidatosComponent } from './modulos/busqueda/busqueda-candidatos/busqueda-candidatos.component';
+import { DetalleCandidatoComponent } from './modulos/busqueda/busqueda-candidatos/detalle-candidato/detalle-candidato.component';
+import { BusquedaEmpresasComponent } from './modulos/busqueda/busqueda-empresas/busqueda-empresas.component';
+import { DetalleEmpresaComponent } from './modulos/busqueda/busqueda-empresas/detalle-empresa/detalle-empresa.component';
 
 import { RegistroEmpresaComponent } from './modulos/seguridad/Registro/Registro Empresa/registro-empresa.component';
 import { RegistroComponent } from './modulos/seguridad/Registro/registro.component';
@@ -57,9 +61,24 @@ export const routes: Routes = [
 
     { path: 'login', component: LoginPageComponent },
     { path: 'candidato/perfil/:idCandidato', component: PerfilCandidatoComponent },
-  
+
+
+
+
     { path: 'registro', component: RegistroComponent},
     { path: 'registro-empresa', component: RegistroEmpresaComponent },
     { path: 'registro-candidato', component: RegistroCandidatoComponent },
-    {path: 'cuentaVerificada', component: ConfirmacionComponent}
+    { path: 'cuentaVerificada', component: ConfirmacionComponent}
+
+
+
+
+
+
+
+
+    { path: 'buscar-candidatos', component: BusquedaCandidatosComponent },
+    { path: 'buscar-candidatos/detalle/:idCandidato', component: DetalleCandidatoComponent },
+    { path: 'buscar-empresas', component: BusquedaEmpresasComponent },
+    { path: 'buscar-empresas/detalle/:idEmpresa', component: DetalleEmpresaComponent },
 ];
