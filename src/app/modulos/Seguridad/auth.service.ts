@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
 import { ConfirmarCuentaResponse } from "./Registro/Confirmacion/confirmar-cuenta-interface";
+import { BehaviorSubject, Observable, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -11,7 +11,7 @@ export class AuthService {
 
     private url = 'http://localhost:9090/auth';
 
-    constructor(private http: HttpClient) {}
+    constructor(private http: HttpClient, ) {}
 
     registrarCandidato(
     nombreCandidato: string,
@@ -77,24 +77,30 @@ export class AuthService {
     return this.http.post(`${this.url}/registroEmpresa`, body);
   }
 
-  login(
-    correo: string,
-    contrasenia: string
-  ) {
-    const body = {
-    correo,
-    contrasenia
-    }
-    return this.http.post(`${this.url}/login`, body);
-  }
+// login(correo: string, contrasenia: string) {
+//   return this.http.post(`${this.url}/login`, {
+//     correo: correo,
+//     contrasenia: contrasenia
+//   });
+// }
+
+login(correo: string, contrasenia: string) {
+  return this.http.post(
+    'http://localhost:9090/auth/login',
+    { correo, contrasenia },
+    { responseType: 'text' } // <--- evita el error de parseo
+  );
+}
+
+
 
 // confirmarcuenta(token: string): Observable<ConfirmarCuentaResponse> {
 //   return this.http.put<ConfirmarCuentaResponse>(`${this.url}/confirmarCuenta?token=${token}`, {});
 // }
 
-confirmarcuenta(token: string) {
-  return this.http.put<ConfirmarCuentaResponse>(
-    `${this.url}/confirmarCuenta?token=${token}`, {}); 
+  confirmarcuenta(token: string) {
+    return this.http.put<ConfirmarCuentaResponse>(
+      `${this.url}/confirmarCuenta?token=${token}`, {}); 
   }
 
 }

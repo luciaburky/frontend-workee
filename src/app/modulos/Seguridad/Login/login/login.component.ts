@@ -4,12 +4,13 @@ import { Form, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validat
 import { Router } from '@angular/router'; 
 import Swal from 'sweetalert2';
 import { AuthService } from '../../auth.service';
+import { SesionService } from '../../../../interceptors/sesion.service';
 
 @Component({
   selector: 'app-login',
   imports: [CommonModule, ReactiveFormsModule, FormsModule],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.css'
+  styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
   loginForm: FormGroup
@@ -19,14 +20,13 @@ export class LoginComponent {
 
   constructor(
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private sesionService: SesionService
   ) {
     this.loginForm = new FormGroup({
       correo: new FormControl('',[Validators.required, Validators.email]),
       contrasenia: new FormControl('',[Validators.required])
     });
-    
-    
   }
 
   enviarDatos(){
@@ -41,19 +41,24 @@ export class LoginComponent {
       });
       return;
     }
-    const correo = this.loginForm.get('correo')?.value;
-    const contrasenia = this.loginForm.get('contrasenia')?.value;
+    const correo = this.loginForm.get('correo')?.value.trim();
+    const contrasenia = this.loginForm.get('contrasenia')?.value.trim();
 
-    this.authService.login(
-      correo,
-      contrasenia
-    ).subscribe({
-      
-    })
+    console.log("Datos que se van a enviar:", { correo, contrasenia });
+
+  this.authService.login(correo, contrasenia).subscribe({
+    next: (token: string) => {
+      this.sesionService.startLocalSession(token);
+      this.router.navigate(['/registro']);
+    },
+    error: () => {
+      console.log('Credenciales inválidas');
+      Swal.fire({ icon: 'error', title: 'Credenciales inválidas' });
+    }
+  }
+);
 
   }
-
-
 
 togglePasswordView() {
 throw new Error('Method not implemented.');
