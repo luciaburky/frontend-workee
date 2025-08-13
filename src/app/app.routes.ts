@@ -68,7 +68,7 @@ export const routes: Routes = [
     { path: 'registro', component: RegistroComponent},
     { path: 'registro-empresa', component: RegistroEmpresaComponent },
     { path: 'registro-candidato', component: RegistroCandidatoComponent },
-    { path: 'cuentaVerificada', component: ConfirmacionComponent}
+    { path: 'cuentaVerificada', component: ConfirmacionComponent},
 
 
 

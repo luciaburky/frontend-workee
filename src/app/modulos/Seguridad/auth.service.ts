@@ -98,10 +98,15 @@ login(correo: string, contrasenia: string) {
 //   return this.http.put<ConfirmarCuentaResponse>(`${this.url}/confirmarCuenta?token=${token}`, {});
 // }
 
-  confirmarcuenta(token: string) {
-    return this.http.put<ConfirmarCuentaResponse>(
-      `${this.url}/confirmarCuenta?token=${token}`, {}); 
-  }
+  // confirmarcuenta(token: string) {
+  //   return this.http.put<ConfirmarCuentaResponse>(
+  //     `${this.url}/confirmarCuenta?token=${token}`, {}); 
+  // }
+
+confirmarcuenta(token: string) {
+  const body = { token };
+  return this.http.put<any>(`${this.url}/confirmarCuenta`, body);
+}
 
 }
 
