@@ -1,22 +1,25 @@
-<!-- <div class="modal fade" id="modalRecuperar" tabindex="-1" aria-labelledby="modalRecuperarLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="modalRecuperarLabel">Recupera tu cuenta</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+<div class="modal-content custom-modal">
+  <div class="modal-header border-0">
+    <h5 class="modal-title w-100 text-center">Recupera tu cuenta</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" (click)="dismissModal()" aria-label="Close"></button>
+  </div>
+  <div class="modal-body">
+    <p class="text-center text-muted mb-4">Introduce tu correo electrónico para recuperar tu contraseña.</p>
+
+    <form [formGroup]="recuperarForm" class="text-center">
+      <div class="mb-3">
+        <label for="emailRecuperacion" class="form-label d-block text-start">Correo electrónico</label>
+        <input 
+          type="email" 
+          id="emailRecuperacion" 
+          formControlName="correo"
+          class="form-control custom-input" 
+          placeholder="ejemplo@gmail.com">
       </div>
-      <div class="modal-body">
-        <form [formGroup]="recuperarForm">
-          <div class="mb-3">
-            <label for="emailRecuperacion" class="form-label">Correo electrónico</label>
-            <input type="email" class="form-control" id="emailRecuperacion" formControlName="correo">
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-primary" (click)="enviarRecuperacion()">Enviar</button>
-      </div>
+    </form>
+
+    <div class="text-center mt-4">
+      <button type="button" class="btn custom-btn" (click)="solicitarRecuperacionContrasenia()">Enviar</button>
     </div>
-  </div>s
-</div> -->
+  </div>
+</div>
