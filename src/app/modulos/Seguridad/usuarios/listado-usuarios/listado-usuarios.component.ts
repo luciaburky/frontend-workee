@@ -16,41 +16,37 @@ import { Rol } from '../rol';
 })
 export class ListadoUsuariosComponent implements OnInit {
   
-  usuarioList: Usuario[] = [{
+  usuarioList: Usuario[] = [
+    {
       id: 1,
       nombreEntidad: "BHP",
-      contraseniaUsuario: "",
       correoUsuario: "bhpadmin@bhp.com",
       rolActualUsuario: "Administrador Empresa"
     },
     {
       id: 2,
       nombreEntidad: "lucia burky",
-      contraseniaUsuario: "",
       correoUsuario: "luciaburky1@gmail.com",
       rolActualUsuario: "Candidato"
     },
     {
       id: 3,
       nombreEntidad: "Maximo costa",
-      contraseniaUsuario: "",
       correoUsuario: "maxicosta@bhp.com",
       rolActualUsuario: "Empleado Empresa"
     },
     {
       id: 5,
       nombreEntidad: "Camila citro",
-      contraseniaUsuario: "",
       correoUsuario: "camicitro@mcdonalds.com",
       rolActualUsuario: "Empleado Empresa"
     },
     {
       id: 4,
       nombreEntidad: "MCdonalds",
-      contraseniaUsuario: "",
       correoUsuario: "mcdonalds@mcdonalds.com",
       rolActualUsuario: "Administrador Empresa"
-    }
+    },
   ];
   usuarioListOriginal: Usuario[] = [];
 

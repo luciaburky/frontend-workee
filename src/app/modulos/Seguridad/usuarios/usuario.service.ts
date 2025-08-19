@@ -12,7 +12,20 @@ export class UsuarioService {
   constructor(private http: HttpClient) {}
 
   findAll(): Observable<Usuario[]> {
+    console.log("intento getear los usuarios")
     return this.http.get<Usuario[]>(this.url);
   }
 
+  findById(idUsuario:number): Observable<Usuario> {
+    return this.http.get<Usuario>(`${this.url}/${idUsuario}`);
+  }
+
+  modificarRol(idUsuario: number, idRol: number): Observable<any> {
+    return this.http.put(`${this.url}/modificarRol/${idUsuario}`, idRol);
+  }
+  
+  eliminarUsuario(idUsuario: number) {
+    return this.http.put(`${this.url}/${idUsuario}`, null);
+  }
+  
 }

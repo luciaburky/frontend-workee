@@ -29,6 +29,8 @@ import { RegistroComponent } from './modulos/seguridad/Registro/registro.compone
 import { RegistroCandidatoComponent } from './modulos/seguridad/Registro/Registro Candidato/registro-candidato.component';
 import { PaginaInicioComponent } from './compartidos/Pagina Incio/pagina-inicio.component';
 import { ConfirmacionComponent } from './modulos/seguridad/Registro/Confirmacion/confirmacion.component';
+import { ListadoUsuariosComponent } from './modulos/seguridad/usuarios/listado-usuarios/listado-usuarios.component';
+import { DetalleUsuarioComponent } from './modulos/seguridad/usuarios/listado-usuarios/detalle-usuario/detalle-usuario.component';
 
 export const routes: Routes = [
     // { path: 'buscar-ofertas', component: BuscarComponent },
@@ -72,7 +74,8 @@ export const routes: Routes = [
 
 
 
-
+    { path: 'usuarios', component: ListadoUsuariosComponent },
+    { path: 'usuarios/detalle/:idUsuario', component: DetalleUsuarioComponent },
 
 
 
