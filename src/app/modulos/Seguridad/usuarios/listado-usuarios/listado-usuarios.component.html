@@ -45,16 +45,16 @@
                 </p>
             </div>
         } @else {
-            <table class="table align-middle">
+            <table class="table align-middle table-hover">
                 <thead>
                     <tr>
                         <th scope="col">USUARIO</th>
                         <th scope="col">CORREO ELECTRÓNICO</th>
-                        <th scope="col">ROL ACTUAL</th>
+                        <th scope="col">ROL</th>
                     </tr>
                 </thead>
+                <tbody>
                 @for (usuario of obtenerUsuariosPaginados(); track $index) {
-                    <tbody>
                         <tr (click)="irADetalle(usuario.id!)" style="cursor: pointer;">
                             <td class="celda-foto-correo">
                                 <!-- <img src="{{ usuario.urlFotoUsuario }}" alt="{{ usuario.nombreEntidad }}"> -->
@@ -68,8 +68,8 @@
                                 {{ usuario.rolActualUsuario }}
                             </td>
                         </tr>
-                    </tbody>
-                }
+                    }
+                </tbody>
             </table>
         }
     </div>

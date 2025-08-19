@@ -48,10 +48,6 @@
   width: 300px;
 }
 
-th {
-    padding-left: 0px;
-}
-
 .buscador-filtro {
     /* margin-bottom: 20px; */
     margin-top: 15px;
@@ -102,20 +98,34 @@ th {
     width: 50px;
     height: 50px;
     object-fit: cover;
-    padding: 4px;
+    margin-right: 8px;
+    /* padding: 4px; */
 }
 
-td {
-    padding: 0;
+/* table {
+  border-collapse: collapse;
 }
 
-.celda-foto-correo {
+thead th {
+  border-bottom: 2px solid #dee2e6;
+}
+
+
+
+td, th {
+  padding: 0.75rem;
+  vertical-align: middle;
+  } */
+/*   
+  tbody tr {
+    border-bottom: 1px solid #dee2e6;
+  } */
+/* .celda-foto-correo {
     display: flex;
     flex-direction: row;
     gap: 12px;
     align-items: center;
-    margin: 0;
-}
+} */
 
 .search-icon {
   position: absolute;
