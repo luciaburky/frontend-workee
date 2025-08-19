@@ -31,6 +31,7 @@ import { PaginaInicioComponent } from './compartidos/Pagina Incio/pagina-inicio.
 import { ConfirmacionComponent } from './modulos/seguridad/Registro/Confirmacion/confirmacion.component';
 import { ListadoUsuariosComponent } from './modulos/seguridad/usuarios/listado-usuarios/listado-usuarios.component';
 import { DetalleUsuarioComponent } from './modulos/seguridad/usuarios/listado-usuarios/detalle-usuario/detalle-usuario.component';
+import { RecuperarContraseniaComponent } from './modulos/seguridad/Recuperacion Contraseña/Recuperar contrasenia/recuperar-contrasenia.component';
 
 export const routes: Routes = [
     // { path: 'buscar-ofertas', component: BuscarComponent },
@@ -84,4 +85,5 @@ export const routes: Routes = [
     { path: 'buscar-candidatos/detalle/:idCandidato', component: DetalleCandidatoComponent },
     { path: 'buscar-empresas', component: BusquedaEmpresasComponent },
     { path: 'buscar-empresas/detalle/:idEmpresa', component: DetalleEmpresaComponent },
+    { path: 'nuevaContrasenia', component: RecuperarContraseniaComponent}
 ];
