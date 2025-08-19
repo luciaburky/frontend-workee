@@ -77,13 +77,6 @@ export class AuthService {
     return this.http.post(`${this.url}/registroEmpresa`, body);
   }
 
-// login(correo: string, contrasenia: string) {
-//   return this.http.post(`${this.url}/login`, {
-//     correo: correo,
-//     contrasenia: contrasenia
-//   });
-// }
-
 login(correo: string, contrasenia: string) {
   return this.http.post(
     'http://localhost:9090/auth/login',
@@ -91,17 +84,6 @@ login(correo: string, contrasenia: string) {
     { responseType: 'text' } // <--- evita el error de parseo
   );
 }
-
-
-
-// confirmarcuenta(token: string): Observable<ConfirmarCuentaResponse> {
-//   return this.http.put<ConfirmarCuentaResponse>(`${this.url}/confirmarCuenta?token=${token}`, {});
-// }
-
-  // confirmarcuenta(token: string) {
-  //   return this.http.put<ConfirmarCuentaResponse>(
-  //     `${this.url}/confirmarCuenta?token=${token}`, {}); 
-  // }
 
 confirmarcuenta(token: string) {
   const body = { token };
@@ -112,6 +94,23 @@ solicitarRecuperarContrasenia(correo: string) {
   const body = { correo };
   return this.http.put(`${this.url}/recuperarContrasenia`, body);
 }
+
+recuperarcontrasenia(
+  token: string,
+  contraseniaNueva: string,
+  repetirContrasenia: string
+) {
+  const body = {
+    contraseniaNueva,
+    repetirContrasenia
+  };
+
+  return this.http.put<any>(
+    `${this.url}/confirmarRecuperacionContrasenia?token=${token}`,
+    { contraseniaNueva, repetirContrasenia }
+  );
+}
+
 
 }
 

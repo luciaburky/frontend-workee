@@ -18,8 +18,29 @@
       </div>
     </form>
 
+
+    @if (seenvio === 0) {
     <div class="text-center mt-4">
       <button type="button" class="btn custom-btn" (click)="solicitarRecuperacionContrasenia()">Enviar</button>
     </div>
+    }
+
+
+  @if (seenvio > 0) {
+    <section *ngIf="mostrarContador">
+      <div class="coming-soon">
+        <div class="time-countdown">
+          <p class="text-center text-muted mb-4">Podrás reenviar el correo en</p>
+          <p class="text-center">{{ minutes }}:{{ seconds | number:'2.0' }}</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="text-center mt-4" *ngIf="!mostrarContador">
+      <button type="button" class="btn custom-btn" (click)="solicitarRecuperacionContrasenia()">Reenviar Correo</button>
+    </div>
+  }
+
+
   </div>
 </div>

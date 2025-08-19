@@ -8,7 +8,7 @@ import { SesionService } from '../../../../interceptors/sesion.service';
 import { Modal } from 'bootstrap';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { ModalService } from '../../../../compartidos/modal/modal.service';
-import { RecuperarContraseniaComponent } from '../../Recuperacion Contraseña/recuperar-contrasenia.component';
+import { RecuperarContraseniaModal } from '../../Recuperacion Contraseña/Modal/recuperar-contrasenia-modal.component';
 //import { RecuperarContraseniaComponent } from '../../Recuperacion Contraseña/recuperar-contrasenia.component';
 
 
@@ -84,7 +84,7 @@ throw new Error('Method not implemented.');
 // }
 
 irRestablecerContrasenia() {
-  this.modalRef = this.modalService.open(RecuperarContraseniaComponent, {
+  this.modalRef = this.modalService.open(RecuperarContraseniaModal, {
     centered: true,
     scrollable: true,
     size: 'lg'
