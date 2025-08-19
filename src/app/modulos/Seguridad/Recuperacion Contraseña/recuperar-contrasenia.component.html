@@ -1,0 +1,25 @@
+<div class="modal-content custom-modal">
+  <div class="modal-header border-0">
+    <h5 class="modal-title w-100 text-center">Recupera tu cuenta</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" (click)="dismissModal()" aria-label="Close"></button>
+  </div>
+  <div class="modal-body">
+    <p class="text-center text-muted mb-4">Introduce tu correo electrónico para recuperar tu contraseña.</p>
+
+    <form [formGroup]="recuperarForm" class="text-center">
+      <div class="mb-3">
+        <label for="emailRecuperacion" class="form-label d-block text-start">Correo electrónico</label>
+        <input 
+          type="email" 
+          id="emailRecuperacion" 
+          formControlName="correo"
+          class="form-control custom-input" 
+          placeholder="ejemplo@gmail.com">
+      </div>
+    </form>
+
+    <div class="text-center mt-4">
+      <button type="button" class="btn custom-btn" (click)="solicitarRecuperacionContrasenia()">Enviar</button>
+    </div>
+  </div>
+</div>

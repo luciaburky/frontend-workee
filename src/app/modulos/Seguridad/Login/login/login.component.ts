@@ -5,6 +5,12 @@ import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { AuthService } from '../../auth.service';
 import { SesionService } from '../../../../interceptors/sesion.service';
+import { Modal } from 'bootstrap';
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { ModalService } from '../../../../compartidos/modal/modal.service';
+import { RecuperarContraseniaComponent } from '../../Recuperacion Contraseña/recuperar-contrasenia.component';
+//import { RecuperarContraseniaComponent } from '../../Recuperacion Contraseña/recuperar-contrasenia.component';
+
 
 @Component({
   selector: 'app-login',
@@ -17,11 +23,13 @@ export class LoginComponent {
   verContrasenia: boolean = false;
   submitForm: boolean = false;
   backendEmailInvalido = false;
+  modalRef?: NgbModalRef;
 
   constructor(
     private router: Router,
     private authService: AuthService,
-    private sesionService: SesionService
+    private sesionService: SesionService,
+    private modalService: ModalService,
   ) {
     this.loginForm = new FormGroup({
       correo: new FormControl('',[Validators.required, Validators.email]),
@@ -63,9 +71,33 @@ export class LoginComponent {
 togglePasswordView() {
 throw new Error('Method not implemented.');
 }
+
+// irRestablecerContrasenia() {
+//   const modalElement = document.getElementById('modalRecuperar');
+
+//    this.modalRef = this.modalService.open(RecuperarContraseniaComponent, {
+//       centered: true,
+//       scrollable: true,
+//       size: 'lg'
+//     });
+
+// }
+
 irRestablecerContrasenia() {
-throw new Error('Method not implemented.');
+  this.modalRef = this.modalService.open(RecuperarContraseniaComponent, {
+    centered: true,
+    scrollable: true,
+    size: 'lg'
+  });
+
+  
 }
+
+
+
+
+
+
 username: any;
 passwordType: any;
 onSubmit() {

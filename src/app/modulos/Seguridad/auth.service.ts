@@ -108,6 +108,11 @@ confirmarcuenta(token: string) {
   return this.http.put<any>(`${this.url}/confirmarCuenta`, body);
 }
 
+solicitarRecuperarContrasenia(correo: string) {
+  const body = { correo };
+  return this.http.put(`${this.url}/recuperarContrasenia`, body);
+}
+
 }
 
 

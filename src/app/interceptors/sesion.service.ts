@@ -59,8 +59,9 @@ export class SesionService {
    * @returns {any}
    */
     getCurrentSesion() {
-    const session = localStorage.getItem('currentSession');
-    return session ? JSON.parse(session) : null;
+    //const session = localStorage.getItem('currentSession');
+    // return session ? JSON.parse(session) : null;
+      return localStorage.getItem('currentSession');
     }
 
   /**
@@ -74,6 +75,8 @@ export class SesionService {
 
   public startLocalSession(token: string) {
   localStorage.setItem('token', token);
+  console.log('Token guardado en localStorage:', token);
+  localStorage.setItem('currentSession', token);
   localStorage.setItem('isLoggedIn', 'true');
   }
 
