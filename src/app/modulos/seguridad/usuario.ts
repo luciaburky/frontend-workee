@@ -5,6 +5,4 @@ export class Usuario {
     fechaHoraAlta?: string;
     fechaHoraBaja?: string | null;
     urlFotoUsuario?: string;
-    rolActualUsuario?: string | null;
-    nombreEntidad?: string | null;
 }

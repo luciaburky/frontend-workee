@@ -3,10 +3,12 @@ import { UsuarioService } from '../usuario.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MultiSelect } from 'primeng/multiselect';
-import { Usuario } from '../../usuario';
 import { Router } from '@angular/router';
 import { RolService } from '../rol.service';
 import { Rol } from '../rol';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
+import { UsuarioListadoDTO } from './usuario-listado-dto';
 
 @Component({
   selector: 'app-listado-usuarios',
@@ -16,39 +18,8 @@ import { Rol } from '../rol';
 })
 export class ListadoUsuariosComponent implements OnInit {
   
-  usuarioList: Usuario[] = [
-    {
-      id: 1,
-      nombreEntidad: "BHP",
-      correoUsuario: "bhpadmin@bhp.com",
-      rolActualUsuario: "Administrador Empresa"
-    },
-    {
-      id: 2,
-      nombreEntidad: "lucia burky",
-      correoUsuario: "luciaburky1@gmail.com",
-      rolActualUsuario: "Candidato"
-    },
-    {
-      id: 3,
-      nombreEntidad: "Maximo costa",
-      correoUsuario: "maxicosta@bhp.com",
-      rolActualUsuario: "Empleado Empresa"
-    },
-    {
-      id: 5,
-      nombreEntidad: "Camila citro",
-      correoUsuario: "camicitro@mcdonalds.com",
-      rolActualUsuario: "Empleado Empresa"
-    },
-    {
-      id: 4,
-      nombreEntidad: "MCdonalds",
-      correoUsuario: "mcdonalds@mcdonalds.com",
-      rolActualUsuario: "Administrador Empresa"
-    },
-  ];
-  usuarioListOriginal: Usuario[] = [];
+  usuarioList: UsuarioListadoDTO[] = [];
+  usuarioListOriginal: UsuarioListadoDTO[] = [];
 
   texto: string = '';
 
@@ -65,9 +36,10 @@ export class ListadoUsuariosComponent implements OnInit {
   ) {}
   
   ngOnInit(): void {
-    // this.usuarioService.findAll().subscribe(data => {
-    //   this.usuarioListOriginal = data;
-    // })
+    this.usuarioService.findAll().subscribe(data => {
+      this.usuarioListOriginal = data;
+      this.usuarioList = [...data];
+    })
 
     this.rolService.findAll().subscribe(data => {
       this.filtrosRol = data;
@@ -96,6 +68,63 @@ export class ListadoUsuariosComponent implements OnInit {
     console.log("detalle de usuario: ", idUsuario);
     this.router.navigate([`usuarios/detalle`,idUsuario]);
   }
+
+  descargarPDF() {
+    const doc = new jsPDF();
+    const img = new Image();
+    img.src = "assets/logoo.png";
+
+    img.onload = () => {
+      doc.addImage(img, 'PNG', 14, 10, 30, 15);
+
+      doc.setFontSize(16);
+      doc.setFont("helvetica", "bold");
+      doc.text('Listado de usuarios del sistema', 105, 30, { align: "center" });
+
+      doc.setFontSize(11);
+      doc.setFont("helvetica", "normal");
+
+      const usuarioExportador = "?????????????????"; 
+      const fechaExportacion = new Date().toLocaleDateString("es-AR");
+
+      let filtroAplicado = "-";
+      if (this.filtrosSeleccionadosRoles.length > 0) {
+        const rolesNombres = this.filtrosRol
+          .filter(r => this.filtrosSeleccionadosRoles.includes(r.id))
+          .map(r => r.nombreRol)
+          .join(", ");
+        filtroAplicado = rolesNombres;
+      }
+
+      doc.text(`Exportado por: ${usuarioExportador}`, 14, 45);
+      doc.text(`Fecha de exportación: ${fechaExportacion}`, 14, 52);
+      doc.text(`Filtro Aplicado: ${filtroAplicado}`, 14, 59);
+
+      autoTable(doc, {
+        startY: 70,
+        head: [['USUARIO', 'ROL ACTUAL']],
+        body: this.usuarioList.map(u => [
+          u.correoUsuario ?? '',
+          u.rolActualusuario ?? ''
+        ]),
+        styles: {
+          fontSize: 10,
+          halign: 'left',
+          valign: 'middle'
+        },
+        headStyles: {
+          fillColor: [230, 235, 255],
+          textColor: 20,
+          fontStyle: 'bold'
+        },
+        alternateRowStyles: {
+          fillColor: [245, 245, 245]
+        }
+      });
+
+      doc.save('usuarios.pdf');
+    };
+  }
   
   // Para paginacion
   get totalPaginas(): number {
@@ -106,7 +135,7 @@ export class ListadoUsuariosComponent implements OnInit {
     return Array.from({ length: this.totalPaginas }, (_, i) => i + 1);
   }
 
-  obtenerUsuariosPaginados(): Usuario[] {
+  obtenerUsuariosPaginados(): UsuarioListadoDTO[] {
     const inicio = (this.paginaActual - 1) * this.elementosPorPagina;
     const fin = inicio + this.elementosPorPagina;
     return this.usuarioList.slice(inicio, fin);

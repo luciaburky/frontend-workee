@@ -6,6 +6,7 @@ import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { ModalService } from '../../../../../compartidos/modal/modal.service';
 import { ModificarRolUsuarioComponent } from './modificar-rol-usuario/modificar-rol-usuario.component';
 import Swal from 'sweetalert2';
+import { UsuarioListadoDTO } from '../usuario-listado-dto';
 
 @Component({
   selector: 'app-detalle-usuario',
@@ -16,12 +17,7 @@ import Swal from 'sweetalert2';
 export class DetalleUsuarioComponent implements OnInit {
   
   idUsuario!: number;
-  // usuario: Usuario = {};
-  usuario: Usuario = {
-    nombreEntidad: "Camila Citro",
-    rolActualUsuario: "Empleado Empresa",
-    correoUsuario: "camicitro@mcdonalds.com",
-  };
+  usuario: UsuarioListadoDTO = {};
   modalRef?: NgbModalRef;
 
   constructor(
@@ -39,9 +35,9 @@ export class DetalleUsuarioComponent implements OnInit {
     // se saca esta logica fuera del ngOnInit para reutilizarla cuando se vuelve del detalle
     this.idUsuario = Number(this.route.snapshot.paramMap.get('idUsuario'));
     console.log(this.idUsuario)
-    // this.usuarioService.findById(this.idUsuario).subscribe(data => {
-    //   this.usuario = data;
-    // })
+    this.usuarioService.findById(this.idUsuario).subscribe(data => {
+      this.usuario = data;
+    })
   }
 
   volverAListado() {
@@ -95,8 +91,9 @@ export class DetalleUsuarioComponent implements OnInit {
 
   modificarRol() {
     this.modalRef = this.modalService.open(ModificarRolUsuarioComponent, {
-      centered: true,
+      centered: false,
     });
+    this.modalRef.componentInstance.idUsuario = this.usuario.idUsuario;
     this.modalRef.componentInstance.usuario = this.usuario;
     this.modalRef.closed.subscribe((result) => {
       if (result === 'rolModificado') {

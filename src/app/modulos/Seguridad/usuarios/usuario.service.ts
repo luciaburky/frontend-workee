@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Usuario } from '../usuario';
+import { UsuarioListadoDTO } from './listado-usuarios/usuario-listado-dto';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,7 @@ export class UsuarioService {
   
   constructor(private http: HttpClient) {}
 
-  findAll(): Observable<Usuario[]> {
+  findAll(): Observable<UsuarioListadoDTO[]> {
     console.log("intento getear los usuarios")
     return this.http.get<Usuario[]>(this.url);
   }
@@ -21,7 +22,13 @@ export class UsuarioService {
   }
 
   modificarRol(idUsuario: number, idRol: number): Observable<any> {
-    return this.http.put(`${this.url}/modificarRol/${idUsuario}`, idRol);
+    console.log("entre al service de usuario y al metodo de modificar, el usuario es el ", idUsuario, " id de rol: ", idRol)
+    return this.http.put(
+      `${this.url}/modificarRol/${idUsuario}`, 
+      idRol,  // Angular lo serializa como JSON: 1
+      { headers: { 'Content-Type': 'application/json' } }
+    );
+    // return this.http.put(`${this.url}/modificarRol/${idUsuario}`, idRol);
   }
   
   eliminarUsuario(idUsuario: number) {

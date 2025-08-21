@@ -30,12 +30,12 @@
                 [panelStyle]="{ 'background': '#fff' }"
                 [(ngModel)]="filtrosSeleccionadosRoles">
             </p-multiselect>
-            <button class="boton descargar">
+            <button class="boton descargar" (click)="descargarPDF()" title="Descargar PDF con listado de usuarios">
                 <span class="material-symbols-outlined">vertical_align_bottom</span>
                 Descargar PDF
             </button>
         </div>
-    </div>   
+    </div>
     <div class="listado-contenido row row-cols-1 row-cols-md-2 g-4">
         @if (usuarioList.length === 0) {
             <div class="sin-resultados">
@@ -55,7 +55,7 @@
                 </thead>
                 <tbody>
                 @for (usuario of obtenerUsuariosPaginados(); track $index) {
-                        <tr (click)="irADetalle(usuario.id!)" style="cursor: pointer;">
+                        <tr (click)="irADetalle(usuario.idUsuario!)" style="cursor: pointer;">
                             <td class="celda-foto-correo">
                                 <!-- <img src="{{ usuario.urlFotoUsuario }}" alt="{{ usuario.nombreEntidad }}"> -->
                                 <img class="foto-usuario" src="../../../../../assets/img/foto-perfil.png" alt="{{ usuario.nombreEntidad }}">
@@ -65,7 +65,7 @@
                                 {{ usuario.correoUsuario }}
                             </td>
                             <td> 
-                                {{ usuario.rolActualUsuario }}
+                                {{ usuario.rolActualusuario }}
                             </td>
                         </tr>
                     }

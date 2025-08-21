@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { AuthService } from '../../auth.service';
 import { SesionService } from '../../../../interceptors/sesion.service';
-import { Modal } from 'bootstrap';
+// import { Modal } from 'bootstrap';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { ModalService } from '../../../../compartidos/modal/modal.service';
 import { RecuperarContraseniaModal } from '../../Recuperacion Contraseña/Modal/recuperar-contrasenia-modal.component';
