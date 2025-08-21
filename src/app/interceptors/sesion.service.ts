@@ -1,86 +1,83 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, Observable, Subject } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { Observable, Subject, catchError, tap } from 'rxjs';
+import { StorageService } from './stoage.service';
 
-@Injectable({
-  providedIn: 'root'
-})
-
+@Injectable({ providedIn: 'root' })
 export class SesionService {
-
-  redirectUrl: string;
+  redirectUrl: string = '';
 
   // Log In Event dispatcher
   private announceSource = new Subject<string>();
-
   // For login subscribers.
   announced$ = this.announceSource.asObservable();
 
   private endpointURL = 'http://localhost:9090/auth';
 
-  constructor(private http: HttpClient) {
-    this.redirectUrl = '';
-  }
+  constructor(
+    private http: HttpClient,
+    private storage: StorageService,
+  ) {}
 
-  
   /**
    * POST existing token and invalidates it on the server for no further usage.
-   * @returns {Observable<any>}
    */
   logout(): Observable<any> {
     const options = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json'
-      })
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' })
     };
 
-    return this.http.post(this.endpointURL + '/logout', null, options).pipe(
-      tap((_) => this.clearLocalSession()),
+    return this.http.post(`${this.endpointURL}/logout`, null, options).pipe(
+      tap(() => this.clearLocalSession()),
       catchError((error) => {
         console.error('Falló el logout', error);
         throw error;
-        })
+      })
     );
   }
 
   /**
    * Clear all the session data stored in the browser and notifies session listening components.
    */
-  clearLocalSession() {
-    localStorage.clear();
-    sessionStorage.clear();
-    localStorage.setItem('isLoggedIn', 'false');
-    
+  clearLocalSession(): void {
+    // Limpia local y session storage de forma SSR-safe
+    this.storage.clearAll();
+    // Después de limpiar todo, seteamos el flag (si estamos en browser esto persiste)
+    this.storage.setItem('isLoggedIn', 'false');
+    // Si tenés listeners de sesión, podrías emitir algo:
+    this.announceSource.next('logout');
   }
 
   /**
    * Returns the local stored session obtained by the last "login" action.
-   * @returns {any}
    */
-    getCurrentSesion() {
-    //const session = localStorage.getItem('currentSession');
-    // return session ? JSON.parse(session) : null;
-      return localStorage.getItem('currentSession');
-    }
+  getCurrentSesion(): string | null {
+    // En tu código guardás el token en currentSession (string). Si fuera JSON, acá lo parseás.
+    return this.storage.getItem('currentSession');
+  }
 
   /**
    * Return the local stored session state obtained by the last "login" action.
-   * @returns {boolean}
    */
   isLoggedIn(): boolean {
-    return localStorage.getItem('isLoggedIn') === 'true';
+    return this.storage.getItem('isLoggedIn') === 'true';
   }
 
-
-  public startLocalSession(token: string) {
-  localStorage.setItem('token', token);
-  console.log('Token guardado en localStorage:', token);
-  localStorage.setItem('currentSession', token);
-  localStorage.setItem('isLoggedIn', 'true');
+  /**
+   * Start local session persisting token and session flags
+   */
+  startLocalSession(token: string): void {
+    this.storage.setItem('token', token);
+    this.storage.setItem('currentSession', token);
+    this.storage.setItem('isLoggedIn', 'true');
+    // Podés notificar a subscriptores que hay login:
+    this.announceSource.next('login');
   }
 
-getToken(): string | null {
-  return localStorage.getItem('token');
-}
+  /**
+   * Read token (SSR-safe)
+   */
+  getToken(): string | null {
+    return this.storage.getItem('token');
+  }
 }
