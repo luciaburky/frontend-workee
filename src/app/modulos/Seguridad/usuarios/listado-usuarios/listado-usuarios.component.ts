@@ -5,7 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MultiSelect } from 'primeng/multiselect';
 import { Router } from '@angular/router';
 import { RolService } from '../rol.service';
-import { Rol } from '../rol';
+import { Rol } from '../../rol';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { UsuarioListadoDTO } from './usuario-listado-dto';

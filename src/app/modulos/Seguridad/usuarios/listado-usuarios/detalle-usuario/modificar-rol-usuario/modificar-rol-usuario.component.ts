@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import Swal from 'sweetalert2';
 import { RolService } from '../../../rol.service';
-import { Rol } from '../../../rol';
+import { Rol } from '../../../../rol';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { ModalService } from '../../../../../../compartidos/modal/modal.service';
