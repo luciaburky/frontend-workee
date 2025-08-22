@@ -19,4 +19,23 @@ export class RolService {
     return this.http.get<Rol[]>(`${this.url}/porCategoria/${idCategoria}`);
   }
 
+  crearrol(
+    nombreRol: string,
+    idCategoria: number,
+    idPermisos: number[]
+  ){
+    const body = {
+      nombreRol,
+      idCategoria,
+      idPermisos
+    };
+    return this.http.post(`${this.url}`, body);
+
+  }
+
+  modificarRol(idRol: number): Observable<Rol> {
+    return this.http.get<Rol>(`${this.url}/${idRol}`);
+  }
+
+  bajarol(){}
 }
