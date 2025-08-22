@@ -32,6 +32,7 @@ import { ConfirmacionComponent } from './modulos/seguridad/Registro/Confirmacion
 import { ListadoUsuariosComponent } from './modulos/seguridad/usuarios/listado-usuarios/listado-usuarios.component';
 import { DetalleUsuarioComponent } from './modulos/seguridad/usuarios/listado-usuarios/detalle-usuario/detalle-usuario.component';
 import { RecuperarContraseniaComponent } from './modulos/seguridad/Recuperacion Contraseña/Recuperar contrasenia/recuperar-contrasenia.component';
+import { GestionderolesComponent } from './modulos/seguridad/Gestion de roles/GDR Componente/gestion-de-roles.component';
 
 export const routes: Routes = [
     // { path: 'buscar-ofertas', component: BuscarComponent },
@@ -85,5 +86,6 @@ export const routes: Routes = [
     { path: 'buscar-candidatos/detalle/:idCandidato', component: DetalleCandidatoComponent },
     { path: 'buscar-empresas', component: BusquedaEmpresasComponent },
     { path: 'buscar-empresas/detalle/:idEmpresa', component: DetalleEmpresaComponent },
-    { path: 'nuevaContrasenia', component: RecuperarContraseniaComponent}
+    { path: 'nuevaContrasenia', component: RecuperarContraseniaComponent},
+    { path: 'gestion-de-roles', component: GestionderolesComponent}
 ];
