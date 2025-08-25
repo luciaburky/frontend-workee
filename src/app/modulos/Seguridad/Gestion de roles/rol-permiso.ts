@@ -1,3 +1,4 @@
+import { Categoria } from "../categoria";
 import { Rol } from "../rol";
 
 export class permisoRol {

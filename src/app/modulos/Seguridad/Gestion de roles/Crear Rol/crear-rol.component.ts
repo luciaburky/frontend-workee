@@ -12,6 +12,7 @@ import { PermisoService } from '../permiso.service';
 import Swal from 'sweetalert2';
 import { CategoriaService } from '../categoria.service';
 import { Categoria } from '../../categoria';
+import { Console } from 'console';
 
 @Component({
   selector: 'app-crear-rol',
@@ -28,7 +29,9 @@ export class CrearRolComponent {
   permisos: permisoRol[] = [];
   rol:any = {};
   categorias: Categoria [] = [];
+  categoriaSeleccionada?: Categoria;
 
+  permisoDeCategoria: permiso[]=[];
   permisosDisponibles: permiso[] = [];             // permisos según la categoría seleccionada
   permisosSeleccionadosID: number[] = [];          // ids elegidos por el usuario
 
@@ -49,13 +52,6 @@ export class CrearRolComponent {
   }
 
   ngOnInit(){
-    const cat = this.RolForm.get('categoriaRol')?.value; console.log(cat?.id);
-    this.permisoService.permisosdeunaCategoria(cat?.id).subscribe({
-      next: (permisos) => this.todosPermisos = permisos,
-      error: (err) => console.error('Error al obtener permisos', err)
-    });
-
-    this.permisos = [];
 
     this.categoriaService.findAll().subscribe({
       next: (data) => {
@@ -72,17 +68,22 @@ export class CrearRolComponent {
   }
 
   isCampoInvalido(): boolean {
-    const control = this.RolForm.get('estado');
+    const control = this.RolForm.get('nombreRol');
     return !!(control?.hasError('required') && (control?.touched || this.submitForm));
   }
 
+
   enviarDatos(){
+    console.log(`funciono`)
+    console.log('Datos del formulario:', this.RolForm.value);
     if (this.RolForm.invalid) {
       this.RolForm.markAllAsTouched();
+      console.log(`entro al if`)
       return;
     }
     const nombrerol = this.RolForm.get('nombreRol')?.value;
     const categoriarol = this.RolForm.get('categoriaRol')?.value;
+    console.log(nombrerol)
     
     this.RolService.crearrol(
       nombrerol,
@@ -90,6 +91,7 @@ export class CrearRolComponent {
       this.permisosSeleccionadosID
     ).subscribe({
           next: () => {
+            console.log(nombrerol,categoriarol,this.permisosSeleccionadosID)
             this.recargarService.emitirRecarga();
             this.submitForm = true;
             this.dismissModal();
@@ -98,7 +100,7 @@ export class CrearRolComponent {
               toast: true,
               position: "top-end",
               icon: "success",
-              title: "El estado de búsqueda laboral se creó correctamente",
+              title: "El Rol se creó correctamente",
               timer: 3000,
               showConfirmButton: false,
             })
@@ -127,9 +129,37 @@ export class CrearRolComponent {
           });
   }
 
+    buscarpermisosSegunCategoria(){
+    const cat = this.RolForm.get('categoriaRol')?.value; console.log(cat?.id);
+    this.permisoService.permisosdeunaCategoria(cat?.id).subscribe({
+      next: (permisos) =>{
+        this.todosPermisos = permisos
+        console.log(permisos)
+      } ,
+      
+      error: (err) => console.error('Error al obtener permisos', err)
+    });
+
+    this.permisos = [];
+    }
+
+    mandarPermisosSeleccionados(){
+      this.permisosSeleccionadosID = []
+    }
+
+
 
   compararCategoria = (r1: Categoria, r2: Categoria) => r1 && r2 ? r1.id === r2.id : r1 === r2;
   compararPermiso = (r1: permiso, r2: permiso) => r1 && r2 ? r1.id === r2.id : r1 === r2;
 
-  onPermisoChange(event: any, idPermiso: number) { if (event.target.checked) { this.permisosSeleccionadosID.push(idPermiso); } else { this.permisosSeleccionadosID = this.permisosSeleccionadosID.filter(id => id !== idPermiso); } }
+  onPermisoChange(event: any, idPermiso: number) {
+    if (event.target.checked) {
+      this.permisosSeleccionadosID.push(idPermiso); 
+    } else { 
+      this.permisosSeleccionadosID = this.permisosSeleccionadosID.filter(id => id !== idPermiso); 
+    }
+    console.log(this.permisosSeleccionadosID)
+  }
+
+
 }
