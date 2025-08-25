@@ -33,6 +33,7 @@ import { ListadoUsuariosComponent } from './modulos/seguridad/usuarios/listado-u
 import { DetalleUsuarioComponent } from './modulos/seguridad/usuarios/listado-usuarios/detalle-usuario/detalle-usuario.component';
 import { RecuperarContraseniaComponent } from './modulos/seguridad/Recuperacion Contraseña/Recuperar contrasenia/recuperar-contrasenia.component';
 import { GestionderolesComponent } from './modulos/seguridad/Gestion de roles/GDR Componente/gestion-de-roles.component';
+import { HabilitacionEmpresasComponent } from './modulos/seguridad/habilitacion-empresas/habilitacion-empresas.component';
 
 export const routes: Routes = [
     // { path: 'buscar-ofertas', component: BuscarComponent },
@@ -78,6 +79,7 @@ export const routes: Routes = [
 
     { path: 'usuarios', component: ListadoUsuariosComponent },
     { path: 'usuarios/detalle/:idUsuario', component: DetalleUsuarioComponent },
+    { path: 'habilitaciones', component: HabilitacionEmpresasComponent },
 
 
 
