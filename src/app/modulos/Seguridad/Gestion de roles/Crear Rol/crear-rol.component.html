@@ -6,15 +6,12 @@
     <div class="modal-body">
       <form [formGroup]="RolForm">
         <div class="mb-3">
-          <label>Categoria</label>
-            <select 
-              class="form-select" 
-              formControlName="categoriaRol" 
-              [compareWith]="compararCategoria"
-              (change)="buscarpermisosSegunCategoria()"
-              >
-              @for (categoria of categorias; track categoria.nombreCategoriaRol) {
-                  <option [ngValue]="categoria">{{ categoria.nombreCategoriaRol }}</option>
+            <label>Categoria</label>
+            <select class="form-select" 
+                    formControlName="categoriaRol"
+                    (change)="buscarpermisosSegunCategoria()">
+              @for (categoria of categorias; track categoria.id) {
+                <option [ngValue]="categoria.id">{{ categoria.nombreCategoriaRol }}</option>
               }
             </select>
         </div>
@@ -34,56 +31,22 @@
               </div>
           }
         </div>
-        <!-- <div class="mb-3">
-          <label>Permisos</label>
-          <select class="form-select" formControlName="permisosRol" [compareWith]="compararPermiso">
-            @for (permiso of todosPermisos; track permiso.nombrePermiso) {
-                <option [ngValue]="permisos">{{ permiso.nombrePermiso }}</option>
-            }
-          </select>
-        </div> -->
-        <!-- <div class="mb-3">
-          <label>Permisos</label>
-          <div *ngFor="let permiso of todosPermisos">
-            <input 
-              class="form-check-input"
-              type="checkbox"
-              [id]="'permiso' + permiso.id"
-              [value]="permiso.id"
-              (change)="onPermisoChange($event, permiso.id!)">
-            <label class="form-check-label" [for]="'permiso' + permiso.id">
-              {{ permiso.nombrePermiso }}
-            </label>
-          </div>
-        </div> -->
         <div class="mb-3">
-        <label>Permisos</label>
-        <div class="permisos-container">
-          <div *ngFor="let permiso of todosPermisos">
-            <input 
-              class="form-check-input"
-              type="checkbox"
-              [id]="'permiso' + permiso.id"
-              [value]="permiso.id"
-              (change)="onPermisoChange($event, permiso.id!)">
-            <label class="form-check-label" [for]="'permiso' + permiso.id">
-              {{ permiso.nombrePermiso }}
-            </label>
+          <label>Permisos</label>
+          <div class="permisos-container">
+            <div *ngFor="let permiso of todosPermisos">
+              <input 
+                class="form-check-input"
+                type="checkbox"
+                [id]="'permiso' + permiso.id"
+                [value]="permiso.id"
+                (change)="onPermisoChange($event, permiso.id!)">   <!-- ✅ -->
+              <label class="form-check-label" [for]="'permiso' + permiso.id">
+                {{ permiso.nombrePermiso }}
+              </label>
+            </div>
           </div>
         </div>
-      </div>
-
-      <!-- <div class="mb-3">
-        <label for="permisosRol" class="p-0 my-0 mb-2">Permisos <span class="required">*</span></label>
-        <select 
-            class="form-check-input"
-            type="checkbox"
-            [id]="'permiso' + todosPermisos.values"
-            [value]="todosPermisos.values"
-            formControlName="permisosRol" 
-        >
-        </select>
-      </div> -->
      </form>
     <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="dismissModal()">

@@ -30,8 +30,11 @@ export class RolService {
       idPermisos
     };
     return this.http.post(`${this.url}`, body);
+    
 
   }
+
+  
 
   modificarRol(idRol: number): Observable<Rol> {
     return this.http.get<Rol>(`${this.url}/${idRol}`);
