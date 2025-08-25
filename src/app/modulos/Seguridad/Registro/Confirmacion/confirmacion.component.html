@@ -1,41 +1,33 @@
 <div class="confirmation-container">
-    @if (estado === 'exito') {
-        <div class="card" >
-            <span class="material-symbols-rounded icon success">check_circle</span>
-            <p>¡Tu cuenta ha sido verificada exitosamente! Ya podés iniciar sesión en Workee.</p>
-            <a href="/login" class="btn">Ir al login</a>
-        </div>
-    } @else {
+    @if (clickear === 0) {
         <div class="card">
-            <span class="material-symbols-rounded icon error">error</span>
-            <p>Ocurrió un error al verificar tu cuenta. El enlace podría ser inválido o haber expirado.</p>
-            <a href="/login" class="btn">Ir al login</a>
+            <span class="material-symbols-rounded icon info">person_add</span>
+            <h1>Confirma tu cuenta</h1>
+            <p>Haz clic en el botón para activar tu cuenta y comenzar a usar Workee.</p>
+            <button 
+                type="button" 
+                class="btn btn-primary boton-registro" 
+                (click)="confirmarcuenta()">
+                Confirmar Cuenta
+            </button>
         </div>
     }
-  </div>
 
-  <!-- <div class="confirmation-container">
-    @if (estado === 'exito') {
-        <div class="card">
-            <span class="material-symbols-rounded icon success">check_circle</span>
-            <p>¡Tu cuenta ha sido verificada exitosamente! Ya podés iniciar sesión en Workee.</p>
+    @if (estado === 'habilitado') {
+        <div class="card success">
+            <span class="material-symbols-outlined icon">check_circle</span>
+            <h1>¡Cuenta verificada!</h1>
+            <p>Ya podés iniciar sesión en Workee y comenzar a usar todas las funciones.</p>
             <a href="/login" class="btn">Ir al login</a>
-        </div>
-    } @else if (estado === 'usado') {
-        <div class="card">
-            <span class="material-symbols-rounded icon error">error</span>
-            <p>El token ya fue utilizado anteriormente</p>
-            <a href="/login" class="btn">Ir al login</a>
-        </div>
-    } @else if (estado === 'error') {
-        <div class="card">
-            <span class="material-symbols-rounded icon error">error</span>
-            <p>Ocurrió un error al verificar tu cuenta. El enlace podría ser inválido o haber expirado.</p>
-            <a href="/login" class="btn">Ir al login</a>
-        </div>
-    } @else {
-        <div class="card">
-            <p>Verificando tu cuenta...</p>
         </div>
     }
-</div> -->
+
+    @if (estado === 'error') {
+        <div class="card error">
+            <span class="material-symbols-outlined icon">error</span>
+            <h1>Ocurrió un error</h1>
+            <p>El enlace podría ser inválido o haber expirado. Si pensas que es un problema ¡Contactanos!.</p>
+            <a href="/login" class="btn">Ir al login</a>
+        </div>
+    }
+</div>

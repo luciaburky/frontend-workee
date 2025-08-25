@@ -1,0 +1,20 @@
+.permisos-container {
+border: 1px solid #ccc;
+padding: 10px;
+height: 200px; /* Adjust this value as needed */
+overflow-y: scroll;
+}
+
+.permisos-container .permiso-item {
+display: flex;
+align-items: center;
+margin-bottom: 5px;
+}
+
+.permisos-container .form-check-input {
+margin-right: 5px;
+}
+
+.permisos-container .form-check-label {
+margin-bottom: 0; /* Override default margin for better vertical alignment */
+}

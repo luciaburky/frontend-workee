@@ -29,6 +29,11 @@ import { RegistroComponent } from './modulos/seguridad/Registro/registro.compone
 import { RegistroCandidatoComponent } from './modulos/seguridad/Registro/Registro Candidato/registro-candidato.component';
 import { PaginaInicioComponent } from './compartidos/Pagina Incio/pagina-inicio.component';
 import { ConfirmacionComponent } from './modulos/seguridad/Registro/Confirmacion/confirmacion.component';
+import { ListadoUsuariosComponent } from './modulos/seguridad/usuarios/listado-usuarios/listado-usuarios.component';
+import { DetalleUsuarioComponent } from './modulos/seguridad/usuarios/listado-usuarios/detalle-usuario/detalle-usuario.component';
+import { RecuperarContraseniaComponent } from './modulos/seguridad/Recuperacion Contraseña/Recuperar contrasenia/recuperar-contrasenia.component';
+import { GestionderolesComponent } from './modulos/seguridad/Gestion de roles/GDR Componente/gestion-de-roles.component';
+import { HabilitacionEmpresasComponent } from './modulos/seguridad/habilitacion-empresas/habilitacion-empresas.component';
 
 export const routes: Routes = [
     // { path: 'buscar-ofertas', component: BuscarComponent },
@@ -68,11 +73,13 @@ export const routes: Routes = [
     { path: 'registro', component: RegistroComponent},
     { path: 'registro-empresa', component: RegistroEmpresaComponent },
     { path: 'registro-candidato', component: RegistroCandidatoComponent },
-    { path: 'cuentaVerificada', component: ConfirmacionComponent}
+    { path: 'cuentaVerificada', component: ConfirmacionComponent},
 
 
 
-
+    { path: 'usuarios', component: ListadoUsuariosComponent },
+    { path: 'usuarios/detalle/:idUsuario', component: DetalleUsuarioComponent },
+    { path: 'habilitaciones', component: HabilitacionEmpresasComponent },
 
 
 
@@ -81,4 +88,6 @@ export const routes: Routes = [
     { path: 'buscar-candidatos/detalle/:idCandidato', component: DetalleCandidatoComponent },
     { path: 'buscar-empresas', component: BusquedaEmpresasComponent },
     { path: 'buscar-empresas/detalle/:idEmpresa', component: DetalleEmpresaComponent },
+    { path: 'nuevaContrasenia', component: RecuperarContraseniaComponent},
+    { path: 'gestion-de-roles', component: GestionderolesComponent}
 ];

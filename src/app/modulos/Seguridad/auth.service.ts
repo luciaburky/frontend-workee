@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
 import { ConfirmarCuentaResponse } from "./Registro/Confirmacion/confirmar-cuenta-interface";
+import { BehaviorSubject, Observable, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -11,7 +11,7 @@ export class AuthService {
 
     private url = 'http://localhost:9090/auth';
 
-    constructor(private http: HttpClient) {}
+    constructor(private http: HttpClient, ) {}
 
     registrarCandidato(
     nombreCandidato: string,
@@ -77,25 +77,40 @@ export class AuthService {
     return this.http.post(`${this.url}/registroEmpresa`, body);
   }
 
-  login(
-    correo: string,
-    contrasenia: string
-  ) {
-    const body = {
-    correo,
-    contrasenia
-    }
-    return this.http.post(`${this.url}/login`, body);
-  }
-
-// confirmarcuenta(token: string): Observable<ConfirmarCuentaResponse> {
-//   return this.http.put<ConfirmarCuentaResponse>(`${this.url}/confirmarCuenta?token=${token}`, {});
-// }
+login(correo: string, contrasenia: string) {
+  return this.http.post(
+    'http://localhost:9090/auth/login',
+    { correo, contrasenia },
+    { responseType: 'text' } // <--- evita el error de parseo
+  );
+}
 
 confirmarcuenta(token: string) {
-  return this.http.put<ConfirmarCuentaResponse>(
-    `${this.url}/confirmarCuenta?token=${token}`, {}); 
-  }
+  const body = { token };
+  return this.http.put<any>(`${this.url}/confirmarCuenta`, body);
+}
+
+solicitarRecuperarContrasenia(correo: string) {
+  const body = { correo };
+  return this.http.put(`${this.url}/recuperarContrasenia`, body);
+}
+
+recuperarcontrasenia(
+  token: string,
+  contraseniaNueva: string,
+  repetirContrasenia: string
+) {
+  const body = {
+    contraseniaNueva,
+    repetirContrasenia
+  };
+
+  return this.http.put<any>(
+    `${this.url}/confirmarRecuperacionContrasenia?token=${token}`,
+    { contraseniaNueva, repetirContrasenia }
+  );
+}
+
 
 }
 
