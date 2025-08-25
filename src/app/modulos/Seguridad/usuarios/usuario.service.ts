@@ -14,7 +14,7 @@ export class UsuarioService {
 
   findAll(): Observable<UsuarioListadoDTO[]> {
     console.log("intento getear los usuarios")
-    return this.http.get<Usuario[]>(this.url);
+    return this.http.get<UsuarioListadoDTO[]>(this.url);
   }
 
   findById(idUsuario:number): Observable<Usuario> {
@@ -32,7 +32,18 @@ export class UsuarioService {
   }
   
   eliminarUsuario(idUsuario: number) {
-    return this.http.put(`${this.url}/${idUsuario}`, null);
+    console.log("intento eliminar el usuario con id: ", idUsuario)
+    // return this.http.delete(`${this.url}/${idUsuario}`);
+    return this.http.delete(`http://localhost:9090/usuarios/${idUsuario}`, { responseType: 'text' });
+  }
+  
+  filtrarUsuarios(idsRoles: number[] | null): Observable<UsuarioListadoDTO[]> {
+    console.log("geteo usuarios con rol: ", idsRoles);
+    const body = {
+      "idsRol": idsRoles
+    }
+    console.log("este es el body que voy a mandar en la request: ", body)
+    return this.http.put<UsuarioListadoDTO[]>(`${this.url}/porRol`, body);
   }
   
 }

@@ -1,14 +1,14 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import Swal from 'sweetalert2';
 import { RolService } from '../../../rol.service';
 import { Rol } from '../../../../rol';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { ModalService } from '../../../../../../compartidos/modal/modal.service';
-import { Usuario } from '../../../../usuario';
 import { UsuarioService } from '../../../usuario.service';
 import { UsuarioListadoDTO } from '../../usuario-listado-dto';
+
 
 @Component({
   selector: 'app-modificar-rol-usuario',
@@ -17,12 +17,17 @@ import { UsuarioListadoDTO } from '../../usuario-listado-dto';
   styleUrl: './modificar-rol-usuario.component.css'
 })
 export class ModificarRolUsuarioComponent implements OnInit {
-  modalRef?: NgbModalRef;
+
+  // modalRef?: NgbModalRef;
   @Input() idUsuario: number = 0;
   @Input() usuario: UsuarioListadoDTO = {};
+  @Input() modalRef!: NgbModalRef;
 
   rolActual: string = '';
-  rolSeleccionado!: number;
+  rolSeleccionado: number | null = null;
+
+  // uso esta variable para obtener la categoria del rol que tiene el usuario
+  categoriaRolUsuario: number = 0;
 
   roles: Rol[] = [];
   
@@ -30,25 +35,25 @@ export class ModificarRolUsuarioComponent implements OnInit {
     private rolService: RolService,
     private modalService: ModalService,
     private usuarioService: UsuarioService,
+    public activeModal: NgbActiveModal,
   ) {}
 
   ngOnInit(): void {
-    this.rolService.findAll().subscribe(data => {
+    console.log("el usuario es: ", this.usuario)
+
+    this.rolService.findByCategoria(this.usuario.idCategoria!).subscribe(data => {
       this.roles = data;
-    })
 
-    const rolEncontrado = this.roles.find(r => r.nombreRol === this.usuario.rolActualusuario);
-    if (rolEncontrado) {
-      this.rolSeleccionado = rolEncontrado.id!;
-    }
+      const actual = this.roles.find(
+        r => r.nombreRol === this.usuario.rolActualusuario
+      );
 
-    this.rolActual = this.usuario.rolActualusuario!;
-
-    // ver si sacar, no se si sirve o no
-    // this.rolSeleccionado = this.usuario.rolActualusuario!;
+      this.rolSeleccionado = actual?.id ?? null;
+    });
   }
 
   volverAPerfil() {
+    if (this.rolSeleccionado == null) return;
     Swal.fire({
       title: '¿Desea confirmar los cambios realizados?',
       icon: "question",
@@ -66,13 +71,20 @@ export class ModificarRolUsuarioComponent implements OnInit {
       if (result.isConfirmed) {
         console.log(this.rolSeleccionado);
         console.log("envio al service, id usuario: ", this.idUsuario, " id de rol: ", this.rolSeleccionado)
-        this.usuarioService.modificarRol(this.idUsuario, this.rolSeleccionado).subscribe({
+        this.usuarioService.modificarRol(this.idUsuario, this.rolSeleccionado!).subscribe({
           next: () => {
-            this.modalService.closeActiveModal('rolModificado');
-            this.modalService.dismissActiveModal();
-            // poner que 
+            this.modalRef.close('rolModificado');
+            Swal.fire({
+              toast: true,
+              position: "top-end",
+              icon: "success",
+              title: "El rol fue modificado exitosamente",
+              timer: 3000,
+              showConfirmButton: false,
+            })
           },
           error: (error) => {
+            console.error('Error al modificar rol', error)
             if(error.error.message === "El rol ingresado no pertenece a la categoria de roles del usuario") {
               Swal.fire({
                 toast: true,

@@ -11,7 +11,7 @@ import { timer } from 'rxjs';
 
 @Component({
   standalone: true,
-  selector: 'app-seleccion-habilidades',
+  selector: 'app-recuperar-contrasenia',
   imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './recuperar-contrasenia-modal.component.html',
   styleUrl: './recuperar-contrasenia-modal.component.css'

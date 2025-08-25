@@ -4,6 +4,10 @@
             <h1>Usuarios</h1>
             <p>Gestiona los usuarios de Workee</p>
         </div>
+         <button class="boton descargar" (click)="descargarPDF()" title="Descargar PDF con listado de usuarios">
+                <span class="material-symbols-outlined">vertical_align_bottom</span>
+                Descargar PDF
+            </button>
     </div>
 
     <div class="buscador-filtro">
@@ -30,9 +34,12 @@
                 [panelStyle]="{ 'background': '#fff' }"
                 [(ngModel)]="filtrosSeleccionadosRoles">
             </p-multiselect>
-            <button class="boton descargar" (click)="descargarPDF()" title="Descargar PDF con listado de usuarios">
-                <span class="material-symbols-outlined">vertical_align_bottom</span>
-                Descargar PDF
+
+            <button 
+                [disabled]="!filtrosSeleccionadosRoles.length"
+                class="boton"
+                (click)="filtrarUsuarios()">
+                    Aplicar filtro
             </button>
         </div>
     </div>

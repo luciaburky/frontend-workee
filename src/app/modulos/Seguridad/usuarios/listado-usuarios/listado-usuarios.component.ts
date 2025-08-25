@@ -9,6 +9,7 @@ import { Rol } from '../../rol';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { UsuarioListadoDTO } from './usuario-listado-dto';
+import { SesionService } from '../../../../interceptors/sesion.service';
 
 @Component({
   selector: 'app-listado-usuarios',
@@ -33,13 +34,19 @@ export class ListadoUsuariosComponent implements OnInit {
     private usuarioService: UsuarioService,
     private router: Router,
     private rolService: RolService,
+    private sessionService: SesionService
   ) {}
   
   ngOnInit(): void {
+    // En esta variable se guarda el correo del usuario que esta logueado
+    // Esto se hace para que no aparezca el propio usuario en el listado
+    const correoActualUsuario = this.sessionService.getCorreoUsuario();
+
     this.usuarioService.findAll().subscribe(data => {
       this.usuarioListOriginal = data;
       this.usuarioList = [...data];
-    })
+    });
+
 
     this.rolService.findAll().subscribe(data => {
       this.filtrosRol = data;
@@ -53,20 +60,26 @@ export class ListadoUsuariosComponent implements OnInit {
 
   buscarUsuarios() {
     const textoLimpio = this.texto.trim().toLowerCase();
-
+    
     if (textoLimpio === '') {
       this.usuarioList = [... this.usuarioListOriginal ];
       return;
     }
 
-    this.usuarioList = this.usuarioListOriginal.filter(usuario =>
-      usuario.correoUsuario?.toLowerCase().includes(textoLimpio)
-    );
+    this.usuarioList = this.usuarioListOriginal.filter(usuario => usuario.correoUsuario?.toLowerCase().includes(textoLimpio))
   }
   
   irADetalle(idUsuario:number) {
     console.log("detalle de usuario: ", idUsuario);
     this.router.navigate([`usuarios/detalle`,idUsuario]);
+  }
+  
+  filtrarUsuarios() {
+    const idsRoles = this.filtrosSeleccionadosRoles?.length ? this.filtrosSeleccionadosRoles : null;
+
+    this.usuarioService.filtrarUsuarios(idsRoles).subscribe(data => {
+      this.usuarioList = data;
+    })
   }
 
   descargarPDF() {
@@ -84,7 +97,7 @@ export class ListadoUsuariosComponent implements OnInit {
       doc.setFontSize(11);
       doc.setFont("helvetica", "normal");
 
-      const usuarioExportador = "?????????????????"; 
+      const usuarioExportador = this.sessionService.getCorreoUsuario() ?? 'Desconocido';
       const fechaExportacion = new Date().toLocaleDateString("es-AR");
 
       let filtroAplicado = "-";
@@ -98,7 +111,7 @@ export class ListadoUsuariosComponent implements OnInit {
 
       doc.text(`Exportado por: ${usuarioExportador}`, 14, 45);
       doc.text(`Fecha de exportación: ${fechaExportacion}`, 14, 52);
-      doc.text(`Filtro Aplicado: ${filtroAplicado}`, 14, 59);
+      doc.text(`Filtro aplicado: ${filtroAplicado}`, 14, 59);
 
       autoTable(doc, {
         startY: 70,
@@ -115,14 +128,13 @@ export class ListadoUsuariosComponent implements OnInit {
         headStyles: {
           fillColor: [230, 235, 255],
           textColor: 20,
-          fontStyle: 'bold'
         },
         alternateRowStyles: {
           fillColor: [245, 245, 245]
         }
       });
 
-      doc.save('usuarios.pdf');
+      doc.save(`usuarios_${fechaExportacion}.pdf`);
     };
   }
   

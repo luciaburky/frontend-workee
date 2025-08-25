@@ -153,6 +153,20 @@ td, th {
     white-space: nowrap;
 }
 
+.boton:disabled {
+  background-color: gray;
+  color: #ffffff;
+  border: 2px solid gray;
+    border-radius: 8px;
+  padding: 6px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 16px;
+  cursor:default;
+  white-space: nowrap;
+}
+
 .descargar {
     background-color: #ffffff;
     color: #31A5DD;

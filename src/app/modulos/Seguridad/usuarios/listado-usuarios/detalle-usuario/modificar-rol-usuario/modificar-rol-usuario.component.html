@@ -7,25 +7,26 @@
         <div class="actual">
             <p>Rol actual</p>
             <div class="badge-rol">
-                {{ rolActual }}
+                {{usuario.rolActualusuario}}
             </div>
         </div>
 
         <div class="nuevo">
             <p>Seleccionar nuevo rol</p>
             <select 
-                class="form-select"
-                aria-label="Default select example"
-                [(ngModel)]="rolSeleccionado">
-                <option selected>Selecciona el nuevo rol</option>
-                @for (rol of roles; track rol.id) {
-                    <option [value]="rol.id">
-                        {{ rol.nombreRol }}
-                    </option>
-                }
+            class="form-control"
+            [(ngModel)]="rolSeleccionado"
+            [ngModelOptions]="{ standalone: true }"
+            >
+            <option [ngValue]="null" disabled>Selecciona el nuevo rol</option>
+            @for (rol of roles; track rol.id) {
+                <option [ngValue]="rol.id">
+                {{ rol.nombreRol }}
+                </option>
+            }
             </select>
         </div>
-        <div class="fin-modal">
+        <div class="modal-footer">
             <button type="button" class="boton-volver-gris" (click)="dismissModal()">
                 <span class="material-symbols-outlined">arrow_back</span>
                 Volver

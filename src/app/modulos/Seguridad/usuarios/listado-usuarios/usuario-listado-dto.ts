@@ -4,4 +4,5 @@ export class UsuarioListadoDTO {
   urlFotoUsuario?: string;
   rolActualusuario?: string | null;
   nombreEntidad?: string | null;
+  idCategoria?: number | null;
 }

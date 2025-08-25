@@ -80,4 +80,18 @@ export class SesionService {
   getToken(): string | null {
     return this.storage.getItem('token');
   }
+
+  getPayload(): any {
+    const token = this.getToken();
+    if (!token) return null;
+
+    const payload = token.split('.')[1];
+    return JSON.parse(atob(payload));
+  }
+
+  getCorreoUsuario(): string | null {
+    const payload = this.getPayload();
+    // console.log("el payload es: ", payload)
+    return payload?.sub || payload?.correoUsuario || null;
+  }
 }
