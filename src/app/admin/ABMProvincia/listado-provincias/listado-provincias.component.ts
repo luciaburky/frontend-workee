@@ -134,7 +134,7 @@ export class ListadoProvinciasComponent implements OnInit {
               });
               Toast.fire({
                 icon: "warning",
-                title: "Esta provincia ya se encuentra deshabilitada",
+                title: "La entidad se encuentra en uso, no puede deshabilitarla",
               });
             }
           }
