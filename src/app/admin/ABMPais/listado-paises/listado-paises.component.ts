@@ -139,28 +139,15 @@ export class ListadoPaisesComponent implements OnInit{
           },
           error: (error) => {
             if(error.error.message === "La entidad se encuentra en uso, no puede deshabilitarla") {
-              // const Toast = Swal.mixin({
-              //   toast: true,
-              //   position: "top-end",
-              //   showConfirmButton: false,
-              //   timer: 3000,
-              //   timerProgressBar: true,
-              //   didOpen: (toast) => {
-              //     toast.onmouseenter = Swal.stopTimer;
-              //     toast.onmouseleave = Swal.resumeTimer;
-              //   }
-              // });
-              // Toast.fire({
-              //   icon: "warning",
-              //   title: "La entidad se encuentra en uso, no puede deshabilitarla",
-              // });
-              Swal.fire({
+              const Toast = Swal.mixin({
                 toast: true,
-                icon: 'warning',
-                title: 'La entidad se encuentra en uso, no puede deshabilitarla',
-                position: 'top-end',
+                position: "top-end",
+                showConfirmButton: false,
                 timer: 3000,
-                showConfirmButton: false
+              });
+              Toast.fire({
+                icon: "warning",
+                title: "La entidad se encuentra en uso, no puede deshabilitarla",
               });
             }
           }
