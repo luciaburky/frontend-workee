@@ -70,18 +70,13 @@ export class ListadoEtapasComponent {
     }).then((result) => {
       if (result.isConfirmed) {
         this.etapaService.habilitar(idEtapa).subscribe({
-          next: (response) => {
+          next: () => {
           this.recargar();
           const Toast = Swal.mixin({
             toast: true,
             position: "top-end",
             showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true,
-            didOpen: (toast) => {
-              toast.onmouseenter = Swal.stopTimer;
-              toast.onmouseleave = Swal.resumeTimer;
-            }
+            timer: 3000
           });
           Toast.fire({
             icon: "success",
@@ -89,8 +84,6 @@ export class ListadoEtapasComponent {
           });
           }
         })
-    } else {
-
     }});
   }
   
@@ -109,18 +102,13 @@ export class ListadoEtapasComponent {
     }).then((result) => {
       if (result.isConfirmed) {
         this.etapaService.deshabilitar(idEtapa).subscribe({
-          next: (response) => {
+          next: () => {
             this.recargar();
             const Toast = Swal.mixin({
             toast: true,
             position: "top-end",
             showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true,
-            didOpen: (toast) => {
-              toast.onmouseenter = Swal.stopTimer;
-              toast.onmouseleave = Swal.resumeTimer;
-            }
+            timer: 3000
           });
           Toast.fire({
             icon: "success",
@@ -129,7 +117,7 @@ export class ListadoEtapasComponent {
           },
           error: (error) => {
             // TODO: REVISAR CON SWAGGER
-            if(error.error.message === "La entidad ya se encuentra deshabilitada") {
+            if(error.error.message === "La entidad se encuentra en uso, no puede deshabilitarla") {
               const Toast = Swal.mixin({
                 toast: true,
                 position: "top-end",
@@ -143,13 +131,11 @@ export class ListadoEtapasComponent {
               });
               Toast.fire({
                 icon: "warning",
-                title: "La etapa ya se encuentra deshabilitada",
+                title: "La entidad se encuentra en uso, no puede deshabilitarla",
               });
             }
           }
         })
-    } else {
-
     }});
   }
 
@@ -186,11 +172,43 @@ export class ListadoEtapasComponent {
     }
   }
 
+  
+  get paginasMostradas(): (number | string)[] {
+    const total = this.totalPaginas;
+    const actual = this.paginaActual;
+    const paginas: (number | string)[] = [];
+
+    if (total <= 7) {
+      for (let i = 1; i <= total; i++) {
+        paginas.push(i);
+      }
+    } else {
+      paginas.push(1);
+
+      if (actual > 3) {
+        paginas.push('...');
+      }
+
+      const start = Math.max(2, actual - 1);
+      const end = Math.min(total - 1, actual + 1);
+
+      for (let i = start; i <= end; i++) {
+        paginas.push(i);
+      }
+
+      if (actual < total - 2) {
+        paginas.push('...');
+      }
+
+      paginas.push(total);
+    }
+
+    return paginas;
+  }
+
   irAPagina(pagina: number): void {
     if (pagina >= 1 && pagina <= this.totalPaginas) {
       this.paginaActual = pagina;
     }
   }
-
-
 }
