@@ -7,7 +7,7 @@ import { EstadoOferta } from './estado-oferta';
   providedIn: 'root'
 })
 export class EstadoOfertaService {
-  private url: string = 'http://localhost:9090/estados-oferta';
+  private url: string = 'http://localhost:9090/estadosOferta';
   
   idSubject = new BehaviorSubject<number | null>(null);
 
@@ -22,7 +22,7 @@ export class EstadoOfertaService {
   }
   
   deshabilitar(idEstadoOferta:number) {
-    return this.http.delete<void>(`${this.url}/${idEstadoOferta}`);
+    return this.http.delete<void>(`${this.url}/deshabilitar/${idEstadoOferta}`);
   }
   
   habilitar(id:number) {

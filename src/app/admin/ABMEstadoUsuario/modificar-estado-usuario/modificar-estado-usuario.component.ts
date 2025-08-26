@@ -60,7 +60,6 @@ export class ModificarEstadoUsuarioComponent {
 
   enviarDatos() {
     this.submitForm = true;
-    console.log(this.submitForm)
 
     if (this.estadoForm.invalid || !this.idEstado) {
       this.estadoForm.markAllAsTouched();

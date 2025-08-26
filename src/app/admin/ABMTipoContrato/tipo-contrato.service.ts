@@ -7,7 +7,7 @@ import { TipoContrato } from './tipo-contrato';
   providedIn: 'root'
 })
 export class TipoContratoService {
-  private url: string = 'http://localhost:9090/tipos-contrato-oferta';
+  private url: string = 'http://localhost:9090/tiposContratoOferta';
   
   idSubject = new BehaviorSubject<number | null>(null);
 
@@ -22,7 +22,7 @@ export class TipoContratoService {
   }
   
   deshabilitar(idTipoContrato: number) {
-    return this.http.delete<void>(`${this.url}/${idTipoContrato}`);
+    return this.http.delete<void>(`${this.url}/deshabilitar/${idTipoContrato}`);
   }
   
   habilitar(idTipoContrato: number) {
