@@ -26,7 +26,7 @@ private url: string = 'http://localhost:9090/generos';
   }
   
   deshabilitar(idGenero: number) {
-    return this.http.delete<void>(`${this.url}/${idGenero}`);
+    return this.http.delete<void>(`${this.url}/deshabilitar/${idGenero}`);
   }
   
   habilitar(idGenero: number) {

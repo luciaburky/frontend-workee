@@ -32,7 +32,7 @@ export class ProvinciaService {
   }
   
   deshabilitar(idProvincia: number) {
-    return this.http.delete<void>(`${this.url}/${idProvincia}`);
+    return this.http.delete<void>(`${this.url}/deshabilitar/${idProvincia}`);
   }
   
   habilitar(idProvincia: number) {

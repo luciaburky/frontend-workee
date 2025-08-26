@@ -26,7 +26,7 @@ export class EstadoBusquedaLaboralService {
   }
   
   deshabilitar(idEstadoBusquedaLaboral:number) {
-    return this.http.delete<void>(`${this.url}/${idEstadoBusquedaLaboral}`);
+    return this.http.delete<void>(`${this.url}/deshabilitar/${idEstadoBusquedaLaboral}`);
   }
   
   habilitar(id:number) {

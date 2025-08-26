@@ -26,7 +26,7 @@ export class RubroService {
   }
   
   deshabilitar(idRubro:number) {
-    return this.http.delete<void>(`${this.url}/${idRubro}`);
+    return this.http.delete<void>(`${this.url}/deshabilitar/${idRubro}`);
   }
   
   habilitar(idRubro:number) {

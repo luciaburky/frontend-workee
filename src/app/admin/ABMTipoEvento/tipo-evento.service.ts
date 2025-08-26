@@ -7,7 +7,7 @@ import { TipoEvento } from './tipo-evento';
   providedIn: 'root'
 })
 export class TipoEventoService {
-private url: string = 'http://localhost:9090/tipos-evento';
+private url: string = 'http://localhost:9090/tiposEvento';
   
   idSubject = new BehaviorSubject<number | null>(null);
 
@@ -22,7 +22,7 @@ private url: string = 'http://localhost:9090/tipos-evento';
   }
   
   deshabilitar(idTipoEvento: number) {
-    return this.http.delete<void>(`${this.url}/${idTipoEvento}`);
+    return this.http.delete<void>(`${this.url}/deshabilitar/${idTipoEvento}`);
   }
   
   habilitar(idTipoEvento: number) {

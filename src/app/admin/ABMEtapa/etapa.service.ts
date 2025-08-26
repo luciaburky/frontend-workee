@@ -23,7 +23,7 @@ export class EtapaService {
   }
   
   deshabilitar(idEtapa: number) {
-    return this.http.delete<void>(`${this.url}/${idEtapa}`);
+    return this.http.delete<void>(`${this.url}/deshabilitar/${idEtapa}`);
   }
   
   habilitar(idEtapa: number) {
