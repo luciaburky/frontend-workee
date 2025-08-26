@@ -26,12 +26,12 @@ export class PaisService {
   }
   
   deshabilitar(idPais:number) {
-    console.log("Deshabilito pais con id: " + idPais);
-    return this.http.delete<void>(`${this.url}/${idPais}`);
+    // console.log("Deshabilito pais con id: " + idPais);
+    return this.http.delete<void>(`${this.url}/deshabilitar/${idPais}`);
   }
   
   habilitar(idPais:number) {
-    console.log("Habilito pais con id: " + idPais);
+    // console.log("Habilito pais con id: " + idPais);
     const body = {
       "idPais": idPais
     }
@@ -54,7 +54,7 @@ export class PaisService {
   }
   
   modificarPais(idPais: number, nombrePais: string) {
-    console.log("llego al modificar del service")
+    // console.log("llego al modificar del service")
     const body = {
       "nombrePais": nombrePais
     }

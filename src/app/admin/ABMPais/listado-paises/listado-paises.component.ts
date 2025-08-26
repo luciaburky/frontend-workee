@@ -78,25 +78,26 @@ export class ListadoPaisesComponent implements OnInit{
             this.paisService.habilitar(idPais).subscribe({
               next: (response) => {
               this.recargar();
-              const Toast = Swal.mixin({
+              // const Toast = Swal.mixin({
+              //   toast: true,
+              //   position: "top-end",
+              //   showConfirmButton: false,
+              //   timer: 3000,
+              // });
+              // Toast.fire({
+              //   icon: "success",
+              //   title: "País habilitado correctamente",
+              // });
+              Swal.fire({
                 toast: true,
-                position: "top-end",
-                showConfirmButton: false,
+                icon: 'success',
+                title: 'País habilitado correctamente',
+                position: 'top-end',
                 timer: 3000,
-                timerProgressBar: true,
-                didOpen: (toast) => {
-                  toast.onmouseenter = Swal.stopTimer;
-                  toast.onmouseleave = Swal.resumeTimer;
-                }
-              });
-              Toast.fire({
-                icon: "success",
-                title: "País habilitado correctamente",
+                showConfirmButton: false
               });
               }
             })
-        } else {
-
         }});
       }
     
@@ -115,46 +116,55 @@ export class ListadoPaisesComponent implements OnInit{
     }).then((result) => {
       if (result.isConfirmed) {
         this.paisService.deshabilitar(idPais).subscribe({
-          next: (response) => {
+          next: () => {
             this.recargar();
-            const Toast = Swal.mixin({
-            toast: true,
-            position: "top-end",
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true,
-            didOpen: (toast) => {
-              toast.onmouseenter = Swal.stopTimer;
-              toast.onmouseleave = Swal.resumeTimer;
-            }
-          });
-          Toast.fire({
-            icon: "success",
-            title: "País deshabilitado correctamente",
-          });
+            // const Toast = Swal.mixin({
+            //   toast: true,
+            //   position: "top-end",
+            //   showConfirmButton: false,
+            //   timer: 3000,
+            // });
+            // Toast.fire({
+            //   icon: "success",
+            //   title: "País deshabilitado correctamente",
+            // });
+            Swal.fire({
+              toast: true,
+              icon: 'success',
+              title: 'País deshabilitado correctamente',
+              position: 'top-end',
+              timer: 3000,
+              showConfirmButton: false
+            });
           },
           error: (error) => {
-            if(error.error.message === "Un error inesperado ha ocurrido: El país ya está deshabilitado") {
-              const Toast = Swal.mixin({
+            if(error.error.message === "La entidad se encuentra en uso, no puede deshabilitarla") {
+              // const Toast = Swal.mixin({
+              //   toast: true,
+              //   position: "top-end",
+              //   showConfirmButton: false,
+              //   timer: 3000,
+              //   timerProgressBar: true,
+              //   didOpen: (toast) => {
+              //     toast.onmouseenter = Swal.stopTimer;
+              //     toast.onmouseleave = Swal.resumeTimer;
+              //   }
+              // });
+              // Toast.fire({
+              //   icon: "warning",
+              //   title: "La entidad se encuentra en uso, no puede deshabilitarla",
+              // });
+              Swal.fire({
                 toast: true,
-                position: "top-end",
-                showConfirmButton: false,
+                icon: 'warning',
+                title: 'La entidad se encuentra en uso, no puede deshabilitarla',
+                position: 'top-end',
                 timer: 3000,
-                timerProgressBar: true,
-                didOpen: (toast) => {
-                  toast.onmouseenter = Swal.stopTimer;
-                  toast.onmouseleave = Swal.resumeTimer;
-                }
-              });
-              Toast.fire({
-                icon: "warning",
-                title: "Este país ya se encuentra deshabilitado",
+                showConfirmButton: false
               });
             }
           }
         })
-    } else {
-
     }});
   }
 
@@ -210,6 +220,39 @@ export class ListadoPaisesComponent implements OnInit{
     if (this.paginaActual > 1) {
       this.paginaActual--;
     }
+  }
+
+  get paginasMostradas(): (number | string)[] {
+    const total = this.totalPaginas;
+    const actual = this.paginaActual;
+    const paginas: (number | string)[] = [];
+
+    if (total <= 7) {
+      for (let i = 1; i <= total; i++) {
+        paginas.push(i);
+      }
+    } else {
+      paginas.push(1);
+
+      if (actual > 3) {
+        paginas.push('...');
+      }
+
+      const start = Math.max(2, actual - 1);
+      const end = Math.min(total - 1, actual + 1);
+
+      for (let i = start; i <= end; i++) {
+        paginas.push(i);
+      }
+
+      if (actual < total - 2) {
+        paginas.push('...');
+      }
+
+      paginas.push(total);
+    }
+
+    return paginas;
   }
 
   irAPagina(pagina: number): void {
