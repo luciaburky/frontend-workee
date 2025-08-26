@@ -3,4 +3,5 @@ export class EstadoBusquedaLaboral {
     nombreEstadoBusqueda?: string;
     fechaHoraAlta?: string;
     fechaHoraBaja?: string | null;
+    codigoEstadoBusqueda?: string;
 }
