@@ -7,7 +7,7 @@ import { Modalidad } from './modalidad';
   providedIn: 'root'
 })
 export class ModalidadService {
-  private url: string = 'http://localhost:9090/modalidades-oferta';
+  private url: string = 'http://localhost:9090/modalidadesOferta';
   
   idSubject = new BehaviorSubject<number | null>(null);
 
@@ -22,7 +22,7 @@ export class ModalidadService {
   }
   
   deshabilitar(idModalidad: number) {
-    return this.http.delete<void>(`${this.url}/${idModalidad}`);
+    return this.http.delete<void>(`${this.url}/deshabilitar/${idModalidad}`);
   }
   
   habilitar(idModalidad: number) {
