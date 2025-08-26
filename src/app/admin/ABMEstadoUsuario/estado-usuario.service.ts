@@ -7,7 +7,7 @@ import { EstadoUsuario } from './estado-usuario';
   providedIn: 'root'
 })
 export class EstadoUsuarioService {
-  private url: string = 'http://localhost:9090/estados-usuario';
+  private url: string = 'http://localhost:9090/estadosUsuario';
   
   idSubject = new BehaviorSubject<number | null>(null);
 
@@ -22,7 +22,7 @@ export class EstadoUsuarioService {
   }
   
   deshabilitar(id: number) {
-    return this.http.delete<void>(`${this.url}/${id}`);
+    return this.http.delete<void>(`${this.url}/deshabilitar/${id}`);
   }
   
   habilitar(id: number) {
