@@ -28,7 +28,7 @@ export class HabilidadService {
   }
   
   deshabilitar(idHabilidad: number) {
-    return this.http.delete<void>(`${this.url}/${idHabilidad}`);
+    return this.http.delete<void>(`${this.url}/deshabilitar/${idHabilidad}`);
   }
   
   habilitar(idHabilidad: number) {

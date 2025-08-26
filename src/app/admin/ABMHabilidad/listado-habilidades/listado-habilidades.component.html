@@ -78,17 +78,24 @@
     <nav *ngIf="totalPaginas > 1">
         <ul class="pagination justify-content-center">
             <li class="page-item" [class.disabled]="paginaActual === 1">
-            <button class="page-link" (click)="retrocederPagina()">Anterior</button>
+                <button class="page-link" (click)="retrocederPagina()">Anterior</button>
             </li>
 
-            <!-- tuve que usar ngFor porque no me funcionaba solo con @for -->
             <li 
-            *ngFor="let pagina of paginas"
-            class="page-item" 
-            [class.active]="paginaActual === pagina">
-                <button class="page-link" (click)="irAPagina(pagina)">
+            *ngFor="let pagina of paginasMostradas"
+            class="page-item"
+            [class.active]="paginaActual === pagina"
+            [class.disabled]="pagina === '...'">
+
+            <ng-container *ngIf="pagina !== '...'; else puntos">
+                <button class="page-link" (click)="irAPagina(+pagina)">
                     {{ pagina }}
                 </button>
+            </ng-container>
+
+            <ng-template #puntos>
+                <span class="page-link">...</span>
+            </ng-template>
             </li>
 
             <li class="page-item" [class.disabled]="paginaActual === totalPaginas">
