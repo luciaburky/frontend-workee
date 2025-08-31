@@ -34,11 +34,18 @@ export class RolService {
 
   }
 
-  
-
-  modificarRol(idRol: number): Observable<Rol> {
-    return this.http.get<Rol>(`${this.url}/${idRol}`);
+  modificarRol(idRol: number, nombreRol: string, idPermisos: number[]) {
+    const body = {
+      nombreRol,
+      idPermisos
+    };
+    return this.http.put(`${this.url}/${idRol}`, body);
   }
+
+  findByID(idRol:number){
+    return this.http.get(`${this.url}/${idRol}`)
+  }
+
 
   bajarol(){}
 }
