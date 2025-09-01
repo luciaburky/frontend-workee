@@ -48,7 +48,6 @@ export class CrearPaisComponent implements OnInit{
     }
     // 'pais' es lo que esta en el formControlName del input
     const nombrePais = this.paisForm.get('pais')?.value;
-    console.log("Holis");
 
     this.paisService.crearPais(nombrePais).subscribe({
       next: () => {

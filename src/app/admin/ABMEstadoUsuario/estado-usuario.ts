@@ -3,4 +3,5 @@ export class EstadoUsuario {
     nombreEstadoUsuario?: string;
     fechaHoraAlta?: string;
     fechaHoraBaja?: string | null;
+    codigoEstadoUsuario?: string;
 }

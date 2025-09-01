@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { Rol } from './../rol';
 
 @Injectable({
@@ -8,8 +8,19 @@ import { Rol } from './../rol';
 })
 export class RolService {
   private url = 'http://localhost:9090/roles';
+
+  idSubject = new BehaviorSubject<number | null>(null);
+  
   
   constructor(private http: HttpClient) {}
+
+  setId(id: number) {
+    this.idSubject.next(id);
+  }
+  
+  getId(){
+    return this.idSubject.asObservable();
+  }
 
   findAll(): Observable<Rol[]> {
     return this.http.get<Rol[]>(this.url);
@@ -34,18 +45,24 @@ export class RolService {
 
   }
 
-  modificarRol(idRol: number, nombreRol: string, idPermisos: number[]) {
+  
+
+  modificarRol(idRol: number): Observable<Rol> {
+    return this.http.get<Rol>(`${this.url}/${idRol}`);
+  }
+
+  findById(idRol: number): Observable<Rol> {
+    return this.http.get<Rol>(`${this.url}/${idRol}`);
+  }
+    
+  deshabilitar(idRol: number) {
+    return this.http.delete<void>(`${this.url}/deshabilitar/${idRol}`);
+  }
+
+  habilitar(idRol: number) {
     const body = {
-      nombreRol,
-      idPermisos
-    };
-    return this.http.put(`${this.url}/${idRol}`, body);
+      "idRol": idRol
+    }      
+    return this.http.put<Rol>(`${this.url}/habilitar/${idRol}`, body);
   }
-
-  findByID(idRol:number){
-    return this.http.get(`${this.url}/${idRol}`)
-  }
-
-
-  bajarol(){}
 }
