@@ -65,4 +65,10 @@ export class RolService {
     }      
     return this.http.put<Rol>(`${this.url}/habilitar/${idRol}`, body);
   }
+
+  buscarRolPorCorreoUsuario(
+    correo:string
+  ){
+    return this.http.get<Rol>(`${this.url}/porCorreo/${correo}`);
+  }
 }

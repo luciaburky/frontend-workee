@@ -17,8 +17,8 @@ export class PermisoService {
     return this.http.get<permiso[]>(`${this.url}/${idCategoria}`);
   }
 
-  permisosdeunRol(){
-
+  permisosdeunRol(idRol: number){
+    return this.http.get<permiso[]>(`${this.url}/porRol/${idRol}`);
   }
   
 }
