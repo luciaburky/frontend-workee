@@ -6,13 +6,33 @@
 
   <!-- Menu dinámico -->
   <nav class="menu">
-    <a *ngFor="let item of menuItems"
-       [routerLink]="item.ruta"
-       routerLinkActive="active"
-       class="menu-item">
-      <span class="material-symbols-outlined">{{ item.icono }}</span>
-      <span>{{ item.titulo }}</span>
-    </a>
+    <ng-container *ngFor="let item of menuItems">
+      <a *ngIf="!item.children"
+        [routerLink]="item.ruta"
+        class="menu-item">
+        <span class="material-symbols-outlined">{{ item.icono }}</span>
+        <span>{{ item.titulo }}</span>
+      </a>
+
+      <!-- Opción con submenú -->
+      <div *ngIf="item.children" class="submenu">
+        <div class="menu-item" (click)="toggleSubmenu(item)">
+          <span class="material-symbols-outlined">{{ item.icono }}</span>
+          <span>{{ item.titulo }}</span>
+          <span class="material-symbols-outlined arrow">
+            {{ item.open ? 'expand_less' : 'expand_more' }}
+          </span>
+        </div>
+
+        <div class="submenu-items" *ngIf="item.open">
+          <a *ngFor="let child of item.children"
+             [routerLink]="child.ruta"
+             class="submenu-item">
+            {{ child.titulo }}
+          </a>
+        </div>
+      </div>
+    </ng-container>
   </nav>
 
   <!-- Logout fijo -->
