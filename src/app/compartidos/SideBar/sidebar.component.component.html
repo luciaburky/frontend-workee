@@ -9,6 +9,8 @@
     <ng-container *ngFor="let item of menuItems">
       <a *ngIf="!item.children"
         [routerLink]="item.ruta"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
         class="menu-item">
         <span class="material-symbols-outlined">{{ item.icono }}</span>
         <span>{{ item.titulo }}</span>
@@ -27,6 +29,8 @@
         <div class="submenu-items" *ngIf="item.open">
           <a *ngFor="let child of item.children"
              [routerLink]="child.ruta"
+             routerLinkActive="active"
+             [routerLinkActiveOptions]="{ exact: true }"
              class="submenu-item">
             {{ child.titulo }}
           </a>

@@ -4,13 +4,11 @@
 }
 
 app-sidebar {
-  width: 250px;        /* Ajustá el ancho según tu diseño */
-  flex-shrink: 0;      /* No se achica */
-  background: #1e1e2f; /* Ejemplo de color de fondo */
+  width: 250px;       
+  flex-shrink: 0;      
 }
 
 .app-content {
   flex: 1;
-  overflow-y: auto; /* Scroll si el contenido es largo */
-  padding: 1rem;
+  overflow-y: auto;
 }

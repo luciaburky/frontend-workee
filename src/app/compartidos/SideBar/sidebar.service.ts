@@ -17,32 +17,32 @@ export class SidebarService {
   menu: MenuItem[] = [
     { titulo: "Buscar", ruta: "", icono: "search",
       children: [
-        { titulo: "Buscar Empresa", ruta: "", icono: "search", codigoPermiso: "BUSCAR_EMPRESAS"},
-        { titulo: "Buscar Ofertas", ruta: "", icono: "search", codigoPermiso: "BUSCAR_OFERTAS"},
-        { titulo: "Buscar Candidatos", ruta: "", icono: "search", codigoPermiso: "BUSCAR_CANDIDATOS"}
+        { titulo: "Buscar Empresa", ruta: "/buscar-empresas", icono: "search", codigoPermiso: "BUSCAR_EMPRESAS"},
+        { titulo: "Buscar Ofertas", ruta: "/buscar-candidatos", icono: "search", codigoPermiso: "BUSCAR_OFERTAS"},
+        { titulo: "Buscar Candidatos", ruta: "/buscar-candidatos", icono: "search", codigoPermiso: "BUSCAR_CANDIDATOS"}
       ]
      },
-    { titulo: "Mi Perfil", ruta: "", icono: "person", codigoPermiso: "GESTIONAR_MI_PERFIL" },
-    { titulo: "Notificaciones", ruta: "", icono: "notifications", codigoPermiso: "" }, //TODO: Falta
-    { titulo: "Ofertas", ruta: "", icono: "card_giftcard",
+    { titulo: "Mi Perfil", ruta: "/mi-perfil", icono: "person", codigoPermiso: "GESTIONAR_MI_PERFIL" },
+    { titulo: "Notificaciones", ruta: "/notificaciones", icono: "notifications", codigoPermiso: "" }, //TODO: Falta
+    { titulo: "Ofertas", icono: "card_giftcard",
       children: [
-        { titulo: "Ofertas", ruta: "", icono: "", codigoPermiso: "GESTION_OFERTAS"},
-        { titulo: "Etapas", ruta: "", icono: "", codigoPermiso: "GESTION_ETAPA_PERSONALIZADA"}
+        { titulo: "Ofertas", ruta: "/ofertas", icono: "", codigoPermiso: "GESTION_OFERTAS"},
+        { titulo: "Etapas", ruta: "/ofertas/etapas", icono: "", codigoPermiso: "GESTION_ETAPA_PERSONALIZADA"}
       ]
      },
-    { titulo: "Empleados", ruta: "", icono: "badge", codigoPermiso: "GESTIONAR_EMPLEADOS" },
-    { titulo: "Estadísticas", ruta: "", icono: "query_stats", codigoPermiso: "" }, //TODO: Falta
+    { titulo: "Empleados", ruta: "/empleados", icono: "badge", codigoPermiso: "GESTIONAR_EMPLEADOS" },
+    { titulo: "Estadísticas", ruta: "/estadisticas", icono: "query_stats", codigoPermiso: "" }, //TODO: Falta
     { titulo: "Panel de control", ruta: "", icono: "settings", 
       children: [
         { titulo: "Roles", ruta: "/gestion-de-roles", icono: "", codigoPermiso: "GESTIONAR_ROLES"},
-        { titulo: "Backup", ruta: "", icono: "", codigoPermiso: "BACKUP"},
-        { titulo: "Parámetros", ruta: "", icono: "", codigoPermiso: ""}
+        { titulo: "Backup", ruta: "/backup", icono: "", codigoPermiso: "BACKUP"}, //TODO: Falta
+        { titulo: "Parámetros", ruta: "/parametros", icono: "", codigoPermiso: "PARAMETROS"}
       ]
      },
-    { titulo: "Habilitaciones", ruta: "", icono: "domain", codigoPermiso: "HABILITACION_EMPRESA" },
+    { titulo: "Habilitaciones", ruta: "/habilitaciones", icono: "domain", codigoPermiso: "HABILITACION_EMPRESA" },
     { titulo: "Usuarios", ruta: "/usuarios", icono: "groups_2", codigoPermiso: "GESTIONAR_USUARIOS" },
-    { titulo: "Calendario", ruta: "", icono: "", codigoPermiso: "" }, //TODO: Falta
-    { titulo: "Postulaciones", ruta: "", icono: "", codigoPermiso: "POSTULAR_OFERTA" }
+    { titulo: "Calendario", ruta: "/calendario", icono: "", codigoPermiso: "" }, //TODO: Falta
+    { titulo: "Postulaciones", ruta: "/postulaciones", icono: "", codigoPermiso: "POSTULAR_OFERTA" } //TODO: Falta
   ];
 
 

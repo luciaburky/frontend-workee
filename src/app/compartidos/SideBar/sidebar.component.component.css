@@ -16,18 +16,18 @@
   z-index: 1000;
   border-bottom-right-radius: 20px;
   box-shadow: none;
+  border-top-right-radius: 20px;
 }
 
-/* Logo */
 .sidebar .logo {
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
 }
 .sidebar .logo img {
   max-width: 140px;
 }
 
-/* Menu */
+
 .sidebar .menu {
   display: flex;
   flex-direction: column;
@@ -51,9 +51,14 @@
   font-size: 22px;
 }
 
-/* Activo */
 .menu-item.active {
-  background: #1daae1;
+  background: #31A5DD;
+  color: #fff;
+  font-weight: 500;
+}
+
+.submenu-item.active {
+  background: #31A5DD;
   color: #fff;
   font-weight: 500;
 }
@@ -104,10 +109,4 @@
 .arrow {
   margin-left: auto;
   font-size: 18px;
-}
-
-.submenu-item.active {
-  background: #1daae1;
-  color: #fff;
-  font-weight: 500;
 }
