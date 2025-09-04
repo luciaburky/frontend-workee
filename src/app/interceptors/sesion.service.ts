@@ -1,7 +1,9 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, Subject, catchError, tap } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, catchError, tap } from 'rxjs';
 import { StorageService } from './stoage.service';
+import { RolService } from '../modulos/seguridad/usuarios/rol.service';
+import { Rol } from '../modulos/seguridad/rol';
 
 @Injectable({ providedIn: 'root' })
 export class SesionService {
@@ -12,11 +14,15 @@ export class SesionService {
   // For login subscribers.
   announced$ = this.announceSource.asObservable();
 
+  private rolUsuarioSubject = new BehaviorSubject<Rol | null>(null);
+  rolUsuario$ = this.rolUsuarioSubject.asObservable();
+
   private endpointURL = 'http://localhost:9090/auth';
 
   constructor(
     private http: HttpClient,
     private storage: StorageService,
+    private rolService: RolService
   ) {}
 
   /**
@@ -94,4 +100,27 @@ export class SesionService {
     // console.log("el payload es: ", payload)
     return payload?.sub || payload?.correoUsuario || null;
   }
+
+    cargarRolUsuario(): void {
+    const correo = this.getCorreoUsuario();
+    if (!correo) {
+      console.error("No se pudo obtener el correo del token.");
+      return;
+    }
+
+    this.rolService.buscarRolPorCorreoUsuario(correo).subscribe({
+      next: (rol) => {
+        this.rolUsuarioSubject.next(rol); // lo guardamos en memoria
+      },
+      error: (err) => {
+        console.error("Error al obtener rol del usuario:", err);
+        this.rolUsuarioSubject.next(null);
+      }
+    });
+  }
+
+  getRolActual(): Rol | null {
+    return this.rolUsuarioSubject.value;
+  }
+
 }
