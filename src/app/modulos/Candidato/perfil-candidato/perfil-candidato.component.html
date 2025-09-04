@@ -17,48 +17,60 @@
     }
   </div>
 
-  <form>
+  <form [formGroup]="candidatoForm">
     <div class="form-grid-foto">
       <div class="foto-seccion">
-        <!-- <img [src]="'assets/img/foto-perfil.png'" alt="foto" class="foto" />
-        <label for="foto">Editar foto</label> -->
-        <!-- <input type="file" id="file" accept="image/jpg, image/jpeg, image/png" class="form-control"
-                formControlName="urlFoto"> -->
-                <!-- <input class="form-control form-control-sm" accept="image/jpg, image/jpeg, image/png" id="formFileSm" type="file"> -->
         <div class="foto-container">
-        <img [src]="'assets/img/foto-mia.jpg'"  alt="foto" class="foto" />
-        @if (modoEdicion) {
-          <label for="fileInput" class="icono-editar" title="Editar foto">
-            <span class="material-symbols-outlined icono-foto">photo_camera</span>
-          </label>
-          <input type="file" id="fileInput"  accept="image/*" hidden /> 
-          }  
+          <img 
+            [src]="fotoTemporal || candidato.usuario?.urlFotoUsuario || 'assets/img/foto-perfil.png'" 
+            alt="foto" 
+            class="foto" 
+          />
+          @if (modoEdicion) {
+            <label for="fileInput" class="icono-editar" title="Editar foto">
+              <span class="material-symbols-outlined icono-foto">photo_camera</span>
+            </label>
+            <input 
+              type="file"
+              id="fileInput"
+              accept="image/jpg, image/jpeg, image/png"
+              hidden
+              (change)="onFileSelectedFoto($event)" 
+            /> 
+          }
         </div>
       </div>
-
-
-
       <div class="al-lado m-0 p-0">
         <div class="form-group">
           <label for="nombreCandidato" class="p-0 my-0 mb-2">Nombre</label>
           <input 
+            maxlength="50"
             type="text"
             class="form-control"
             name="nombreCandidato"
+            formControlName="nombreCandidato"
             [readonly]="!modoEdicion"
-            [(ngModel)]="candidato.nombreCandidato">
-        </div>
-        <div class="form-group">
-          <label for="apellidoCandidato" class="p-0 my-0 mb-2 mt-3">Apellido</label>
-          <input 
+            [ngClass]="{ 'is-invalid': isCampoInvalido('nombreCandidato') }">
+            @if (isCampoInvalido('nombreCandidato')) {
+              <div class="invalid-feedback">El campo “Nombre” no puede estar vacío</div>
+            }
+          </div>
+          <div class="form-group">
+            <label for="apellidoCandidato" class="p-0 my-0 mb-2 mt-3">Apellido</label>
+            <input 
+            maxlength="50"
             type="text"
             class="form-control"
             name="apellidoCandidato"
+            formControlName="apellidoCandidato"
             [readonly]="!modoEdicion"
-            [(ngModel)]="candidato.apellidoCandidato">
+            [ngClass]="{ 'is-invalid': isCampoInvalido('apellidoCandidato') }">
+            @if (isCampoInvalido('apellidoCandidato')) {
+              <div class="invalid-feedback">El campo “Apellido” no puede estar vacío</div>
+            }
+          </div>
         </div>
-      </div>
-      <div class="abajo m-0 full-width">
+        <div class="abajo m-0 full-width">
         <div class="form-grid">
           <div class="form-group">
             <label for="fechaNacimientoCandidato" class="p-0 my-0 mb-2">Fecha de nacimiento</label>
@@ -71,13 +83,11 @@
             lang="es">
           </div>
           <div class="form-group">
-            <label for="generoCandidato" class="p-0 my-0 mb-2">Género</label>
-            <select 
+          <label for="generoCandidato" class="p-0 my-0 mb-2">Género</label>
+            <select
               class="form-select"
-              name="generoCandidato"
-              [disabled]="!modoEdicion"
               id="generoCandidato"
-              [(ngModel)]="candidato.genero"
+              formControlName="generoCandidato"
               [compareWith]="compararGenero">
               @for (genero of generos; track genero.id) {
                 <option [ngValue]="genero">
@@ -87,14 +97,12 @@
             </select>
           </div>
           <div class="form-group">
-            <label for="paisCandidato" class="p-0 my-0 mb-2">País</label>
-            <select 
+          <label for="paisCandidato" class="p-0 my-0 mb-2">País</label>
+            <select
               class="form-select"
-              name="paisCandidato"
-              [disabled]="!modoEdicion"
               id="paisCandidato"
-              [(ngModel)]="paisSeleccionado"
-              (ngModelChange)="filtrarProvinciasPorPais($event)"
+              formControlName="paisCandidato"
+              (change)="filtrarProvinciasPorPais(candidatoForm.get('paisCandidato')?.value)"
               [compareWith]="compararPais">
               @for (pais of paises; track pais.id) {
                 <option [ngValue]="pais">
@@ -105,12 +113,10 @@
           </div>
           <div class="form-group">
             <label for="provinciaCandidato" class="p-0 my-0 mb-2">Provincia</label>
-            <select 
+            <select
               class="form-select"
-              name="provinciaCandidato"
-              [disabled]="!modoEdicion"
               id="provinciaCandidato"
-              [(ngModel)]="candidato.provincia"
+              formControlName="provinciaCandidato"
               [compareWith]="compararProvincia">
               @for (provincia of provinciasDePais; track provincia.id) {
                 <option [ngValue]="provincia">
@@ -129,7 +135,7 @@
             readonly
             [value]="candidato.usuario?.correoUsuario">
         </div>
-        <div class="form-group full-width">
+        <!-- <div class="form-group full-width">
           <label for="contrasenia" class="p-0 my-0 mb-2">Contraseña</label>
           <div class="input-group">
             <input 
@@ -163,8 +169,9 @@
               </span>
             </div>
           </div>
-        }
+        } -->
         <div class="form-grid">
+          @if (candidato.candidatoCV?.enlaceCV) {
           <div class="form-group cv-wrapper">
             <label class="p-0 my-0 mb-2" for="cv">Curriculum Vitae</label>
             <div class="cv-box-contenedor">
@@ -172,32 +179,43 @@
                 <span class="material-symbols-outlined icono-pdf">description</span>
                 <div class="cv-detalle">
                   <p>
-                    <a href="#">
-                      AgustinaMartin_CV.pdf
+                    <a [href]="candidato.candidatoCV?.enlaceCV" target="_blank">
+                      {{ mostrarNombreArchivoCV(candidato.candidatoCV?.enlaceCV) }}
                     </a>
                   </p>
-                  <small>Actualizado el 10/05/2025</small>
+                  <small>Actualizado el {{ candidato.candidatoCV?.fechaHoraAlta | date:'dd/MM/yyyy' }}</small>
                 </div>
               </div>
               <div class="cv-acciones">
-                <button id="icon-button" [disabled]="!modoEdicion" (click)="editarCV()">
-                  <span class="material-symbols-outlined editar-cv" title="Editar">edit</span>
-                </button>
-                <button id="icon-button" [disabled]="!modoEdicion" (click)="eliminarCV()">
-                  <span class="material-symbols-outlined eliminar-cv" title="Eliminar">delete</span>
-                </button>
+                @if (modoEdicion) {
+                  <button id="icon-button" [disabled]="!modoEdicion" (click)="fileInputCV.click()">
+                    <span class="material-symbols-outlined editar-cv" title="Editar">edit</span>
+                  </button>
+                  <button id="icon-button" [disabled]="!modoEdicion" (click)="eliminarCV()">
+                    <span class="material-symbols-outlined eliminar-cv" title="Eliminar">delete</span>
+                  </button>
+                }
               </div>
             </div>
           </div>
+          <input 
+            type="file" 
+            #fileInputCV 
+            accept="application/pdf" 
+            style="display: none" 
+            formControlName="candidatoCV"
+            (change)="onFileSelectedCV($event)"/>
+        }
+
           <div class="form-group">
             <label class="p-0 my-0 mb-2">Estado de búsqueda laboral</label>
             @if (!modoEdicion) {
               <span
               class="badge"
               [ngClass]="{
-                'no-disponible': candidato.estadoBusqueda?.nombreEstadoBusqueda === 'No disponible',
-                'escucho-ofertas': candidato.estadoBusqueda?.nombreEstadoBusqueda === 'Escucho ofertas',
-                'buscando-activamente': candidato.estadoBusqueda?.nombreEstadoBusqueda === 'Buscando activamente'
+                'no-disponible': candidato.estadoBusqueda?.codigoEstadoBusqueda === 'NO_DISPONIBLE',
+                'escucho-ofertas': candidato.estadoBusqueda?.codigoEstadoBusqueda === 'ESCUCHO_OFERTAS',
+                'buscando-activamente': candidato.estadoBusqueda?.codigoEstadoBusqueda === 'BUSCANDO_ACTIVAMENTE'
               }"
               >
                 {{ candidato.estadoBusqueda?.nombreEstadoBusqueda?.toUpperCase() }}
@@ -207,7 +225,7 @@
               class="form-select"
               name="estadoBusqueda"
               id="estadoBusqueda"
-              [(ngModel)]="candidato.estadoBusqueda"
+              formControlName="estadoBusquedaCandidato"
               [compareWith]="compararEstadoBusqueda">
               @for (estado of estados; track estado.id) {
                 <option [ngValue]="estado">
@@ -229,7 +247,7 @@
           </div>
           <div class="habilidades">
             @for (hab of habilidadesParaMostrar; track $index) {
-              <span class="tag"> {{hab.habilidad?.nombreHabilidad}} </span>
+              <span class="tag"> {{hab.habilidad?.nombreHabilidad}} ({{ hab.habilidad?.id }}) </span>
             }
           </div>
         </div> 

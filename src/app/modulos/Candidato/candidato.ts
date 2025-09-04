@@ -17,5 +17,5 @@ export class Candidato {
     genero?: Genero;
     provincia?: Provincia;
     usuario?: Usuario;
-    cv?: CV;
+    candidatoCV?: CV;
 }

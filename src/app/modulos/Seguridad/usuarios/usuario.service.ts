@@ -17,6 +17,10 @@ export class UsuarioService {
     return this.http.get<UsuarioListadoDTO[]>(this.url);
   }
 
+  getUsuario(idUsuario:number): Observable<Usuario> {
+    return this.http.get<Usuario>(`${this.url}/miPerfil`);
+  }
+
   findById(idUsuario:number): Observable<Usuario> {
     return this.http.get<Usuario>(`${this.url}/${idUsuario}`);
   }

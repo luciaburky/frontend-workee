@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
 import Swal from 'sweetalert2';
 import { PaisService } from '../../../admin/ABMPais/pais.service';
 import { ProvinciaService } from '../../../admin/ABMProvincia/provincia.service';
@@ -7,7 +7,7 @@ import { GeneroService } from '../../../admin/ABMGenero/genero.service';
 import { Genero } from '../../../admin/ABMGenero/genero';
 import { Pais } from '../../../admin/ABMPais/pais';
 import { Provincia } from '../../../admin/ABMProvincia/provincia';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Candidato } from '../candidato';
 import { ModalService } from '../../../compartidos/modal/modal.service';
 import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
@@ -19,6 +19,8 @@ import { CandidatoHabilidad } from '../candidato-habilidad';
 import { HabilidadService } from '../../../admin/ABMHabilidad/habilidad.service';
 import { EstadoBusquedaLaboralService } from '../../../admin/ABMEstadoBusquedaLaboral/estado-busqueda-laboral.service';
 import { EstadoBusquedaLaboral } from '../../../admin/ABMEstadoBusquedaLaboral/estado-busqueda-laboral';
+import { UsuarioService } from '../../seguridad/usuarios/usuario.service';
+import { ref, StorageReference, Storage, uploadBytes, getDownloadURL, uploadBytesResumable } from '@angular/fire/storage';
 
 @Component({
   selector: 'app-perfil-candidato',
@@ -27,7 +29,8 @@ import { EstadoBusquedaLaboral } from '../../../admin/ABMEstadoBusquedaLaboral/e
   styleUrls: ['./perfil-candidato.component.css'],
 })
 export class PerfilCandidatoComponent implements OnInit {
-  
+  candidatoForm: FormGroup;
+  submitForm: boolean = false;
   modoEdicion: boolean = false;
   verContrasenia: boolean = false;
   mostrarCampoRepetir: boolean = false;
@@ -42,7 +45,7 @@ export class PerfilCandidatoComponent implements OnInit {
       id: 0,
       nombreEstadoBusqueda: ''
     },
-    cv: {
+    candidatoCV: {
       id: 0,
       enlaceCV: '',
     },
@@ -59,8 +62,27 @@ export class PerfilCandidatoComponent implements OnInit {
       correoUsuario: '',
       contraseniaUsuario: '',
       urlFotoUsuario: '',
-    }
+    },
+    habilidades: []
   }
+
+  fotoTemporal: string = '';
+  CVTemporal: any = null;
+  
+  //PARA FOTO DE PERFIL
+  urlFoto = '';
+  file!: File;
+  imgRef!: StorageReference;
+  previewUrl!: string;
+
+  //PARA CV
+  private storage = inject(Storage);
+  urlCV = '';
+  fileCV: any = null;
+  docRef!: StorageReference;
+  @ViewChild('fileInputCV') fileInputCV!: ElementRef<HTMLInputElement>;
+  nombreArchivoCV: string = '';
+
   modalRef?: NgbModalRef;
 
   paises: Pais[] =[];
@@ -74,6 +96,9 @@ export class PerfilCandidatoComponent implements OnInit {
 
   habilidadesSeleccionadasID: number[] = []; // array de ids de las habildiades que le quedaron al candidato
   habilidadesFinales: any;
+  habs: CandidatoHabilidad[] = [];
+
+  enlaceCV: string = '';
 
   constructor(
     private candidatoService: CandidatoService,
@@ -84,27 +109,69 @@ export class PerfilCandidatoComponent implements OnInit {
     private habilidadService: HabilidadService,
     private modalService: ModalService,
     private route: ActivatedRoute,
-  ) {}
+    private usuarioService: UsuarioService,
+  ) {
+    this.candidatoForm = new FormGroup({
+      nombreCandidato: new FormControl('', [Validators.required]),
+      apellidoCandidato: new FormControl('', [Validators.required]),
+      fechaDeNacimiento: new FormControl('', [Validators.required]),
+      provinciaCandidato: new FormControl({ value: null, disabled: true }, [Validators.required]),
+      paisCandidato: new FormControl({ value: null, disabled: true }, [Validators.required]),
+      estadoBusquedaCandidato: new FormControl(''),
+      generoCandidato: new FormControl({ value: null, disabled: true }, [Validators.required]),
+      habilidadesCandidato: new FormControl(''),
+      enlaceCV: new FormControl(''),
+      correoCandidato: new FormControl('', [Validators.required, Validators.email]),
+      contrasenia: new FormControl('', [Validators.required, Validators.minLength(8)]),
+      repetirContrasenia: new FormControl('', [Validators.required, Validators.minLength(8)]),
+      urlFotoPerfil: new FormControl(''),
+    })
+  }
 
   ngOnInit(): void {
-    
+    // console.log(this.modoEdicion)
     const id = Number(this.route.snapshot.paramMap.get('idCandidato'));
     
     this.provinciaService.findAllActivas().subscribe({
       next: (data) => {
         this.provincias = data;
         
-        this.candidatoService.findById(id).subscribe({
+        this.usuarioService.getUsuario(id).subscribe({
           next: (data) => {
             this.candidato = data;
+
             this.candidatoOriginal = JSON.parse(JSON.stringify(data));
+            console.log(this.candidato)
             this.paisSeleccionado = this.candidato.provincia?.pais;
-            this.filtrarProvinciasPorPais(this.paisSeleccionado || null);
-          },
-          error: (error) => {
-            console.error('Error al obtener el candidato', error);
+            this.enlaceCV = this.candidato.candidatoCV?.enlaceCV ?? '';
+            // console.log("enlace CV: ", this.enlaceCV)
+            this.habs = this.candidato.habilidades!;
+            // console.log("habilidades: ", this.habs);
+            this.habilidades = this.candidato.habilidades ?? [];
+            this.candidatoForm.patchValue({
+              nombreCandidato: this.candidato.nombreCandidato,
+              apellidoCandidato: this.candidato.apellidoCandidato,
+              generoCandidato: this.candidato.genero,
+              paisCandidato: this.candidato.provincia?.pais,
+              provinciaCandidato: this.candidato.provincia,
+              estadoBusquedaCandidato: this.candidato.estadoBusqueda,
+            });
+
+            this.filtrarProvinciasPorPais(this.candidato.provincia?.pais ?? null);
           }
-        });
+        })
+
+        // this.candidatoService.findById(id).subscribe({
+        //   next: (data) => {
+        //     this.candidato = data;
+        //     this.candidatoOriginal = JSON.parse(JSON.stringify(data));
+        //     this.paisSeleccionado = this.candidato.provincia?.pais;
+        //     this.filtrarProvinciasPorPais(this.paisSeleccionado || null);
+        //   },
+        //   error: (error) => {
+        //     console.error('Error al obtener el candidato', error);
+        //   }
+        // });
       },
       error: (error) => {
         console.error('Error al obtener provincias', error);
@@ -145,12 +212,14 @@ export class PerfilCandidatoComponent implements OnInit {
       this.todasHabilidades = habilidades;
     });
 
-    this.habilidades = this.candidato.habilidades ?? [];
-    // console.log("habilidades: ", this.habilidades)
+    // console.log("habilidades desde linea 205: ", this.habilidades)
   }
 
   modificarCandidato() {
     this.modoEdicion = true;
+    this.candidatoForm.get('generoCandidato')?.enable();
+    this.candidatoForm.get('paisCandidato')?.enable();
+    this.candidatoForm.get('provinciaCandidato')?.enable();
   }
 
   seleccionarHabilidades() {
@@ -201,12 +270,27 @@ export class PerfilCandidatoComponent implements OnInit {
       }).then((result) => {
         if (result.isConfirmed) {
           this.modoEdicion = false;
+          this.candidatoForm.get('generoCandidato')?.disable();
+          this.candidatoForm.get('paisCandidato')?.disable();
+          this.candidatoForm.get('provinciaCandidato')?.disable();
           this.candidato = JSON.parse(JSON.stringify(this.candidatoOriginal));
+
+          this.candidatoForm.patchValue({
+            nombreCandidato: this.candidato.nombreCandidato,
+            apellidoCandidato: this.candidato.apellidoCandidato,
+            generoCandidato: this.candidato.genero,
+            paisCandidato: this.candidato.provincia?.pais,
+            provinciaCandidato: this.candidato.provincia,
+            estadoBusquedaCandidato: this.candidato.estadoBusqueda,
+          });
+
+          this.filtrarProvinciasPorPais(this.candidato.provincia?.pais ?? null);
       }});
     }
   }
 
-  enviarDatos() {
+  async enviarDatos() {
+    this.submitForm = true;
     Swal.fire({
       title: '¿Desea confirmar los cambios realizados?',
       icon: "question",
@@ -220,7 +304,7 @@ export class PerfilCandidatoComponent implements OnInit {
       customClass: {
         title: 'titulo-chico',
       }
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
         let habilidadesAEnviar: number[] = [];
         // console.log("habilidades que ya tiene: ", this.candidato.habilidades?.map(habilidad => habilidad.habilidad?.id).filter((id): id is number => id !== undefined))
@@ -231,19 +315,31 @@ export class PerfilCandidatoComponent implements OnInit {
         }
         const contrasenia = this.candidato.usuario?.contraseniaUsuario ?? '';
         const repetirContrasenia = this.repetirContrasenia ?? '';
+        const formValue = this.candidatoForm.value;
+
+        let fotoURL = this.candidato.usuario?.urlFotoUsuario ?? '';
+        if (this.file) {
+          const subida = await this.subirFoto(this.file);
+          if (subida) fotoURL = subida;
+        }
+
         this.candidatoService.modificarCandidato(this.candidato.id!,
-                                                this.candidato.nombreCandidato ?? '',
-                                                this.candidato.apellidoCandidato ?? '',
-                                                this.candidato.provincia?.id ?? 0,
-                                                this.candidato.estadoBusqueda?.id ?? 0,
-                                                this.candidato.genero?.id ?? 0,
-                                                habilidadesAEnviar,
-                                                contrasenia,
-                                                repetirContrasenia
+                              formValue.nombreCandidato,
+                              formValue.apellidoCandidato,
+                              formValue.provinciaCandidato?.id ?? 0,
+                              formValue.estadoBusquedaCandidato?.id ?? 0,
+                              formValue.generoCandidato?.id ?? 0,
+                              habilidadesAEnviar,
+                              // contrasenia,
+                              fotoURL
+                              // repetirContrasenia
         ).subscribe({
           next: () => {
             this.candidatoOriginal = JSON.parse(JSON.stringify(this.candidato));
             this.modoEdicion = false;
+            this.candidatoForm.get('generoCandidato')?.disable();
+            this.candidatoForm.get('paisCandidato')?.disable();
+            this.candidatoForm.get('provinciaCandidato')?.disable();
             Swal.fire({
               toast: true,
               position: "top-end",
@@ -296,6 +392,7 @@ export class PerfilCandidatoComponent implements OnInit {
   }
 
   filtrarProvinciasPorPais(paisSeleccionado: Pais | null) {
+    // console.log("pais seleccionado: ", paisSeleccionado);
     this.paisSeleccionado = paisSeleccionado!;
     
     if (!paisSeleccionado) {
@@ -319,11 +416,131 @@ export class PerfilCandidatoComponent implements OnInit {
     return this.habilidadesFinales === undefined ? this.habilidades : this.habilidadesFinales;
   }
 
-  editarCV() {
-    console.log("Editar CV");
+  mostrarNombreArchivoCV(enlace: string | undefined): string { 
+    if (!enlace) return '';
+    try {
+      const start = enlace.indexOf('/o/');
+      const mid = enlace.indexOf('?', start);
+      if (start === -1) return enlace;
+
+      let nombreEnc = enlace.substring(start + 3, mid !== -1 ? mid : enlace.length);
+      let nombreDec = decodeURIComponent(nombreEnc);
+
+      const partes = nombreDec.split('/');
+      return partes[partes.length - 1];
+    } catch {
+      return enlace;
+    }
+  }
+
+  onFileSelectedFoto(event: any) {
+    const file: File = event.target.files[0];
+    if (file) {
+      this.file = file;
+      const reader = new FileReader();
+      reader.onload = e => this.fotoTemporal = e.target?.result as string;
+      reader.readAsDataURL(file);
+    }
+  }
+
+  async subirFoto(file: File): Promise<string | null> {
+    if (!file) return null;
+    try {
+      const filePath = `foto/${file.name}`;
+      const fileRef = ref(this.storage, filePath);
+      await uploadBytes(fileRef, file);
+      const downloadURL = await getDownloadURL(fileRef);
+
+      return downloadURL;
+    } catch (error) {
+      console.error("Error al subir la foto:", error);
+      return null;
+    }
+  }
+
+  verificarFormatoFoto(nombreArchivo: string): boolean {
+    const extensionesPermitidas = /\.(jpg|jpeg|png)$/i;
+    return extensionesPermitidas.test(nombreArchivo);
+  }
+  
+  onFileSelectedCV(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+      this.subirCV(file);
+    }
+  }
+
+  async subirCV(file: File) {
+    if (!file) return;
+    try {
+      // if (this.file.size > 5242880) {
+      //   this.candidatoForm.get('candidatoCV')?.setErrors({ tamanioInvalido: true });
+      // }
+      const filePath = `cv/${file.name}`;
+      const fileRef = ref(this.storage, filePath);
+      const downloadURL = await getDownloadURL(fileRef);
+
+      this.candidato.candidatoCV = {
+        enlaceCV: downloadURL,
+        fechaHoraAlta: new Date().toISOString()
+      };
+      this.candidatoService.actualizarCV(
+        this.candidato.id!,
+        this.candidato.candidatoCV?.enlaceCV ?? ''
+      ).subscribe({
+        next: (res) => {
+          // console.log("CV guardado en la BD:", res);
+        },
+        error: (err) => {
+          console.error("Error al guardar CV en BD:", err);
+        }
+      });
+    } catch (error) {
+      console.error("Error al subir el CV:", error);
+    }
+  }
+
+  isCampoInvalido(nombreCampo: string): boolean {
+    const control = this.candidatoForm.get(nombreCampo);
+    return !!(control && control.invalid && (control.touched || this.submitForm));
   }
 
   eliminarCV() {
-    console.log("Eliminar CV");
+    Swal.fire({
+      title: "¿Desea eliminar su CV?",
+      text: "Esta acción no se puede deshacer.",
+      icon: "question",
+      iconColor: "#31A5DD",
+      showCancelButton: true,
+      confirmButtonColor: "#31A5DD",
+      cancelButtonColor: "#697077",
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "No, volver",
+      reverseButtons: true,
+      customClass: {
+        title: 'titulo-chico',
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // console.log("Elimino CV");
+        this.candidatoService.eliminarCV(this.candidato.id!).subscribe({
+          next: () => {
+            this.candidato.candidatoCV = undefined;
+            Swal.fire({
+              toast: true,
+              position: "top-end",
+              icon: "success",
+              title: "El CV se eliminó correctamente",
+              timer: 3000,
+              showConfirmButton: false,
+            });
+        },
+        error: (error) => {
+          console.error('Error al eliminar CV', error); 
+        },
+        });
+      }
+    });
   }
 }
