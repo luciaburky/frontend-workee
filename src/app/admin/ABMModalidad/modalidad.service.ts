@@ -16,6 +16,10 @@ export class ModalidadService {
   findAll(): Observable<Modalidad[]> {
     return this.http.get<Modalidad[]>(this.url);
   }
+
+  findAllActivas(): Observable<Modalidad[]> {
+    return this.http.get<Modalidad[]>(`${this.url}/activas`);
+  }
   
   findById(idModalidad: number): Observable<Modalidad> {
     return this.http.get<Modalidad>(`${this.url}/${idModalidad}`);
