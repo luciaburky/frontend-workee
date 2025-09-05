@@ -49,5 +49,19 @@ export class UsuarioService {
     console.log("este es el body que voy a mandar en la request: ", body)
     return this.http.put<UsuarioListadoDTO[]>(`${this.url}/porRol`, body);
   }
+
+  cambiarContrasenia(contraseniaActual: string,
+                      nuevaContrasenia: string,
+                      repetirContrasenia: string,
+                      idUsuario: number
+  ) {
+    const body = {
+      "contraseniaActual": contraseniaActual,
+      "contraseniaNueva": nuevaContrasenia,
+      "repetirContrasenia": repetirContrasenia
+    }
+    console.log("este es el body que voy a mandar en la request: ", body)
+    return this.http.put(`${this.url}/actualizarContrasenia/${idUsuario}`, body);
+  }
   
 }
