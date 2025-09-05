@@ -16,6 +16,10 @@ export class TipoContratoService {
   findAll(): Observable<TipoContrato[]> {
     return this.http.get<TipoContrato[]>(this.url);
   }
+
+  findAllActivos(): Observable<TipoContrato[]> {
+    return this.http.get<TipoContrato[]>(`${this.url}/activos`);
+  }
   
   findById(idTipoContrato: number): Observable<TipoContrato> {
     return this.http.get<TipoContrato>(`${this.url}/${idTipoContrato}`);
