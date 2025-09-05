@@ -41,6 +41,32 @@
   cursor: pointer;
 }
 
+.boton-cambio-contrasenia {
+  background-color: #ffffff;
+  color: #31A5DD;
+  border: 2px solid #31A5DD;    
+  border-radius: 8px;
+  padding: 6px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.boton-subir-cv {
+  background-color: #ffffff;
+  color: #27a2df;
+  border: 2px solid #27a2df;    
+  border-radius: 8px;
+  padding: 6px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
 .foto-seccion {
   display: flex;
   flex-direction: column;
@@ -70,7 +96,7 @@ form .al-lado {
 }
 
 .form-group {
-  display: flex;
+  /* display: flex; */
   flex-direction: column;
   width: 100%;
 }
@@ -125,6 +151,26 @@ form .al-lado {
   align-items: center;
 }
 
+/* .boton-cambio-contrasenia:hover:not(:disabled) {
+  background-color: #2287bb;
+} */
+
+.boton-cambio-contrasenia:disabled,
+.boton-cambio-contrasenia.disabled-btn {
+  background-color: #d6d6d6;
+  color: #888;
+  cursor: not-allowed;
+  border-color: #d6d6d6;
+}
+
+.boton-subir-cv:disabled,
+.boton-subir-cv.disabled-btn {
+  background-color: #d6d6d6;
+  color: #888;
+  cursor: not-allowed;
+  border-color: #d6d6d6;
+}
+
 .input-group .form-control {
   flex: 1;
   border-top-right-radius: 0;
@@ -146,6 +192,11 @@ form .al-lado {
   justify-content: space-between;
   width: 100%;
   margin-top: 2rem;
+}
+
+.correo-contrasenia {
+  display: flex;
+  flex-direction: row;
 }
 
 form .form-grid {
