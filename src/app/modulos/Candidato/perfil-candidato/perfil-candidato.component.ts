@@ -21,6 +21,7 @@ import { EstadoBusquedaLaboralService } from '../../../admin/ABMEstadoBusquedaLa
 import { EstadoBusquedaLaboral } from '../../../admin/ABMEstadoBusquedaLaboral/estado-busqueda-laboral';
 import { UsuarioService } from '../../seguridad/usuarios/usuario.service';
 import { ref, StorageReference, Storage, uploadBytes, getDownloadURL, uploadBytesResumable } from '@angular/fire/storage';
+import { CambioContraseniaComponent } from '../../../compartidos/cambio-contrasenia/cambio-contrasenia.component';
 
 @Component({
   selector: 'app-perfil-candidato',
@@ -269,6 +270,7 @@ export class PerfilCandidatoComponent implements OnInit {
         }
       }).then((result) => {
         if (result.isConfirmed) {
+          this.fotoTemporal = '';
           this.modoEdicion = false;
           this.candidatoForm.get('generoCandidato')?.disable();
           this.candidatoForm.get('paisCandidato')?.disable();
@@ -467,6 +469,31 @@ export class PerfilCandidatoComponent implements OnInit {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
+      if (!file.name.toLowerCase().endsWith('.pdf')) {
+        Swal.fire({
+          icon: 'error',
+          title: 'El CV debe estar en formato PDF',
+          toast: true,
+          position: "top-end",
+          timer: 3000,
+          showConfirmButton: false,
+        });
+        this.fileInputCV.nativeElement.value = '';
+        return;
+      }
+      const maxSize = 5 * 1024 * 1024;
+      if (file.size > maxSize) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'El archivo debe ser menor a 5 MB',
+          toast: true,
+          position: "top-end",
+          timer: 3000,
+          showConfirmButton: false,
+        });
+        this.fileInputCV.nativeElement.value = '';
+        return;
+      }
       this.subirCV(file);
     }
   }
@@ -542,5 +569,15 @@ export class PerfilCandidatoComponent implements OnInit {
         });
       }
     });
+  }
+
+  abrirModalContrasenia() {
+    this.modalRef = this.modalService.open(CambioContraseniaComponent, {
+      centered: true,
+      scrollable: true,
+      size: 'md'
+    });
+
+    this.modalRef.componentInstance.usuarioId = this.candidato.usuario!.id;
   }
 }
