@@ -17,6 +17,10 @@ export class UsuarioService {
     return this.http.get<UsuarioListadoDTO[]>(this.url);
   }
 
+  getUsuario(idUsuario:number): Observable<Usuario> {
+    return this.http.get<Usuario>(`${this.url}/miPerfil`);
+  }
+
   findById(idUsuario:number): Observable<Usuario> {
     return this.http.get<Usuario>(`${this.url}/${idUsuario}`);
   }
@@ -44,6 +48,20 @@ export class UsuarioService {
     }
     console.log("este es el body que voy a mandar en la request: ", body)
     return this.http.put<UsuarioListadoDTO[]>(`${this.url}/porRol`, body);
+  }
+
+  cambiarContrasenia(contraseniaActual: string,
+                      nuevaContrasenia: string,
+                      repetirContrasenia: string,
+                      idUsuario: number
+  ) {
+    const body = {
+      "contraseniaActual": contraseniaActual,
+      "contraseniaNueva": nuevaContrasenia,
+      "repetirContrasenia": repetirContrasenia
+    }
+    console.log("este es el body que voy a mandar en la request: ", body)
+    return this.http.put(`${this.url}/actualizarContrasenia/${idUsuario}`, body);
   }
   
 }

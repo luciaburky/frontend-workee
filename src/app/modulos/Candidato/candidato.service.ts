@@ -15,16 +15,18 @@ export class CandidatoService {
   findById(idCandidato: number): Observable<Candidato> {
     return this.http.get<Candidato>(`${this.url}/${idCandidato}`);
   }
-
+  
   modificarCandidato(idCandidato: number,
-                    nombreCandidato: string,
-                    apellidoCandidato: string,
-                    idProvincia: number,
-                    idEstadoBusqueda: number,
-                    idGenero: number,
-                    idHabilidades: number[],
-                    contrasenia: string,
-                    repetirContrasenia: string) {
+    nombreCandidato: string,
+    apellidoCandidato: string,
+    idProvincia: number,
+    idEstadoBusqueda: number,
+    idGenero: number,
+    idHabilidades: number[],
+    urlFotoPerfil: string,
+    // contrasenia: string,
+    // repetirContrasenia: string
+  ) {
     const body = {
       "nombreCandidato": nombreCandidato,
       "apellidoCandidato": apellidoCandidato,
@@ -33,13 +35,23 @@ export class CandidatoService {
       "idEstadoBusqueda": idEstadoBusqueda,
       "idGenero": idGenero,
       "idHabilidades": idHabilidades,
+      "enlaceCV": null,
       "correoCandidato": null,
-      "contrasenia": contrasenia,
-      "repetirContrasenia": repetirContrasenia
+      // "contrasenia": contrasenia,
+      // "repetirContrasenia": contrasenia,
+      "urlFotoPerfil": urlFotoPerfil,
+      // "contraseniaActual": contrasenia
     }
     console.log("estoy desde el service, este es el body: ", body)
     return this.http.put(`${this.url}/${idCandidato}`, body);
   }
 
+  actualizarCV(idCandidato: number, enlaceCV: string) {
+    return this.http.put(`${this.url}/${idCandidato}/cv`, enlaceCV);
+  }
+
+  eliminarCV(idCandidato: number) {
+    return this.http.delete(`${this.url}/${idCandidato}/cv`);
+  }
 
 }
