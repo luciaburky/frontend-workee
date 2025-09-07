@@ -67,7 +67,7 @@ export const routes: Routes = [
     { path: 'empleados', component: ListadoEmpleadosComponent, canActivate: [authGuard] },
     { path: 'empleados/crear', component: CrearEmpleadoComponent, canActivate: [authGuard] },
     { path: 'empleados/perfil/:idEmpleado', component: PerfilEmpleadoComponent, canActivate: [authGuard] },
-    { path: 'inicio', component: PaginaInicioComponent}, //TODO: ????
+    { path: 'inicio', component: PaginaInicioComponent, canActivate: [publicGuard] }, 
 
     { path: 'login', component: LoginPageComponent, canActivate: [publicGuard] },
     { path: 'candidato/perfil/:idCandidato', component: PerfilCandidatoComponent, canActivate: [authGuard] },

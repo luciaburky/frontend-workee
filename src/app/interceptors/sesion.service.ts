@@ -1,9 +1,10 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, Subject, catchError, tap } from 'rxjs';
-import { StorageService } from './stoage.service';
+import { StorageService } from './storage.service';
 import { RolService } from '../modulos/seguridad/usuarios/rol.service';
 import { Rol } from '../modulos/seguridad/rol';
+import { Router } from '@angular/router';
 
 @Injectable({ providedIn: 'root' })
 export class SesionService {
@@ -22,7 +23,8 @@ export class SesionService {
   constructor(
     private http: HttpClient,
     private storage: StorageService,
-    private rolService: RolService
+    private rolService: RolService,
+    private router: Router
   ) {}
 
   /**
@@ -121,6 +123,41 @@ export class SesionService {
 
   getRolActual(): Rol | null {
     return this.rolUsuarioSubject.value;
+  }
+
+
+  // Nuevo método para redirigir según el rol
+  redirectBasedOnRol(): void {
+    const rolActual = this.getRolActual();
+    const payload = this.getPayload(); // Obtener el payload del token
+
+    if (!rolActual || !payload) {
+      console.warn('Rol o payload no disponibles. Redirigiendo a página por defecto.');
+      this.router.navigate(['/']); // Redirigir a la página de inicio
+      return;
+    }
+
+    // Aquí es donde ocurre la magia de la redirección
+    switch (rolActual.codigoRol) {
+      case 'CANDIDATO':
+        const idCandidato = payload.id; // Asume que el ID está en el payload
+        this.router.navigate(['/candidato/perfil/1']);
+        break;
+      case 'EMPLEADO_EMPRESA':
+        const idEmpleado = payload.id;
+        this.router.navigate(['/empleados/perfil', idEmpleado]);
+        break;
+      case 'ADMIN_EMPRESA':
+        const idEmpresa = payload.id;
+        this.router.navigate(['/empresas/perfil', idEmpresa]);
+        break;
+      case 'ADMIN_SISTEMA':
+        this.router.navigate(['/usuarios']);
+        break;
+      default:
+        console.warn('Rol no reconocido, redirigiendo a la página por defecto.');
+        this.router.navigate(['/']);
+    }
   }
 
 }

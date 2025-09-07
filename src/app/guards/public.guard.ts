@@ -8,8 +8,8 @@ export const publicGuard: CanActivateFn = (route, state) => {
 
   // Si la sesión está activa, redirige al dashboard.
   if (sesionService.isLoggedIn()) {
-    router.navigate(['/buscar-empresas']); //TODO: Cambiarlo, quizas yo le pondria el de mi perfil
-    
+    //router.navigate(['/buscar-empresas']); //TODO: Cambiarlo, quizas yo le pondria el de mi perfil
+    sesionService.redirectBasedOnRol();
     return false; // No permite el acceso a la ruta de login/registro
   }
 
