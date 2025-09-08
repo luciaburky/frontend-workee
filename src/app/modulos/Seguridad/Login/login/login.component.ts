@@ -42,6 +42,9 @@ export class LoginComponent implements OnInit{
   }
   ngOnInit(): void {
     this.loading$ = this.sesionService.loading$;
+    if (!this.sesionService.isLoggedIn()) {
+      this.sesionService.setLoading(false);
+    }
   }
 
   enviarDatos(){

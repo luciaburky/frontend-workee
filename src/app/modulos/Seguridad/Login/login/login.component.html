@@ -3,13 +3,13 @@
     <span class="visually-hidden">Cargando...</span>
   </div>
 </div>
-
+<ng-template #formTemplate>
 <div class="login-container">
   <div class="login-content">
     <h1 class="titulo-login">¡Hola nuevamente!</h1>
     <p class="subtitulo-login">Inicia sesión para continuar con tu experiencia Workee.</p>
 
-    <ng-template #formTemplate>
+    
     <form [formGroup]="loginForm" class="login-form">
       <div class="form-group">
         <label>Correo electrónico <span class="required"></span></label>
@@ -55,7 +55,7 @@
         Iniciar sesión
       </button>
     </form>
-    </ng-template>
+    
     <div class="bottom-text">
         ¿No tienes una cuenta? <a href="/registro">Regístrate</a>
     </div>
@@ -74,3 +74,4 @@
     </div>
   </div>
 </div>
+</ng-template>
