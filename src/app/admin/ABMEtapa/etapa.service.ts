@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Etapa } from './etapa';
+import { Empresa } from '../../modulos/empresa/empresa/empresa';
 
 @Injectable({
   providedIn: 'root'
@@ -57,6 +58,10 @@ export class EtapaService {
       "descripcionEtapa": descripcionEtapa
     }
     return this.http.put(`${this.url}/${idEtapa}`,body);
+  }
+
+  obtenerEtapasDisponiblesParaEmpresa(idEmpresa: number): Observable<Etapa[]> {
+    return this.http.get<Etapa[]>(`${this.url}/disponibles/empresa/${idEmpresa}`);
   }
 
 }

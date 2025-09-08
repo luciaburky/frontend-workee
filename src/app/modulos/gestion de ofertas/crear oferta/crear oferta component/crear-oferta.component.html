@@ -1,0 +1,93 @@
+<h1>Crear nueva oferta de empleo</h1>
+<p>Completa el formulario para publicar una nueva oferta de empleo en tu empresa</p>
+<div class="form-group"></div>
+<form [formGroup]="crearofertaForm">
+  <div class="oferta-wrapper">
+      <p>Informacion Basica</p>
+          <div class="form-group">
+              <label>Título de la oferta <span class="required">*</span></label>
+              <input type="text" required placeholder="Ingresar..." class="form-control"
+                    formControlName="titulo"
+                    [ngClass]="{ 'is-invalid': isCampoInvalido('titulo') }" />
+              @if (isCampoInvalido('titulo')) {
+                <div class="invalid-feedback">El campo "Titulo" no puede estar vacío</div>
+              }
+          </div>
+          <div class="form-group">
+              <label>Tipo de contrato <span class="required">*</span></label>
+              <select class="form-select" formControlName="tipocontrato" [compareWith]="compararTipoContrato">
+                @for (tipocontrato of tipocontratos; track tipocontrato.id) {
+                  <option [ngValue]="tipocontrato">{{ tipocontrato.nombreTipoContratoOferta}}</option>
+                }
+              </select>
+              @if (isCampoInvalido('tipocontrato')) {
+                <div class="invalid-feedback">El campo "Tipo de contrato" es obligatorio</div>
+              }
+            </div>
+            <div class="form-group">
+              <label>Modalidad <span class="required">*</span></label>
+              <select class="form-select" formControlName="modalidad" [compareWith]="compararTipoContrato">
+                @for (modalidad of modalidades; track modalidad.id) {
+                  <option [ngValue]="modalidad">{{ modalidad.nombreModalidadOferta}}</option>
+                }
+              </select>
+              @if (isCampoInvalido('tipocontrato')) {
+                <div class="invalid-feedback">El campo "Modalidad" es obligatorio</div>
+              }
+            </div>
+  </div>
+    <div class="oferta-wrapper">
+        <p>Detalle de la oferta</p>
+        <div class="form-group">
+            <label>Descripción <span class="required">*</span></label>
+            <textarea rows="4" placeholder="Ingresar..." class="form-control"
+                formControlName="descripcionOferta"
+                [ngClass]="{ 'is-invalid': isCampoInvalido('descripcionOferta') }"></textarea>
+            @if (isCampoInvalido('descripcionOferta')) {
+                <div class="invalid-feedback">El campo “Descripción de la oferta” no puede estar vacío</div>
+            }
+        </div>
+        <p>Responsabilidades de la oferta</p>
+        <div class="form-group">
+            <label>Responsabilidades de la oferta <span class="required">*</span></label>
+            <textarea rows="4" placeholder="Ingresar..." class="form-control"
+                formControlName="responsabilidadesOferta"
+                [ngClass]="{ 'is-invalid': isCampoInvalido('responsabilidadesOferta') }"></textarea>
+            @if (isCampoInvalido('responsabilidadesOferta')) {
+                <div class="invalid-feedback">El campo “Responsabilidades de la Oferta” no puede estar vacío</div>
+            }
+        </div>
+        <div class="form-group">
+            <div class="titulo-habilidades">
+                <label>Habilidades</label>
+                
+                <button id="icon-button" (click)="seleccionarHabilidades()">
+                    <span class="material-symbols-outlined editar-cv" title="Editar habilidades">edit</span>
+                </button>
+                
+            </div>
+            <div class="habilidades">
+                @for (hab of habilidadesParaMostrar; track $index) {
+                <span class="tag"> {{hab.habilidad.nombreHabilidad}} </span>
+                }
+            </div>
+            <p>Añade las habilidades blandas y técnicas requeridas para tu puesto</p>
+        </div> 
+    </div>
+    <div class="oferta-wrapper">
+        <p>Proceso de seleccion</p>
+        <p>Selecciona las etapas que conformaran el proceso de selección para esta oferta.</p>
+        <p>Etapas disponibles</p>
+        <div class="form-group">
+            <div class="etapas-disponibles">
+                @for (etapa of etapasDisponibles; track etapa.id) {
+                    <div class="etapa-disponible" (click)="agregarEtapa(etapa)">
+                        <button class="tarjeta-etapa">{{ etapa.nombreEtapa }}</button>
+                    </div>
+                }
+            </div>
+
+        </div>
+    </div>
+
+</form>

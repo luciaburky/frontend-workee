@@ -35,6 +35,7 @@ import { RecuperarContraseniaComponent } from './modulos/seguridad/Recuperacion 
 import { GestionderolesComponent } from './modulos/seguridad/Gestion de roles/GDR Componente/gestion-de-roles.component';
 import { HabilitacionEmpresasComponent } from './modulos/seguridad/habilitacion-empresas/habilitacion-empresas.component';
 import { SidebarComponent } from './compartidos/SideBar/sidebar.component.component';
+import { CrearOfertaComponent } from './modulos/gestion de ofertas/crear oferta/crear oferta component/crear-oferta.component';
 
 export const routes: Routes = [
     // { path: 'buscar-ofertas', component: BuscarComponent },
@@ -70,7 +71,7 @@ export const routes: Routes = [
 
 
 
-
+    { path: 'crear-oferta', component: CrearOfertaComponent},
     { path: 'registro', component: RegistroComponent},
     { path: 'registro-empresa', component: RegistroEmpresaComponent },
     { path: 'registro-candidato', component: RegistroCandidatoComponent },

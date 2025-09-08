@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Empresa } from './empresa';
+import { SesionService } from '../../../interceptors/sesion.service';
 
 @Injectable({
   providedIn: 'root',
@@ -10,7 +11,10 @@ import { Empresa } from './empresa';
 export class EmpresaService {
   private url = 'http://localhost:9090/empresas';
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private sesionService: SesionService,
+  ) {}
   
   findById(idEmpresa: number): Observable<Empresa> {
     return this.http.get<Empresa>(`${this.url}/${idEmpresa}`);
@@ -45,4 +49,12 @@ export class EmpresaService {
     return this.http.delete<void>(`${this.url}/${idEmpresa}`);
   }
   
+  getidEmpresabyCorreo(){
+    const correo = this.sesionService.getCorreoUsuario();
+    if (!correo) {
+      console.error("No se pudo obtener el correo del token para obtener el id Empresa.");
+      return;
+    }
+    return this.http.get<number>(`${this.url}/idEmpresaPorCorreo/${correo}`);
+  }
 }
