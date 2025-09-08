@@ -20,6 +20,9 @@ export class SesionService {
 
   private endpointURL = 'http://localhost:9090/auth';
 
+  private loadingSubject = new BehaviorSubject<boolean>(true);
+  loading$ = this.loadingSubject.asObservable();
+
   constructor(
     private http: HttpClient,
     private storage: StorageService,
@@ -27,9 +30,6 @@ export class SesionService {
     private router: Router
   ) {}
 
-  /**
-   * POST existing token and invalidates it on the server for no further usage.
-   */
   logout(): Observable<any> {
     const options = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -44,9 +44,6 @@ export class SesionService {
     );
   }
 
-  /**
-   * Clear all the session data stored in the browser and notifies session listening components.
-   */
   clearLocalSession(): void {
     // Limpia local y session storage de forma SSR-safe
     this.storage.clearAll();
@@ -56,24 +53,16 @@ export class SesionService {
     this.announceSource.next('logout');
   }
 
-  /**
-   * Returns the local stored session obtained by the last "login" action.
-   */
+
   getCurrentSesion(): string | null {
     // En tu código guardás el token en currentSession (string). Si fuera JSON, acá lo parseás.
     return this.storage.getItem('currentSession');
   }
 
-  /**
-   * Return the local stored session state obtained by the last "login" action.
-   */
   isLoggedIn(): boolean {
     return this.storage.getItem('isLoggedIn') === 'true';
   }
 
-  /**
-   * Start local session persisting token and session flags
-   */
   startLocalSession(token: string): void {
     this.storage.setItem('token', token);
     this.storage.setItem('currentSession', token);
@@ -82,9 +71,7 @@ export class SesionService {
     this.announceSource.next('login');
   }
 
-  /**
-   * Read token (SSR-safe)
-   */
+  
   getToken(): string | null {
     return this.storage.getItem('token');
   }
@@ -104,24 +91,32 @@ export class SesionService {
   }
 
     cargarRolUsuario(): void {
-    const correo = this.getCorreoUsuario();
-    if (!correo) {
-      console.error("No se pudo obtener el correo del token.");
-      return;
-    }
-
-    this.rolService.buscarRolPorCorreoUsuario(correo).subscribe({
-      next: (rol) => {
-        this.rolUsuarioSubject.next(rol); // lo guardamos en memoria
-      },
-      error: (err) => {
-        console.error("Error al obtener rol del usuario:", err);
-        this.rolUsuarioSubject.next(null);
+      this.setLoading(true);
+      const correo = this.getCorreoUsuario();
+      if (!correo) {
+        this.setLoading(false);
+        console.error("No se pudo obtener el correo del token.");
+        return;
       }
-    });
+
+      this.rolService.buscarRolPorCorreoUsuario(correo).subscribe({
+        next: (rol) => {
+          this.rolUsuarioSubject.next(rol); 
+          console.log("Rol del usuario cargado:", rol);
+          this.redirectBasedOnRol();
+          this.setLoading(false);
+        },
+        error: (err) => {
+          console.error("Error al obtener rol del usuario:", err);
+          this.rolUsuarioSubject.next(null);
+          this.setLoading(false);
+        }
+      });
   }
 
   getRolActual(): Rol | null {
+    console.log("el rol actual es: ", this.rolUsuarioSubject.value)
+
     return this.rolUsuarioSubject.value;
   }
 
@@ -129,27 +124,23 @@ export class SesionService {
   // Nuevo método para redirigir según el rol
   redirectBasedOnRol(): void {
     const rolActual = this.getRolActual();
-    const payload = this.getPayload(); // Obtener el payload del token
 
-    if (!rolActual || !payload) {
+    if (!rolActual) {
       console.warn('Rol o payload no disponibles. Redirigiendo a página por defecto.');
-      this.router.navigate(['/']); // Redirigir a la página de inicio
+      this.router.navigate(['/buscar-empresas']);
       return;
     }
 
     // Aquí es donde ocurre la magia de la redirección
     switch (rolActual.codigoRol) {
       case 'CANDIDATO':
-        const idCandidato = payload.id; // Asume que el ID está en el payload
-        this.router.navigate(['/candidato/perfil/1']);
+        this.router.navigate(['/candidato/perfil']);
         break;
       case 'EMPLEADO_EMPRESA':
-        const idEmpleado = payload.id;
-        this.router.navigate(['/empleados/perfil', idEmpleado]);
+        this.router.navigate(['/empleados/perfil']);
         break;
       case 'ADMIN_EMPRESA':
-        const idEmpresa = payload.id;
-        this.router.navigate(['/empresas/perfil', idEmpresa]);
+        this.router.navigate(['/empresas/perfil']);
         break;
       case 'ADMIN_SISTEMA':
         this.router.navigate(['/usuarios']);
@@ -158,6 +149,10 @@ export class SesionService {
         console.warn('Rol no reconocido, redirigiendo a la página por defecto.');
         this.router.navigate(['/']);
     }
+  }
+
+  setLoading(isLoading: boolean) {
+    this.loadingSubject.next(isLoading);
   }
 
 }

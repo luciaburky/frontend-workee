@@ -63,14 +63,14 @@ export const routes: Routes = [
     { path: 'parametros/rubros', component: ListadoRubrosComponent, canActivate: [authGuard] },
     { path: 'parametros/habilidades', component: ListadoHabilidadesComponent, canActivate: [authGuard] },
     { path: 'parametros/etapas', component: ListadoEtapasComponent, canActivate: [authGuard] },
-    { path: 'empresas/perfil/:id', component: PerfilEmpresaComponent, canActivate: [authGuard] },
+    { path: 'empresas/perfil', component: PerfilEmpresaComponent, canActivate: [authGuard] },
     { path: 'empleados', component: ListadoEmpleadosComponent, canActivate: [authGuard] },
     { path: 'empleados/crear', component: CrearEmpleadoComponent, canActivate: [authGuard] },
-    { path: 'empleados/perfil/:idEmpleado', component: PerfilEmpleadoComponent, canActivate: [authGuard] },
+    { path: 'empleados/perfil', component: PerfilEmpleadoComponent, canActivate: [authGuard] },
     { path: 'inicio', component: PaginaInicioComponent, canActivate: [publicGuard] }, 
 
     { path: 'login', component: LoginPageComponent, canActivate: [publicGuard] },
-    { path: 'candidato/perfil/:idCandidato', component: PerfilCandidatoComponent, canActivate: [authGuard] },
+    { path: 'candidato/perfil', component: PerfilCandidatoComponent, canActivate: [authGuard] },
 
 
 

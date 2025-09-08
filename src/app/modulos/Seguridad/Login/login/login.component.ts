@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Form, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router'; 
 import Swal from 'sweetalert2';
@@ -9,6 +9,7 @@ import { SesionService } from '../../../../interceptors/sesion.service';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { ModalService } from '../../../../compartidos/modal/modal.service';
 import { RecuperarContraseniaModal } from '../../Recuperacion Contraseña/Modal/recuperar-contrasenia-modal.component';
+import { Observable } from 'rxjs';
 //import { RecuperarContraseniaComponent } from '../../Recuperacion Contraseña/recuperar-contrasenia.component';
 
 
@@ -18,12 +19,15 @@ import { RecuperarContraseniaModal } from '../../Recuperacion Contraseña/Modal/
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit{
   loginForm: FormGroup
   verContrasenia: boolean = false;
   submitForm: boolean = false;
   backendEmailInvalido = false;
   modalRef?: NgbModalRef;
+
+  //para lo re redireccion
+  loading$!: Observable<boolean>;
 
   constructor(
     private router: Router,
@@ -35,6 +39,9 @@ export class LoginComponent {
       correo: new FormControl('',[Validators.required, Validators.email]),
       contrasenia: new FormControl('',[Validators.required])
     });
+  }
+  ngOnInit(): void {
+    this.loading$ = this.sesionService.loading$;
   }
 
   enviarDatos(){
@@ -57,7 +64,8 @@ export class LoginComponent {
   this.authService.login(correo, contrasenia).subscribe({
     next: (token: string) => {
       this.sesionService.startLocalSession(token);
-      this.router.navigate(['/registro']);
+      //this.router.navigate(['/registro']);
+      this.sesionService.cargarRolUsuario();
     },
     error: () => {
       console.log('Credenciales inválidas');
