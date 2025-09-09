@@ -38,6 +38,7 @@ import { SidebarComponent } from './compartidos/SideBar/sidebar.component.compon
 import { ParametrosPageComponent } from './admin/parametros-page/parametros-page.component';
 import { authGuard } from './guards/auth.guard';
 import { publicGuard } from './guards/public.guard';
+import { DetalleEmpresaPendienteComponent } from './modulos/seguridad/habilitacion-empresas/detalle-empresa-pendiente/detalle-empresa-pendiente/detalle-empresa-pendiente.component';
 
 export const routes: Routes = [
     // { path: 'buscar-ofertas', component: BuscarComponent },
@@ -85,6 +86,7 @@ export const routes: Routes = [
     { path: 'usuarios', component: ListadoUsuariosComponent, canActivate: [authGuard] },
     { path: 'usuarios/detalle/:idUsuario', component: DetalleUsuarioComponent, canActivate: [authGuard] },
     { path: 'habilitaciones', component: HabilitacionEmpresasComponent, canActivate: [authGuard] },
+    { path: 'habilitaciones/detalle-empresa/:id', component: DetalleEmpresaPendienteComponent, canActivate: [authGuard] },
 
 
 
