@@ -4,6 +4,8 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { FiltroUbicacion } from './busqueda-empresas/filtro-ubicacion';
 import { Empresa } from '../empresa/empresa/empresa';
 import { Candidato } from '../candidato/candidato';
+import { Oferta } from '../oferta/oferta';
+import { BusquedaEmpresa } from './busqueda-empresas/busqueda-empresa';
 
 @Injectable({
   providedIn: 'root'
@@ -19,24 +21,24 @@ export class BusquedaService {
     return this.http.get<FiltroUbicacion[]>(`${this.url}/filtroUbicacion`);
   }
   
-  buscarEmpresasPorNombre(texto: string): Observable<any[]> {
-    return this.http.get<any[]>(`${this.url}/empresasPorNombre?nombreEmpresa=${texto}`);
+  buscarEmpresasPorNombre(texto: string): Observable<BusquedaEmpresa[]> {
+    return this.http.get<BusquedaEmpresa[]>(`${this.url}/empresasPorNombre?nombreEmpresa=${texto}`);
   }
   
   filtrarEmpresas(
                   nombreEmpresa: string | null,
                   idsRubros: number[] | null,
                   idsProvincias: number[] | null,
-                  // tieneOfertasAbiertas: boolean | null
-                ): Observable<Empresa[]> {
+                  tieneOfertasAbiertas: boolean | null
+                ): Observable<BusquedaEmpresa[]> {
     const body = {
       "nombreEmpresa": nombreEmpresa,
       "idsRubros": idsRubros,
       "idsProvincias": idsProvincias,
-      "tieneOfertasAbiertas": null
+      "tieneOfertasAbiertas": tieneOfertasAbiertas
     }
     console.log("estoy desde el service, este es el body: ", body);
-    return this.http.post<Empresa[]>(`${this.url}/empresasFiltradas`, body);
+    return this.http.post<BusquedaEmpresa[]>(`${this.url}/empresasFiltradas`, body);
   }
   
   buscarCandidatosPorNombre(texto: string): Observable<any[]> {
@@ -56,9 +58,40 @@ export class BusquedaService {
       "idsProvincias": idsProvincias,
       "idsPaises": idsPaises,
       "idsHabilidades": idsHabilidades,
-      "idsEstadosDeBusqueda": idsEstadosDeBusqueda,
+      "idsEstadosBusqueda": idsEstadosDeBusqueda,
     }
     console.log("estoy desde el service, este es el body: ", body);
     return this.http.post<Candidato[]>(`${this.url}/candidatosFiltrados`, body);
+  }
+  
+  buscarOfertasPorNombre(texto: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.url}/ofertasPorNombre?nombreOferta=${texto}`);
+  }
+  
+  filtrarOfertas(
+                  nombreOferta: string | null,
+                  idsProvincias: number[] | null,
+                  idsTipoContrato: number[] | null,
+                  idsModalidadOferta: number[] | null,
+                  fechaFiltro: string | null,
+                ): Observable<Oferta[]> {
+    const body = {
+      "nombreOferta": nombreOferta,
+      "idsProvincias": idsProvincias,
+      "idsTipoContrato": idsTipoContrato,
+      "idsModalidadOferta": idsModalidadOferta,
+      "fechaFiltro": fechaFiltro,
+    }
+    console.log("estoy desde el service, este es el body: ", body);
+    return this.http.post<Oferta[]>(`${this.url}/ofertasFiltradas`, body);
+  }
+
+
+  oferta(id: number): Observable<Oferta> {
+    return this.http.get<Oferta>(`http://localhost:9090/ofertas/${id}`);
+  }
+
+  ofertasPorEmpresa(id: number): Observable<Oferta[]> {
+    return this.http.get<Oferta[]>(`http://localhost:9090/ofertas/empresa/${id}`);
   }
 }

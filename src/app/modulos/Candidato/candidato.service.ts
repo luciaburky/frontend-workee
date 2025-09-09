@@ -1,7 +1,7 @@
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Candidato } from './candidato';
+import { Candidato } from '../candidato/candidato';
 
 @Injectable({
   providedIn: 'root',
