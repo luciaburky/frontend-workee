@@ -74,20 +74,104 @@
             <p>Añade las habilidades blandas y técnicas requeridas para tu puesto</p>
         </div> 
     </div>
-    <div class="oferta-wrapper">
-        <p>Proceso de seleccion</p>
-        <p>Selecciona las etapas que conformaran el proceso de selección para esta oferta.</p>
-        <p>Etapas disponibles</p>
+    
+        <div class="oferta-wrapper">
+        <p class="seccion-titulo">Proceso de selección</p>
+        <p class="seccion-sub">Selecciona las etapas que conformarán el proceso de selección para esta oferta.</p>
+
+        <p class="seccion-subtitulo">Etapas disponibles</p>
         <div class="form-group">
-            <div class="etapas-disponibles">
-                @for (etapa of etapasDisponibles; track etapa.id) {
-                    <div class="etapa-disponible" (click)="agregarEtapa(etapa)">
-                        <button class="tarjeta-etapa">{{ etapa.nombreEtapa }}</button>
-                    </div>
-                }
-            </div>
-
+          <div class="etapas-disponibles">
+            @for (etapa of etapasDisponibles; track etapa.id) {
+              <div class="etapa-disponible" (click)="agregarEtapa(etapa)">
+                <button type="button" class="tarjeta-etapa">
+                  <span class="tarjeta-titulo">{{ etapa.nombreEtapa }}</span>
+                  <span class="tarjeta-subtitulo">{{ etapa.descripcionEtapa }}</span>
+                  <!-- (opcional) descripción corta si la tenés en tus datos -->
+                  <!-- <span class="tarjeta-desc">{{ etapa.descripcion }}</span> -->
+                </button>
+              </div>
+            }
+          </div>
         </div>
-    </div>
 
+        <div class="oferta-wrapper seleccionadas" *ngIf="etapasSeleccionadas.length > 0">
+          <p class="seccion-subtitulo">Etapas seleccionadas</p>
+
+          @for (etapa of etapasSeleccionadas; track etapa.numeroEtapa; let i = $index) {
+            <div class="etapa-card">
+              <div class="etapa-header">
+                <span class="icon-tip" aria-hidden="true"></span>
+                <h5 class="etapa-titulo">
+                  {{ etapa.numeroEtapa }}. {{ getNombreEtapa(etapa.idEtapa) }}
+                </h5>
+                <!-- MISMA lógica: solo cambia el look/posición -->
+                <button type="button" class="btn btn-danger btn-cerrar" (click)="quitarEtapa(i)">Quitar</button>
+              </div>
+
+              <div class="campo">
+                <label class="campo-label">Descripción</label>
+                <div class="editor-simulador">
+                  <div class="editor-toolbar">
+                    <!-- Aca iria lo de negrita y demas  PARA LA CAMIIIIIIIII
+                     IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII-->
+                  </div>
+                  <textarea class="form-control editor-area"
+                            [(ngModel)]="etapasSeleccionadas[i].descripcionAdicional" [ngModelOptions]="{ standalone: true }"></textarea>
+                </div>
+              </div>
+
+              <!-- <div class="form-group cv-wrapper">
+              <label for="fileCV" class="p-0 my-0 mb-2">Documentos Adjuntos</label>            
+              <div class="cv-drop-area" (click)="abrirSelectorArchivoEtapa()">
+                  <p class="cv-texto">Adjuntar documentos</p>
+              </div>
+          
+              @if (fileArchivoEtapa) {
+                  <div class="cv-box">
+                  <span class="material-symbols-outlined icono-pdf">description</span>
+                  <div class="cv-detalle">
+                      <p><a [href]="ArchivoEtapaTemporal" target="_blank">{{ fileArchivoEtapa?.name }}</a></p>
+                      <small>Actualizado el {{ today | date:'dd/MM/yyyy' }}</small>
+                  </div>
+                  <div class="cv-acciones">
+                      <button id="icon-button" type="button" (click)="eliminarArchivoEtapa()">
+                      <span class="material-symbols-outlined eliminar-cv" title="Eliminar">delete</span>
+                      </button>
+                  </div>
+                  </div>
+              }
+
+              @if (crearofertaForm.get('enlaceArchivoEtapa')?.hasError('formato')) {
+                  <p class="text-error">El formato del archivo seleccionado no es válido. Debe ser .pdf</p>
+              }
+              @if (crearofertaForm.get('enlaceArchivoEtapa')?.hasError('tamanioInvalido') && crearofertaForm.get('enlaceArchivoEtapa')?.touched) {
+                  <p class="text-error">El documento no debe superar los 5MB.</p>
+              }
+              
+              <input
+                  type="file"
+                  id="fileArchivoEtapa"
+                  accept="application/pdf"
+                  hidden
+                  formControlName="enlaceArchivoEtapa"
+                  (change)="onArchivoEtapaSelected($event)"
+              />
+              </div> -->
+            <label class="check-row">
+              <input
+                #cb
+                type="checkbox"
+                [checked]="etapasSeleccionadas[i].adjuntaEnlace"
+                (change)="toggleAdjuntaEnlace(i, cb.checked)"
+              />
+              El candidato podrá adjuntar un enlace
+            </label>
+            </div>
+          }
+        </div>
+      </div>
+      <div class="botones">
+          <button type="button" class="btn btn-primary guardar" (click)="enviarDatos()">Guardar oferta</button>
+      </div>
 </form>

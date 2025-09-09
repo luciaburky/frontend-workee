@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { ofertaEtapaDTO } from '../gestion de ofertas/crear oferta/ofertaEtapaDTO';
 
 
 @Injectable({
@@ -17,19 +18,21 @@ export class OfertaService {
     titulo: string,
     descripcion: string,
     responsabilidades: string,
-    //idEmpresa: number,
     idModalidadOferta: number,
     idTipoContratoOferta: number,
     idHabilidades: number[],
+    idEmpresa: number,
+    ofertaEtapas: ofertaEtapaDTO[] = [],
   ){
     const body = {
         titulo,
         descripcion,
         responsabilidades,
-        //idEmpresa,
         idModalidadOferta,
         idTipoContratoOferta,
         idHabilidades,
+        idEmpresa,        
+        ofertaEtapas,
     };
     return this.http.post(`${this.url}`, body);
   }

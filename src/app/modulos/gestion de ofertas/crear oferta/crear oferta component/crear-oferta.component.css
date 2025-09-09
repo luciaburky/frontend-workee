@@ -42,3 +42,98 @@ form .habilidades .tag {
   cursor: pointer;
   transition: border-color 0.3s ease;
 }
+
+
+/* Títulos y subtítulos */
+.oferta-wrapper .seccion-titulo{font-size:1.25rem;font-weight:700;color:#1f2937;margin:.25rem 0 .35rem}
+.oferta-wrapper .seccion-sub{color:#6b7280;margin:.2rem 0 1rem}
+.oferta-wrapper .seccion-subtitulo{font-weight:600;color:#374151;margin:1.2rem 0 .8rem}
+
+/* Grid de etapas disponibles */
+.etapas-disponibles{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:1rem;
+}
+.etapa-disponible .tarjeta-etapa{
+  width:100%;
+  text-align:left;
+  background:#fff;
+  border:1px solid #E5EAF1;
+  border-radius:12px;
+  padding:16px 18px;
+  box-shadow:0 1px 0 rgba(16,24,40,.02);
+  transition:border-color .2s, box-shadow .2s, background-color .2s;
+  cursor:pointer;
+}
+.etapa-disponible .tarjeta-etapa:hover{
+  border-color:#8BD1F1;
+  background:#EAF5FE;
+  box-shadow:0 0 0 3px rgba(49,165,221,.15);
+}
+.tarjeta-etapa .tarjeta-titulo{display:block;font-weight:700;color:#111827;margin-bottom:4px}
+.tarjeta-etapa .tarjeta-subtitulo{display:block;color:#111827;margin-bottom:4px}
+.tarjeta-etapa .tarjeta-desc{display:block;font-size:.9rem;color:#6b7280}
+
+/* Contenedor de seleccionadas: sólo estilo, no lógica */
+.seleccionadas{background:transparent;box-shadow:none;padding:0}
+
+/* Card de etapa seleccionada (igual a la imagen) */
+.etapa-card{
+  position:relative;
+  background:#fff;
+  border:2px solid #8BD1F1;
+  border-radius:14px;
+  padding:18px;
+  margin:18px 0;
+  box-shadow:0 2px 6px rgba(17,24,39,.04);
+}
+.etapa-header{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.icon-tip::before{content:"💡";display:inline-block;font-size:18px}
+.etapa-titulo{margin:0;font-size:1rem;font-weight:700;color:#1c7fb9}
+
+/* Botón cerrar arriba a la derecha, usando tu mismo botón (click) */
+.btn-cerrar{
+  position:absolute;top:10px;right:10px;
+  background:transparent !important;border:none !important;
+  color:#9CA3AF;padding:0;width:28px;height:28px;line-height:28px;
+  text-indent:-9999px;
+}
+.btn-cerrar::after{
+  content:"✕";position:absolute;inset:0;text-indent:0;
+  display:flex;align-items:center;justify-content:center;font-size:18px;
+}
+.btn-cerrar:hover{color:#6B7280;filter:none}
+
+/* Campos y labels */
+.campo{margin:12px 0}
+.campo-label{display:block;font-weight:600;color:#374151;margin-bottom:6px}
+
+/* Simulación de editor */
+.editor-simulador{border-radius:10px;overflow:hidden}
+.editor-toolbar{
+  display:flex;gap:6px;align-items:center;
+  border:1px solid #E5E7EB;border-bottom:none;
+  background:#F8FAFC;padding:6px 8px
+}
+.editor-toolbar .tool{
+  border:0;background:transparent;padding:4px 8px;border-radius:8px;cursor:default
+}
+.editor-area{
+  border:1px solid #E5E7EB;border-top:none;border-radius:0 0 10px 10px;
+  height:140px;resize:vertical
+}
+
+/* Adjuntar documentos */
+.adjuntar-btn{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:10px 14px;border-radius:24px;
+  border:1px dashed #CFD8E3;background:#F5F7FA;cursor:pointer;user-select:none
+}
+.adjuntar-btn .paperclip::before{content:"📎"}
+.adjuntar-btn input[type="file"]{display:none}
+.ayuda{font-size:12px;color:#6B7280;margin-top:6px}
+
+/* Checkbox final */
+.check-row{display:flex;align-items:center;gap:8px;margin-top:10px;color:#374151}
+.check-row input[type="checkbox"]{width:16px;height:16px;accent-color:#31A5DD}

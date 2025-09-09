@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
 import { Router } from '@angular/router';
 import { TipoContrato } from '../../../../admin/ABMTipoContrato/tipo-contrato';
@@ -20,6 +20,7 @@ import { SesionService } from '../../../../interceptors/sesion.service';
 import { Empleado } from '../../../empresa/empleados/empleado';
 import { EmpresaService } from '../../../empresa/empresa/empresa.service';
 import { ofertaEtapaDTO } from '../ofertaEtapaDTO';
+import { Storage, ref, uploadBytes, getDownloadURL, StorageReference } from '@angular/fire/storage';
 
 @Component({
   selector: 'app-crear-oferta',
@@ -44,6 +45,15 @@ export class CrearOfertaComponent implements OnInit {
   etapasDisponibles: Etapa[] = [];
   etapasSeleccionadas: ofertaEtapaDTO[] = [];
 
+    //PARA Archivo Etapa
+    urlArchivoEtapa = '';
+    fileArchivoEtapa: any = null;
+    docRef!: StorageReference;
+    ArchivoEtapaTemporal: any = null;
+    today: Date = new Date();
+    
+
+
   idEmpresaObtenida!: number;
   constructor(
     private router: Router,
@@ -54,6 +64,8 @@ export class CrearOfertaComponent implements OnInit {
     private modalService: ModalService,
     private etapaService: EtapaService,
     private empresaService: EmpresaService,
+    private changeDetectorRef: ChangeDetectorRef,
+    private storage: Storage,
 
   ){
   this.crearofertaForm = new FormGroup({
@@ -62,7 +74,8 @@ export class CrearOfertaComponent implements OnInit {
     modalidad: new FormControl('', [Validators.required]),
     descripcionOferta: new FormControl('', [Validators.required]),
     responsabilidadesOferta: new FormControl('', [Validators.required]),
-    habilidadesOferta: new FormControl('')
+    habilidadesOferta: new FormControl(''),
+    enlaceArchivoEtapa: new FormControl(''),
   });
   }
 
@@ -120,7 +133,7 @@ ngOnInit(){
 
 }
 
-  enviarDatos(){
+  async enviarDatos(){
     this.submitForm = true;
 
     if (this.crearofertaForm.invalid) {
@@ -131,20 +144,50 @@ ngOnInit(){
       });
       return;
     }
+
+    
+
+    // try{
+
+    // } catch(error){
+      
+    // }
+    // let enlaceArchivoEtapa = '';
+    // if (this.fileArchivoEtapa) {
+    //   this.docRef = ref(this.storage, `Archivo Adjunto/${this.fileArchivoEtapa.name}`);
+    //   const snapshot = await uploadBytes(this.docRef, this.fileArchivoEtapa);
+    //   enlaceArchivoEtapa = await getDownloadURL(snapshot.ref);
+    // }
       
     const titulo = this.crearofertaForm.get('titulo')?.value;
-    const descripcion = this.crearofertaForm.get('descripcion')?.value;
+    const descripcion = this.crearofertaForm.get('descripcionOferta')?.value;
     const modalidadSeleccionada = this.crearofertaForm.get('modalidad')?.value.id;
     const tipocontratoSeleccionado = this.crearofertaForm.get('tipocontrato')?.value.id;
-    const responsabilidades = this.crearofertaForm.get('responsabilidades')?.value;
+    const responsabilidades = this.crearofertaForm.get('responsabilidadesOferta')?.value;
 
-    this.ofertaService.crearOferta(
+      console.log(
+    '💩 DATOS A ENVIAR 💩',
+    {
       titulo,
       descripcion,
       responsabilidades,
       modalidadSeleccionada,
       tipocontratoSeleccionado,
+      habilidadesSeleccionadasID: this.habilidadesSeleccionadasID,
+      empresaId: this.idEmpresaObtenida,
+      etapas: this.etapasSeleccionadas
+    }
+  );
+
+    this.ofertaService.crearOferta(
+      titulo,
+      descripcion,
+      responsabilidades,
+      modalidadSeleccionada, 
+      tipocontratoSeleccionado,
       this.habilidadesSeleccionadasID,
+      this.idEmpresaObtenida,
+      this.etapasSeleccionadas
     ).subscribe({
         next: () => {
                 Swal.fire({
@@ -200,7 +243,98 @@ ngOnInit(){
   }
 
 
-  agregarEtapa(etapa: Etapa){
-    this.etapasSeleccionadas.push
+  agregarEtapa(etapa: Etapa) {
+    // Evitar duplicados
+    const yaSeleccionada = this.etapasSeleccionadas.some(e => e.idEtapa === etapa.id);
+    if (yaSeleccionada) return;
+
+    const numeroEtapa = this.etapasSeleccionadas.length + 1;
+
+    const nuevaEtapa: ofertaEtapaDTO = {
+      numeroEtapa: numeroEtapa,
+      adjuntaEnlace: false,                  // por defecto
+      idEtapa: etapa.id!,                     // viene de la etapa seleccionada
+      idEmpleadoEmpresa: 0,                  // ⚠️ acá tenés que setear el empleado logueado
+      archivoAdjunto: '',
+      descripcionAdicional: ''
+    };
+
+    this.etapasSeleccionadas.push(nuevaEtapa);
+    console.log('etapas seleccionadas: ', this.etapasSeleccionadas)
   }
+
+
+  quitarEtapa(index: number) {
+  this.etapasSeleccionadas.splice(index, 1);
+
+  // Reordenar los números
+  this.etapasSeleccionadas = this.etapasSeleccionadas.map((et, idx) => ({
+    ...et,
+    numeroEtapa: idx + 1
+  }));
+}
+
+onFileSelected(event: Event, index: number) {
+
+}
+
+getNombreEtapa(idEtapa: number): string {
+  const etapa = this.etapasDisponibles.find(e => e.id === idEtapa);
+  return etapa ? etapa.nombreEtapa! : '';
+}
+
+abrirSelectorArchivoEtapa() {
+  document.getElementById('fileArchivoEtapa')?.click(); 
+}
+
+eliminarArchivoEtapa() {
+  this.fileArchivoEtapa = null;
+  this.ArchivoEtapaTemporal = null;
+  this.crearofertaForm.get('enlaceArchivoEtapa')?.reset();
+  
+  // Forzar la detección de cambios para que la UI se actualice inmediatamente
+  this.changeDetectorRef.detectChanges();
+}
+
+onArchivoEtapaSelected(event: any) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    // Resetear errores previos
+    this.crearofertaForm.get('enlaceArchivoEtapa')?.setErrors(null);
+
+    // Validar formato
+    if (file.type !== 'application/pdf') {
+      this.crearofertaForm.get('enlaceArchivoEtapa')?.setErrors({ formato: true });
+      this.fileArchivoEtapa = null; // Asegúrate de que fileArchivoEtapa esté nulo si hay un error
+      this.changeDetectorRef.detectChanges(); // Forzar la actualización
+      return;
+    }
+
+    // Validar tamaño (máx 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      this.crearofertaForm.get('enlaceArchivoEtapa')?.setErrors({ tamanioInvalido: true });
+      this.fileArchivoEtapa = null; // Asegúrate de que fileArchivoEtapa esté nulo si hay un error
+      this.changeDetectorRef.detectChanges(); // Forzar la actualización
+      return;
+    }
+
+    // Guardar archivo y generar preview
+    this.fileArchivoEtapa = file;
+    this.ArchivoEtapaTemporal = URL.createObjectURL(file);
+    this.crearofertaForm.get('enlaceArchivoEtapa')?.setValue(file);
+    
+    // Forzar la detección de cambios para que la UI se actualice inmediatamente
+    this.changeDetectorRef.detectChanges();
+}
+
+toggleAdjuntaEnlace(i: number, checked: boolean) {
+  const esPrimeraElegida = this.etapasSeleccionadas[i].numeroEtapa === 1;
+  this.etapasSeleccionadas[i].adjuntaEnlace = esPrimeraElegida ? checked : false;
+
+ console.log('etapas seleccionadas: ', this.etapasSeleccionadas)
+}
+
+
+
 }
