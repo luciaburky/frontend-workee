@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { FiltroUbicacion } from './busqueda-empresas/filtro-ubicacion';
 import { Empresa } from '../empresa/empresa/empresa';
-import { Candidato } from '../Candidato/candidato';
+import { Candidato } from '../candidato/candidato';
 import { Oferta } from '../oferta/oferta';
 import { BusquedaEmpresa } from './busqueda-empresas/busqueda-empresa';
 
