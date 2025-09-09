@@ -3,7 +3,7 @@ import { BusquedaService } from '../busqueda.service';
 import { ProvinciaService } from '../../../admin/ABMProvincia/provincia.service';
 import { PaisService } from '../../../admin/ABMPais/pais.service';
 import { HabilidadService } from '../../../admin/ABMHabilidad/habilidad.service';
-import { Candidato } from '../../Candidato/candidato';
+import { Candidato } from '../../candidato/candidato';
 import { MultiSelect } from 'primeng/multiselect';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';

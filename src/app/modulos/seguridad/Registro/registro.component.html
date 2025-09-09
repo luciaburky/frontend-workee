@@ -1,5 +1,12 @@
-<app-navbarlogin></app-navbarlogin>
 
+<div *ngIf="loading$ | async; else formTemplate" class="d-flex justify-content-center align-items-center vh-100">
+  <div class="spinner-border text-primary" role="status">
+    <span class="visually-hidden">Cargando...</span>
+  </div>
+</div>
+
+<ng-template #formTemplate>
+  <app-navbarlogin></app-navbarlogin>
 <div class="titulo-registro">
   <h1>Únete a Workee</h1>
   <p>
@@ -34,3 +41,4 @@
     <app-registro-empresa></app-registro-empresa>
   }
 </div>
+</ng-template>

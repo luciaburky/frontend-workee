@@ -15,6 +15,7 @@ export class Empresa {
     provincia?: Provincia;
     rubro?: Rubro;
     usuario?: Usuario;
+    urlDocumentoLegal?: string;
     // contrasenia?: string;
     // repetirContrasenia?: string;
 }

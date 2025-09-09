@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { CandidatoService } from '../../../Candidato/candidato.service';
+import { CandidatoService } from '../../../candidato/candidato.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Candidato } from '../../../Candidato/candidato';
+import { Candidato } from '../../../candidato/candidato';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import Swal from 'sweetalert2';

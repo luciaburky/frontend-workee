@@ -16,10 +16,10 @@ import Swal from 'sweetalert2';
 import { url } from 'inspector';
 import { ModalService } from '../../../../compartidos/modal/modal.service';
 import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { SeleccionHabilidadesComponent } from '../../../Candidato/perfil-candidato/seleccion-habilidades/seleccion-habilidades.component';
+import { SeleccionHabilidadesComponent } from '../../../candidato/perfil-candidato/seleccion-habilidades/seleccion-habilidades.component';
 import { Habilidad } from '../../../../admin/ABMHabilidad/habilidad';
 import { HabilidadService } from '../../../../admin/ABMHabilidad/habilidad.service';
-import { CandidatoHabilidad } from '../../../Candidato/candidato-habilidad';
+import { CandidatoHabilidad } from '../../../candidato/candidato-habilidad';
 import { AuthService } from '../../auth.service';
 import { Storage, ref, uploadBytes, getDownloadURL, StorageReference} from '@angular/fire/storage';
 
