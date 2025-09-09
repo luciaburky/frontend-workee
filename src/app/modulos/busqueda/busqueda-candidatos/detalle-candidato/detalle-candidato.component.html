@@ -5,7 +5,7 @@
     </button>
     <div class="perfil-header">
         <div class="logo-seccion">
-            <img [src]="'assets/img/foto-empresa.png'" alt="foto" class="foto" />
+            <img [src]="candidato.usuario?.urlFotoUsuario" alt="foto" class="foto" />
         </div>
         <div class="info">
             <div class="nombre-boton">
@@ -61,17 +61,20 @@
         </div>
         <div class="seccion-cv">
             <h5 class="pb-10">Currículum Vitae</h5>
-            <div class="cv-box">
-                <span class="material-symbols-outlined icono-pdf">description</span>
-                <div class="cv-detalle">
-                    <p>
-                        <a href="#">
-                        AgustinaMartin_CV.pdf
-                        <!-- {{ candidato.cv?.enlaceCV }} -->
-                        </a>
-                    </p>
+            @if (candidato.candidatoCV!.enlaceCV === null || candidato.candidatoCV!.enlaceCV === '') {
+                <p>{{candidato.nombreCandidato}} {{candidato.apellidoCandidato}} no ha subido un CV.</p>
+            } @else {
+                <div class="cv-box">
+                    <span class="material-symbols-outlined icono-pdf">description</span>
+                    <div class="cv-detalle">
+                        <p>
+                            <a [href]="candidato.candidatoCV!.enlaceCV" target="_blank">
+                            {{ mostrarNombreArchivoCV(candidato.candidatoCV!.enlaceCV) }}
+                            </a>
+                        </p>
+                    </div>
                 </div>
-            </div>
+            }
         </div>
         </div>
     </div>
