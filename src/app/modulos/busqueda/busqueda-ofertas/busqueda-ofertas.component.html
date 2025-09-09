@@ -1,7 +1,7 @@
 <div class="listado-wrapper">
     <div class="listado-header">
         <div>
-            <h1>Empresas</h1>
+            <h1>Ofertas</h1>
             <p>Encuentra las mejores oportunidades laborales</p>
         </div>
     </div>
@@ -12,8 +12,8 @@
                 type="text" 
                 placeholder="Buscar..." 
                 class="input-search"
-                [(ngModel)]="textoEmpresa" />
-            <button id="icon-button" (click)="buscarPorNombre(textoEmpresa)">
+                [(ngModel)]="textoOferta" />
+            <button id="icon-button" (click)="buscarPorNombre(textoOferta)">
                 <span class="material-symbols-outlined search-icon">search</span>
             </button>
         </div>
@@ -22,9 +22,9 @@
         <div class="filtros">
             <p-multiselect
                 [options]="filtrosUbicacion"
+                placeholder="Ubicación"
                 optionLabel="name"
                 optionValue="idProvincia"
-                placeholder="Ubicación"
                 [maxSelectedLabels]="0"
                 [selectedItemsLabel]="'Ubicación ({0})'"
                 class="filtro w-full md:w-80"
@@ -32,77 +32,103 @@
                 [(ngModel)]="filtrosSeleccionadosUbicacion">
             </p-multiselect>
             <p-multiselect
-                [options]="filtrosRubro"
+                [options]="filtrosTipoContrato"
+                placeholder="Tipo de contrato"
                 optionLabel="name"
                 optionValue="id"
-                placeholder="Rubros"
                 [maxSelectedLabels]="0"
-                [selectedItemsLabel]="'Rubros ({0})'"
+                [selectedItemsLabel]="'Tipo de contrato ({0})'"
                 class="filtro w-full md:w-80"
                 [panelStyle]="{ 'background': '#fff' }"
-                [(ngModel)]="filtrosSeleccionadosRubros">
+                [(ngModel)]="filtrosSeleccionadosTipoContrato">
             </p-multiselect>
+            <p-multiselect
+                [options]="filtrosModalidad"
+                optionLabel="name"
+                placeholder="Modalidad"
+                optionValue="id"
+                [maxSelectedLabels]="0"
+                [selectedItemsLabel]="'Modalidad ({0})'"
+                class="filtro w-full md:w-80"
+                [panelStyle]="{ 'background': '#fff' }"
+                [(ngModel)]="filtrosSeleccionadosModalidad">
+            </p-multiselect>
+            <!-- [options]="filtrosFecha" -->
+            <!-- <p-autocomplete
+            optionLabel="name"
+            placeholder="Fecha de publicación"
+            optionValue="id"
+            class="filtro w-full md:w-80"
+            [panelStyle]="{ 'background': '#fff' }"
+            [(ngModel)]="filtrosSeleccionadosFecha"> 
+            >
+            </p-autocomplete> -->
             <p-select 
-                [options]="filtrosOferta"
+                [options]="filtrosFecha"
                 [checkmark]="true" 
-                optionValue="value"
+                optionValue="id"
                 optionLabel="name" 
                 [showClear]="true" 
-                placeholder="Ofertas abiertas"
+                placeholder="Fecha de publicación"
                 class="filtro w-full md:w-56"
-                [(ngModel)]="filtrosSeleccionadosOfertas">
+                [(ngModel)]="filtrosSeleccionadosFecha">
             </p-select>
         </div>
         <div class="contenedor-boton">
             <button 
-                [disabled]="!tieneFiltrosActivos()"
-                class="boton"
-                (click)="filtrarEmpresas()">
-                    Aplicar filtros
+            [disabled]="!filtrosSeleccionadosUbicacion.length && !filtrosSeleccionadosModalidad.length && !filtrosSeleccionadosTipoContrato.length && !filtrosSeleccionadosFecha"
+            class="boton"
+            (click)="filtrarEmpresas()">
+                Aplicar filtros
             </button>
         </div>
     </div>   
     <div class="listado-contenido row row-cols-1 row-cols-md-2 g-4">
-        @if (empresaList.length === 0) {
+        @if (ofertaList.length === 0) {
             <div class="sin-resultados">
                 @if (!busquedaRealizada) {
                     <img src="assets\img\buscar.png" alt="Busca empresas" class="sin-resultados-img">
                     <p class="sin-resultados-txt">
-                        Busca las empresas que te interesan en Workee
+                        Busca las ofertas que te interesan en Workee
                     </p>
                 } @else {
                     <img src="assets\img\sin-resultados.png" alt="No hay resultados" class="sin-resultados-img">
                     <p class="sin-resultados-txt">
-                        No encontramos empresas que coincidan con tu búsqueda
+                        No encontramos ofertas que coincidan con tu búsqueda
                     </p>
                 }
             </div>
         } @else {
-            @for (busqueda of obtenerEmpresasPaginadas(); track $index) {
-                <div class="tarjeta-empresa" (click)="irADetalle(busqueda.empresa.id!)" role="button">
-                    <div class="logo-container">
-                    <img [src]="busqueda.empresa.usuario?.urlFotoUsuario" alt="Logo de {{ busqueda.empresa.nombreEmpresa }}" />
-                    </div>
-                    <div class="contenido">
-                    <h5 class="nombre-empresa">{{ busqueda.empresa.nombreEmpresa }}</h5>
-                    <p class="rubro-ubicacion">
-                        {{ busqueda.empresa.rubro?.nombreRubro }} •
-                        {{ busqueda.empresa.provincia?.nombreProvincia }},
-                        {{ busqueda.empresa.provincia?.pais?.nombrePais }}
-                    </p>
-                    <div class="ofertas">
-                        <span class="material-symbols-outlined">business_center</span>
-                        @if (busqueda.cantidadOfertasAbiertas === 1) {
-                        <span>{{ busqueda.cantidadOfertasAbiertas }} oferta abierta</span>
-                        } @else if (busqueda.cantidadOfertasAbiertas > 1) {
-                        <span>{{ busqueda.cantidadOfertasAbiertas }} ofertas abiertas</span>
-                        } @else {
-                        <span>Sin ofertas abiertas</span>
-                        }
-                    </div>
-                    <p class="descripcion">{{ busqueda.empresa.descripcionEmpresa }}</p>
-                    </div>
+            @for (oferta of obtenerOfertasPaginadas(); track $index) {
+            <div class="tarjeta-oferta" role="button" (click)="irADetalle(oferta.id!)">
+                <div class="logo-container">
+                    <img 
+                        [src]="oferta.empresa.usuario?.urlFotoUsuario"
+                        alt="Logo de {{ oferta.empresa.nombreEmpresa }}" />
                 </div>
+                <div class="contenido">
+                    <div class="oferta-header">
+                    <h5 class="nombre-oferta">{{ oferta.titulo }}</h5>
+                    <div class="publicacion-oferta">
+                        <span class="material-symbols-outlined">schedule</span>
+                        <p>Publicado: {{ oferta.fechaHoraAlta | date:'dd/MM/yyyy' }}</p>
+                    </div>
+                    </div>
+                    <p class="rubro-ubicacion">
+                    {{ oferta.empresa.nombreEmpresa }}
+                    </p>
+                    <p class="rubro-ubicacion">
+                    {{ oferta.modalidadOferta.nombreModalidadOferta }} • {{ oferta.tipoContratoOferta.nombreTipoContratoOferta }}
+                    </p>
+                    <div class="ubicacion-oferta">
+                    <span class="material-symbols-outlined">location_on</span>
+                    <p>{{ oferta.empresa.provincia?.nombreProvincia }}, {{ oferta.empresa.provincia?.pais?.nombrePais }}</p>
+                    </div>
+                    <p class="descripcion-oferta">
+                        {{ oferta.descripcion }}
+                    </p>
+                </div>
+            </div>
             }
         }
     </div>

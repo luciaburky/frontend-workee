@@ -35,10 +35,15 @@ import { RecuperarContraseniaComponent } from './modulos/seguridad/Recuperacion 
 import { GestionderolesComponent } from './modulos/seguridad/Gestion de roles/GDR Componente/gestion-de-roles.component';
 import { HabilitacionEmpresasComponent } from './modulos/seguridad/habilitacion-empresas/habilitacion-empresas.component';
 import { SidebarComponent } from './compartidos/SideBar/sidebar.component.component';
+
 import { ParametrosPageComponent } from './admin/parametros-page/parametros-page.component';
 import { authGuard } from './guards/auth.guard';
 import { publicGuard } from './guards/public.guard';
 import { DetalleEmpresaPendienteComponent } from './modulos/seguridad/habilitacion-empresas/detalle-empresa-pendiente/detalle-empresa-pendiente/detalle-empresa-pendiente.component';
+
+import { BusquedaOfertasComponent } from './modulos/busqueda/busqueda-ofertas/busqueda-ofertas.component';
+import { DetalleOfertaComponent } from './modulos/busqueda/busqueda-ofertas/detalle-oferta/detalle-oferta.component';
+
 
 export const routes: Routes = [
     // { path: 'buscar-ofertas', component: BuscarComponent },
@@ -91,12 +96,24 @@ export const routes: Routes = [
 
 
 
+
     { path: 'buscar-candidatos', component: BusquedaCandidatosComponent, canActivate: [authGuard] },
     { path: 'buscar-candidatos/detalle/:idCandidato', component: DetalleCandidatoComponent, canActivate: [authGuard] },
     { path: 'buscar-empresas', component: BusquedaEmpresasComponent, canActivate: [authGuard] },
     { path: 'buscar-empresas/detalle/:idEmpresa', component: DetalleEmpresaComponent, canActivate: [authGuard] },
     { path: 'nuevaContrasenia', component: RecuperarContraseniaComponent, canActivate: [authGuard]},
     { path: 'gestion-de-roles', component: GestionderolesComponent, canActivate: [authGuard]},
+
+    { path: 'buscar-candidatos', component: BusquedaCandidatosComponent },
+    { path: 'buscar-candidatos/detalle/:idCandidato', component: DetalleCandidatoComponent },
+    { path: 'buscar-empresas', component: BusquedaEmpresasComponent },
+    { path: 'buscar-empresas/detalle/:idEmpresa', component: DetalleEmpresaComponent },
+    { path: 'buscar-ofertas', component: BusquedaOfertasComponent },
+    { path: 'buscar-ofertas/detalle/:idOferta', component: DetalleOfertaComponent },
+    // { path: 'buscar-empresas/detalle/:idEmpresa', component: DetalleEmpresaComponent },
+    { path: 'nuevaContrasenia', component: RecuperarContraseniaComponent},
+    { path: 'gestion-de-roles', component: GestionderolesComponent},
+
 
 
 

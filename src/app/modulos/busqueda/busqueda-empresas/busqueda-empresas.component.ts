@@ -8,10 +8,12 @@ import { RubroService } from '../../../admin/ABMRubro/rubro.service';
 import { Rubro } from '../../../admin/ABMRubro/rubro';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { BusquedaEmpresa } from './busqueda-empresa';
+import { SelectModule } from 'primeng/select';
 
 @Component({
   selector: 'app-busqueda-empresas',
-  imports: [MultiSelect, CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [MultiSelect, CommonModule, FormsModule, ReactiveFormsModule, SelectModule],
   templateUrl: './busqueda-empresas.component.html',
   styleUrl: './busqueda-empresas.component.css'
 })
@@ -19,25 +21,18 @@ export class BusquedaEmpresasComponent implements OnInit{
   
   filtrosUbicacion: FiltroUbicacion[] = [];
   filtrosRubro: Rubro[] = [];
-  filtrosOferta: string[] = [
-    "Sí", "No"
-  ];
+  filtrosOferta: any;
+  empresaList: BusquedaEmpresa[] = [];
 
-  empresaList: Empresa[] = [];
-
-  texto: string = '';
+  textoEmpresa: string = '';
 
   paginaActual: number = 1;
   elementosPorPagina: number = 10;
 
   filtrosSeleccionadosUbicacion: any[] = [];
   filtrosSeleccionadosRubros: any[] = [];
-  filtrosSeleccionadosOfertas: any[] = [];
+  filtrosSeleccionadosOfertas: any;
   busquedaRealizada: boolean = false; // se agrega esta variable para controlar si se ha realizado una búsqueda
-
-  // VARIABLES QUE SE VAN A USAR CUANDO AGREGUEMOS LO DE OFERTAS
-  tieneOfertasAbiertas: boolean = false;
-  cantidadOfertasAbiertas: number = 0;
 
   constructor(
     private busquedaService: BusquedaService,
@@ -50,20 +45,20 @@ export class BusquedaEmpresasComponent implements OnInit{
       sessionStorage.clear();
     });
     
-    const listaGuardada = sessionStorage.getItem('empresaList');
-    const textoGuardado = sessionStorage.getItem('texto');
+    const listaGuardadaEmpresa = sessionStorage.getItem('empresaList');
+    const textoGuardadoEmpresa = sessionStorage.getItem('textoEmpresa');
     const filtrosUbicacionGuardados = sessionStorage.getItem('filtrosUbicacion');
     const filtrosRubroGuardados = sessionStorage.getItem('filtrosRubro');
     const filtrosOfertaGuardados = sessionStorage.getItem('filtrosOferta');
     
-    if (listaGuardada) {
-      this.empresaList = JSON.parse(listaGuardada);
+    if (listaGuardadaEmpresa) {
+      this.empresaList = JSON.parse(listaGuardadaEmpresa);
       console.log(this.empresaList)
       this.busquedaRealizada = true;
     }
 
-    if (textoGuardado) {
-      this.texto = JSON.parse(textoGuardado);
+    if (textoGuardadoEmpresa) {
+      this.textoEmpresa = JSON.parse(textoGuardadoEmpresa);
     }
 
     if (filtrosUbicacionGuardados) {
@@ -95,14 +90,20 @@ export class BusquedaEmpresasComponent implements OnInit{
       })
     )
     })
+
+    this.filtrosOferta = [
+      { name: "Sí", value: true },
+      { name: "No", value: false }
+    ];
+
   }
 
-  buscarPorNombre(texto: string): void {
+  buscarPorNombre(textoEmpresa: string): void {
     this.busquedaRealizada = true;
-    this.busquedaService.buscarEmpresasPorNombre(texto).subscribe(data => {
+    this.busquedaService.buscarEmpresasPorNombre(textoEmpresa).subscribe(data => {
       this.empresaList = data;
-      console.log("empresas que coinciden con el texto ", texto, ": ", this.empresaList);
-      sessionStorage.setItem('texto',JSON.stringify(this.texto));
+      console.log("empresas que coinciden con el texto ", textoEmpresa, ": ", this.empresaList);
+      sessionStorage.setItem('textoEmpresa',JSON.stringify(this.textoEmpresa));
       sessionStorage.setItem('empresaList', JSON.stringify(this.empresaList));
       sessionStorage.setItem('filtrosUbicacion', JSON.stringify(this.filtrosSeleccionadosUbicacion));
       sessionStorage.setItem('filtrosRubro', JSON.stringify(this.filtrosSeleccionadosRubros));
@@ -113,11 +114,12 @@ export class BusquedaEmpresasComponent implements OnInit{
   filtrarEmpresas() {
     const idsProvincias = this.filtrosSeleccionadosUbicacion?.length ? this.filtrosSeleccionadosUbicacion : null;
     const idsRubros = this.filtrosSeleccionadosRubros?.length ? this.filtrosSeleccionadosRubros : null;
+    const tieneOfertasAbiertas = this.filtrosSeleccionadosOfertas ?? null;
 
     this.busquedaRealizada = true;
-    this.busquedaService.filtrarEmpresas(this.texto, idsRubros, idsProvincias).subscribe(data => {
+    this.busquedaService.filtrarEmpresas(this.textoEmpresa, idsRubros, idsProvincias, tieneOfertasAbiertas).subscribe(data => {
       this.empresaList = data;
-      sessionStorage.setItem('texto',JSON.stringify(this.texto));
+      sessionStorage.setItem('textoEmpresa',JSON.stringify(this.textoEmpresa));
       sessionStorage.setItem('empresaList', JSON.stringify(this.empresaList));
       sessionStorage.setItem('filtrosUbicacion', JSON.stringify(this.filtrosSeleccionadosUbicacion));
       sessionStorage.setItem('filtrosRubro', JSON.stringify(this.filtrosSeleccionadosRubros));
@@ -129,6 +131,13 @@ export class BusquedaEmpresasComponent implements OnInit{
     this.router.navigate([`buscar-empresas/detalle`,idEmpresa]);
   }
 
+  // esta funcion se usa para evaluar si tiene filtros seleccionados en el listado, para habilitar el boton de aplicar filtros
+  tieneFiltrosActivos(): boolean {
+  return this.filtrosSeleccionadosUbicacion.length > 0
+      || this.filtrosSeleccionadosRubros.length > 0
+      || this.filtrosSeleccionadosOfertas !== null && this.filtrosSeleccionadosOfertas !== undefined;
+  }
+
   // Para paginacion
   get totalPaginas(): number {
     return Math.ceil(this.empresaList.length / this.elementosPorPagina);
@@ -138,7 +147,7 @@ export class BusquedaEmpresasComponent implements OnInit{
     return Array.from({ length: this.totalPaginas }, (_, i) => i + 1);
   }
 
-  obtenerEmpresasPaginadas(): Empresa[] {
+  obtenerEmpresasPaginadas(): BusquedaEmpresa[] {
     const inicio = (this.paginaActual - 1) * this.elementosPorPagina;
     const fin = inicio + this.elementosPorPagina;
     return this.empresaList.slice(inicio, fin);
@@ -154,6 +163,39 @@ export class BusquedaEmpresasComponent implements OnInit{
     if (this.paginaActual > 1) {
       this.paginaActual--;
     }
+  }
+  
+  get paginasMostradas(): (number | string)[] {
+    const total = this.totalPaginas;
+    const actual = this.paginaActual;
+    const paginas: (number | string)[] = [];
+
+    if (total <= 7) {
+      for (let i = 1; i <= total; i++) {
+        paginas.push(i);
+      }
+    } else {
+      paginas.push(1);
+
+      if (actual > 3) {
+        paginas.push('...');
+      }
+
+      const start = Math.max(2, actual - 1);
+      const end = Math.min(total - 1, actual + 1);
+
+      for (let i = start; i <= end; i++) {
+        paginas.push(i);
+      }
+
+      if (actual < total - 2) {
+        paginas.push('...');
+      }
+
+      paginas.push(total);
+    }
+
+    return paginas;
   }
 
   irAPagina(pagina: number): void {

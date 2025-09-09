@@ -36,6 +36,7 @@ export class DetalleCandidatoComponent implements OnInit {
     const id = Number(this.route.snapshot.paramMap.get('idCandidato'));
     this.candidatoService.findById(id).subscribe(data => {
       this.candidato = data;
+      console.log(this.candidato)
       this.edadCandidato = this.calcularEdad(this.candidato.fechaDeNacimiento!)
     })
   }
@@ -99,5 +100,22 @@ export class DetalleCandidatoComponent implements OnInit {
         // })
 
     }});
+  }
+
+  mostrarNombreArchivoCV(enlace: string | undefined): string { 
+    if (!enlace) return '';
+    try {
+      const start = enlace.indexOf('/o/');
+      const mid = enlace.indexOf('?', start);
+      if (start === -1) return enlace;
+
+      let nombreEnc = enlace.substring(start + 3, mid !== -1 ? mid : enlace.length);
+      let nombreDec = decodeURIComponent(nombreEnc);
+
+      const partes = nombreDec.split('/');
+      return partes[partes.length - 1];
+    } catch {
+      return enlace;
+    }
   }
 }
