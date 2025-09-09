@@ -12,8 +12,8 @@
                 type="text" 
                 placeholder="Buscar..." 
                 class="input-search"
-                [(ngModel)]="texto" />
-            <button id="icon-button" (click)="buscarPorNombre(texto)">
+                [(ngModel)]="textoEmpresa" />
+            <button id="icon-button" (click)="buscarPorNombre(textoEmpresa)">
                 <span class="material-symbols-outlined search-icon">search</span>
             </button>
         </div>
@@ -42,23 +42,23 @@
                 [panelStyle]="{ 'background': '#fff' }"
                 [(ngModel)]="filtrosSeleccionadosRubros">
             </p-multiselect>
-            <p-multiselect
+            <p-select 
                 [options]="filtrosOferta"
+                [checkmark]="true" 
+                optionValue="value"
+                optionLabel="name" 
+                [showClear]="true" 
                 placeholder="Ofertas abiertas"
-                [maxSelectedLabels]="0"
-                [selectedItemsLabel]="'Ofertas abiertas ({0})'"
-                class="filtro w-full md:w-80"
-                [panelStyle]="{ 'background': '#fff' }"
+                class="filtro w-full md:w-56"
                 [(ngModel)]="filtrosSeleccionadosOfertas">
-                <!-- [(ngModel)]="filtrosSeleccionados" -->
-            </p-multiselect>
+            </p-select>
         </div>
         <div class="contenedor-boton">
             <button 
-            [disabled]="!filtrosSeleccionadosUbicacion.length && !filtrosSeleccionadosRubros.length && !filtrosSeleccionadosOfertas.length"
-            class="boton"
-            (click)="filtrarEmpresas()">
-                Aplicar filtros
+                [disabled]="!tieneFiltrosActivos()"
+                class="boton"
+                (click)="filtrarEmpresas()">
+                    Aplicar filtros
             </button>
         </div>
     </div>   
@@ -78,50 +78,61 @@
                 }
             </div>
         } @else {
-            @for (empresa of obtenerEmpresasPaginadas(); track $index) {
-                <div class="tarjeta-empresa" (click)="irADetalle(empresa.id!)" role="button">
+            @for (busqueda of obtenerEmpresasPaginadas(); track $index) {
+                <div class="tarjeta-empresa" (click)="irADetalle(busqueda.empresa.id!)" role="button">
                     <div class="logo-container">
-                        <img [src]="'assets/img/foto-empresa.png'" alt="Logo de {{ empresa.nombreEmpresa }}" />
+                    <img [src]="busqueda.empresa.usuario?.urlFotoUsuario" alt="Logo de {{ busqueda.empresa.nombreEmpresa }}" />
                     </div>
                     <div class="contenido">
-                        <h5 class="nombre-empresa">{{ empresa.nombreEmpresa }}</h5>
-                        <p class="rubro-ubicacion">{{ empresa.rubro?.nombreRubro }} • {{ empresa.provincia?.nombreProvincia }}, {{ empresa.provincia?.pais?.nombrePais }}</p>
-                        <div class="ofertas">
-                            <span class="material-symbols-outlined">business_center</span>
-                            @if (tieneOfertasAbiertas) {
-                                <span>{{ cantidadOfertasAbiertas }} ofertas abiertas</span>
-                            } @else {
-                                <span>Sin ofertas abiertas</span>
-                            }
-                        </div>
-                        
-                        <p class="descripcion">
-                            {{ empresa.descripcionEmpresa }}
-                        </p>
+                    <h5 class="nombre-empresa">{{ busqueda.empresa.nombreEmpresa }}</h5>
+                    <p class="rubro-ubicacion">
+                        {{ busqueda.empresa.rubro?.nombreRubro }} •
+                        {{ busqueda.empresa.provincia?.nombreProvincia }},
+                        {{ busqueda.empresa.provincia?.pais?.nombrePais }}
+                    </p>
+                    <div class="ofertas">
+                        <span class="material-symbols-outlined">business_center</span>
+                        @if (busqueda.cantidadOfertasAbiertas === 1) {
+                        <span>{{ busqueda.cantidadOfertasAbiertas }} oferta abierta</span>
+                        } @else if (busqueda.cantidadOfertasAbiertas > 1) {
+                        <span>{{ busqueda.cantidadOfertasAbiertas }} ofertas abiertas</span>
+                        } @else {
+                        <span>Sin ofertas abiertas</span>
+                        }
+                    </div>
+                    <p class="descripcion">{{ busqueda.empresa.descripcionEmpresa }}</p>
                     </div>
                 </div>
             }
         }
     </div>
     
-    @if (totalPaginas > 1) {
-        <nav class="paginador">
-            <ul class="pagination justify-content-center mb-0">
-                <li class="page-item" [class.disabled]="paginaActual === 1">
-                    <button class="page-link" (click)="retrocederPagina()">Anterior</button>
-                </li>
-                <li 
-                *ngFor="let pagina of paginas"
-                class="page-item" 
-                [class.active]="paginaActual === pagina">
-                    <button class="page-link" (click)="irAPagina(pagina)">
-                        {{ pagina }}
-                    </button>
-                </li>
-                <li class="page-item" [class.disabled]="paginaActual === totalPaginas">
-                    <button class="page-link" (click)="avanzarPagina()">Siguiente</button>
-                </li>
-            </ul>
-        </nav>
-    }
+    <nav *ngIf="totalPaginas > 1">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" [class.disabled]="paginaActual === 1">
+                <button class="page-link" (click)="retrocederPagina()">Anterior</button>
+            </li>
+
+            <li 
+            *ngFor="let pagina of paginasMostradas"
+            class="page-item"
+            [class.active]="paginaActual === pagina"
+            [class.disabled]="pagina === '...'">
+
+            <ng-container *ngIf="pagina !== '...'; else puntos">
+                <button class="page-link" (click)="irAPagina(+pagina)">
+                {{ pagina }}
+                </button>
+            </ng-container>
+
+            <ng-template #puntos>
+                <span class="page-link">...</span>
+            </ng-template>
+            </li>
+
+            <li class="page-item" [class.disabled]="paginaActual === totalPaginas">
+                <button class="page-link" (click)="avanzarPagina()">Siguiente</button>
+            </li>
+        </ul>
+    </nav>
 </div>
