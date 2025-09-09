@@ -92,6 +92,7 @@ export class SesionService {
 
     cargarRolUsuario(): void {
       this.setLoading(true);
+
       const correo = this.getCorreoUsuario();
       if (!correo) {
         this.setLoading(false);
@@ -123,6 +124,14 @@ export class SesionService {
 
   // Nuevo método para redirigir según el rol
   redirectBasedOnRol(): void {
+    const url = this.redirectUrl;
+    if (this.redirectUrl) {
+      this.redirectUrl = ''; 
+      this.router.navigateByUrl(url);
+      //this.router.navigate([url]).then(() => this.setLoading(false));
+      return;
+    }
+    
     const rolActual = this.getRolActual();
 
     if (!rolActual) {
@@ -148,6 +157,10 @@ export class SesionService {
       default:
         console.warn('Rol no reconocido, redirigiendo a la página por defecto.');
         this.router.navigate(['/']);
+        /*this.router.navigate([url]).then(() => {
+          // Desactivar el estado de carga una vez que la navegación se ha completado.
+          this.setLoading(false);
+        });*/
     }
   }
 
