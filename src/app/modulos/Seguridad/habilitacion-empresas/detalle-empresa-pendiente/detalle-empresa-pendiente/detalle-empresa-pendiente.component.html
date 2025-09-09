@@ -79,12 +79,31 @@
 
       <div class="doc-legal">
         <strong>Documento legal</strong>
-        <p>
-          <a [href]="empresa.urlDocumentoLegal" target="_blank" class="btn-doc">
-            📄 Ver documento
-          </a>
-        </p>
+        <div class="doc-box-contenedor disabled" *ngIf="!empresa.urlDocumentoLegal">
+          <div class="doc-box">
+            <span class="material-symbols-outlined icono-pdf">description</span>
+            <div class="doc-detalle">
+              <p class="disabled-text">No se adjuntó documento</p>
+            </div>
+          </div>
+        </div>
+        <div class="doc-box-contenedor" *ngIf="empresa.urlDocumentoLegal">
+          <div class="doc-box">
+            <span class="material-symbols-outlined icono-pdf">description</span>
+            <div class="doc-detalle">
+              <p>
+                <a [href]="empresa.urlDocumentoLegal" target="_blank">
+                  
+                  {{ mostrarNombreArchivo(empresa.urlDocumentoLegal) }}
+                </a>
+              </p>
+              <small>Actualizado el {{ empresa.usuario?.fechaHoraAlta| date:'dd/MM/yyyy' }}</small>
+            </div>
+          </div>
+        </div>
       </div>
+
+
     </div>
 
     <div class="detalle-actions">

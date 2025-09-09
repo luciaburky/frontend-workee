@@ -7,6 +7,7 @@ import { RubroService } from '../../../../../admin/ABMRubro/rubro.service';
 import { ProvinciaService } from '../../../../../admin/ABMProvincia/provincia.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { EmpresaService } from '../../../../empresa/empresa/empresa.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-detalle-empresa-pendiente',
@@ -32,6 +33,7 @@ export class DetalleEmpresaPendienteComponent implements OnInit{
         correoUsuario: '',
         contraseniaUsuario: '',
         urlFotoUsuario: '',
+        fechaHoraAlta: ''
       }
     };
     rubros: Rubro[] = [];
@@ -80,26 +82,87 @@ export class DetalleEmpresaPendienteComponent implements OnInit{
 
 
     volver(): void {
-      this.router.navigate(['/habilitaciones']);
+      this.router.navigate(['habilitaciones']);
     }
 
     habilitarEmpresa(): void {
-    this.administradorService.habilitarEmpresa(this.idEmpresa).subscribe({
-      next: () => {
-        alert('Empresa habilitada con éxito');
-        this.volver();
-      },
-      error: (error) => console.error('Error al habilitar empresa', error)
-    });
+      Swal.fire({
+      title: `¿Está seguro de que desea habilitar la empresa ${this.empresa.nombreEmpresa}?`,
+      text: "La empresa podrá utilizar Workee.",
+      icon: "success",
+      iconColor: "#10C036",
+      showCancelButton: true,
+      confirmButtonColor: "#10C036",
+      cancelButtonColor: "#697077",
+      confirmButtonText: "Sí, habilitar",
+      cancelButtonText: "No, volver",
+      reverseButtons: true,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.administradorService.habilitarEmpresa(this.idEmpresa).subscribe({
+            next: () => {
+              this.volver();
+              Swal.fire({
+                toast: true,
+                position: "top-end",
+                icon: "success",
+                title: "Empresa habilitada correctamente",
+                showConfirmButton: false,
+                timer: 3000
+              });
+            }
+          })
+        }
+      });
   }
 
   rechazarEmpresa(): void {
-    this.administradorService.rechazarEmpresa(this.idEmpresa).subscribe({
-      next: () => {
-        alert('Empresa rechazada');
-        this.volver();
-      },
-      error: (error) => console.error('Error al rechazar empresa', error)
+    Swal.fire({
+      title: `¿Está seguro de que desea rechazar la habilitación de la empresa ${this.empresa.nombreEmpresa}?`,
+      text: "Esta acción no se puede deshacer. La empresa no podrá utilizar Workee.",
+      icon: "error",
+      iconColor: "#FF5252",
+      showCancelButton: true,
+      confirmButtonColor: "#FF5252",
+      cancelButtonColor: "#697077",
+      confirmButtonText: "Sí, rechazar",
+      cancelButtonText: "No, volver",
+      reverseButtons: true,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.administradorService.rechazarEmpresa(this.idEmpresa).subscribe({
+          next: () => {
+            this.volver();
+            Swal.fire({
+              toast: true,
+              position: "top-end",
+              icon: "success",
+              title: "Empresa rechazada correctamente",
+              showConfirmButton: false,
+              timer: 3000
+            });
+          }
+        })
+      }
     });
   }
+
+
+  mostrarNombreArchivo(enlace: string | undefined): string { 
+    if (!enlace) return '';
+    try {
+      const start = enlace.indexOf('/o/');
+      const mid = enlace.indexOf('?', start);
+      if (start === -1) return enlace;
+
+      let nombreEnc = enlace.substring(start + 3, mid !== -1 ? mid : enlace.length);
+      let nombreDec = decodeURIComponent(nombreEnc);
+
+      const partes = nombreDec.split('/');
+      return partes[partes.length - 1];
+    } catch {
+      return enlace;
+    }
+  }
+
 }

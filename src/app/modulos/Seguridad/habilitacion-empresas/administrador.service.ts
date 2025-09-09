@@ -21,12 +21,12 @@ export class AdministradorService {
     return this.http.get<Empresa>(`${this.url}/${idEmpresa}`);
   }*/
 
-  habilitarEmpresa(idEmpreas: number):Observable<String>{
-    return this.http.put<String>(`${this.url}/habilitaciones/habilitar/${idEmpreas}`,{});
+  habilitarEmpresa(idEmpreas: number){
+    return this.http.put(`${this.url}/habilitaciones/habilitar/${idEmpreas}`, null, { responseType: 'text' });
   }
 
-  rechazarEmpresa(idEmpreas: number):Observable<String>{
-    return this.http.put<String>(`${this.url}/habilitaciones/rechazar/${idEmpreas}`,{});
+  rechazarEmpresa(idEmpreas: number){
+    return this.http.put(`${this.url}/habilitaciones/rechazar/${idEmpreas}`, null, { responseType: 'text' });
   }
 
 }

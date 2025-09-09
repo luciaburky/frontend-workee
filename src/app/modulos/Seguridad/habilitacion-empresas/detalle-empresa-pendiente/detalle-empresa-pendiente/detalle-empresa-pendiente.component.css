@@ -79,6 +79,12 @@
   gap: 1rem;
 }
 
+.info-grid strong {
+  display: block;
+  margin-bottom: 0.8rem; 
+}
+
+
 .doc-legal {
   margin-top: 1rem;
 }
@@ -143,4 +149,57 @@
   border: none;
   border-top: 1px solid #8a8989; 
   margin: 1.5rem 0;
+}
+
+.doc-box-contenedor {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  background-color: #ffffff;
+  padding: 0.8rem 1rem;
+  margin-top: 0.6rem;
+  width: 25rem;
+}
+
+.doc-box {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  background-color: #f7f7f7;
+  border-radius: 8px;
+  padding: 0.8rem 1rem;
+  flex-grow: 1;
+}
+
+.doc-box .icono-pdf {
+  font-size: 1.5rem;
+  color: #697077;
+}
+
+.doc-detalle {
+  display: flex;
+  flex-direction: column;
+}
+
+.doc-detalle p {
+  margin: 0;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.doc-detalle p a {
+  text-decoration: none;
+  color: #007bff;
+}
+
+.doc-detalle p a:hover {
+  text-decoration: underline;
+}
+
+.doc-detalle small {
+  color: #999;
+  font-size: 0.8rem;
+  margin-top: 0.3rem;
 }
