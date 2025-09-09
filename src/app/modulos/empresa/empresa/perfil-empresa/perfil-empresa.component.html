@@ -76,7 +76,7 @@
             class="form-control"
             name="paisEmpresa"
             readonly
-            [value]="empresa.provincia?.idPais">
+            [value]="nombrePais">
         </div>
         <div class="form-group">
           <label for="provinciaEmpresa" class="p-0 my-0 mb-2">Provincia</label>
@@ -122,16 +122,43 @@
             name="sitioWebEmpresa"
             [readonly]="!modoEdicion"
             [value]="empresa.sitioWebEmpresa">
+            
         </div>
-        <div class="form-group">
+        <div class="form-group full-width">
           <label for="contrasenia" class="p-0 my-0 mb-2">Contraseña</label>
-          <input 
-            type="password"
-            class="form-control"
-            name="contrasenia"
-            [readonly]="!modoEdicion"
-            [(ngModel)]="empresa.contrasenia">
+          <div class="input-group">
+            <input 
+              [type]="verContrasenia ? 'text' : 'password'"
+              class="form-control"
+              name="contrasenia"
+              [(ngModel)]="empresa.usuario!.contraseniaUsuario"
+              [readonly]="!modoEdicion"
+              (input)="mostrarCampoRepetir = !!empresa.usuario?.contraseniaUsuario">
+            <span class="input-group-text" (click)="verContrasenia = !verContrasenia" style="cursor: pointer;">
+              <span class="material-symbols-outlined">
+                {{ verContrasenia ? 'visibility' : 'visibility_off' }}
+              </span>
+            </span>
+          </div>
         </div>
+        @if (mostrarCampoRepetir) {
+        <div class="form-group full-width">
+          <label for="repetirContrasenia" class="p-0 my-0 mb-2">Repetir contraseña</label>
+          <div class="input-group">
+            <input
+              [type]="verContrasenia ? 'text' : 'password'"
+              class="form-control"
+              name="repetirContrasenia"
+              [(ngModel)]="repetirContrasenia"
+              [readonly]="!modoEdicion"/>
+            <span class="input-group-text" (click)="verContrasenia = !verContrasenia" style="cursor: pointer;">
+              <span class="material-symbols-outlined">
+                {{ verContrasenia ? 'visibility' : 'visibility_off' }}
+              </span>
+            </span>
+          </div>
+        </div>
+      }
       </div>
     </div>
   </form>

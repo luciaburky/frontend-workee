@@ -18,13 +18,17 @@ export class HabilidadService {
   findAll(): Observable<Habilidad[]> {
     return this.http.get<Habilidad[]>(this.url);
   }
+
+  findAllActivas(): Observable<Habilidad[]> {
+    return this.http.get<Habilidad[]>(`${this.url}/activas`);
+  }
   
   findById(idHabilidad: number): Observable<Habilidad> {
     return this.http.get<Habilidad>(`${this.url}/${idHabilidad}`);
   }
   
   deshabilitar(idHabilidad: number) {
-    return this.http.delete<void>(`${this.url}/${idHabilidad}`);
+    return this.http.delete<void>(`${this.url}/deshabilitar/${idHabilidad}`);
   }
   
   habilitar(idHabilidad: number) {

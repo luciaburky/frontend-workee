@@ -7,7 +7,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class EstadoBusquedaLaboralService {
-  private url: string = 'http://localhost:9090/estados-busqueda';
+  private url: string = 'http://localhost:9090/estadosBusqueda';
   
   idSubject = new BehaviorSubject<number | null>(null);
 
@@ -17,12 +17,16 @@ export class EstadoBusquedaLaboralService {
     return this.http.get<EstadoBusquedaLaboral[]>(this.url);
   }
   
+  findAllActivos(): Observable<EstadoBusquedaLaboral[]> {
+    return this.http.get<EstadoBusquedaLaboral[]>(`${this.url}/activos`);
+  }
+  
   findById(idEstadoBusquedaLaboral:number): Observable<EstadoBusquedaLaboral> {
     return this.http.get<EstadoBusquedaLaboral>(`${this.url}/${idEstadoBusquedaLaboral}`);
   }
   
   deshabilitar(idEstadoBusquedaLaboral:number) {
-    return this.http.delete<void>(`${this.url}/${idEstadoBusquedaLaboral}`);
+    return this.http.delete<void>(`${this.url}/deshabilitar/${idEstadoBusquedaLaboral}`);
   }
   
   habilitar(id:number) {

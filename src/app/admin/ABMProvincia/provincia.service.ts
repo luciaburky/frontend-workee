@@ -22,13 +22,17 @@ export class ProvinciaService {
   findAll(): Observable<Provincia[]> {
     return this.http.get<Provincia[]>(this.url);
   }
+
+  findAllActivas(): Observable<Provincia[]> {
+    return this.http.get<Provincia[]>(`${this.url}/activas`);
+  }
   
   findById(idProvincia: number): Observable<Provincia> {
     return this.http.get<Provincia>(`${this.url}/${idProvincia}`);
   }
   
   deshabilitar(idProvincia: number) {
-    return this.http.delete<void>(`${this.url}/${idProvincia}`);
+    return this.http.delete<void>(`${this.url}/deshabilitar/${idProvincia}`);
   }
   
   habilitar(idProvincia: number) {
