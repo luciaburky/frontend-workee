@@ -30,18 +30,9 @@ export class SesionService {
     private router: Router
   ) {}
 
-  logout(): Observable<any> {
-    const options = {
-      headers: new HttpHeaders({ 'Content-Type': 'application/json' })
-    };
-
-    return this.http.post(`${this.endpointURL}/logout`, null, options).pipe(
-      tap(() => this.clearLocalSession()),
-      catchError((error) => {
-        console.error('Falló el logout', error);
-        throw error;
-      })
-    );
+  logout(): void {
+    this.clearLocalSession();
+    this.router.navigate(['/inicio']);
   }
 
   clearLocalSession(): void {
