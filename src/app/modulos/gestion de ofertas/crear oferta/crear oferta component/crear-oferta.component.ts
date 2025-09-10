@@ -21,6 +21,7 @@ import { Empleado } from '../../../empresa/empleados/empleado';
 import { EmpresaService } from '../../../empresa/empresa/empresa.service';
 import { ofertaEtapaDTO } from '../ofertaEtapaDTO';
 import { Storage, ref, uploadBytes, getDownloadURL, StorageReference } from '@angular/fire/storage';
+import { EmpleadoModalComponent } from '../modal empleados/empleado-modal.component';
 
 @Component({
   selector: 'app-crear-oferta',
@@ -266,6 +267,7 @@ ngOnInit(){
 
   quitarEtapa(index: number) {
   this.etapasSeleccionadas.splice(index, 1);
+  console.log('etapas seleccionadas: ', this.etapasSeleccionadas)
 
   // Reordenar los números
   this.etapasSeleccionadas = this.etapasSeleccionadas.map((et, idx) => ({
@@ -335,6 +337,26 @@ toggleAdjuntaEnlace(i: number, checked: boolean) {
  console.log('etapas seleccionadas: ', this.etapasSeleccionadas)
 }
 
+seleccionarEmpleado(i: number) {
+  if (!this.idEmpresaObtenida) return;
+
+  this.modalRef = this.modalService.open(EmpleadoModalComponent, {
+    centered: true,
+    scrollable: true,
+    size: 'lg'
+  });
+
+  this.modalRef.componentInstance.empresaId = this.idEmpresaObtenida;
+  // this.modalRef.componentInstance.preseleccionadoId = this.etapasSeleccionadas[i].idEmpleadoEmpresa;
+
+  // 👇 ahora esperamos un number (id)
+  this.modalRef.result.then((empleadoId: number) => {
+    if (empleadoId != null) {
+      this.etapasSeleccionadas[i].idEmpleadoEmpresa = empleadoId;
+      console.log(`Empleado ${empleadoId} asignado a la etapa #${i + 1}`);
+    }
+  }).catch(() => {});
+}
 
 
 }

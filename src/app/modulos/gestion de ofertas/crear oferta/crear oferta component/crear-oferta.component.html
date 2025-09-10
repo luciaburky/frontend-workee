@@ -108,7 +108,27 @@
                 <!-- MISMA lógica: solo cambia el look/posición -->
                 <button type="button" class="btn btn-danger btn-cerrar" (click)="quitarEtapa(i)">Quitar</button>
               </div>
+              <div class="form-group">
+                  <div class="titulo-habilidades">
+                      <label>Asignar Empleado</label>                      
+                      <!-- donde listás cada etapa -->
+                        <button type="button" class="btn btn-outline-primary" (click)="seleccionarEmpleado(i)">
+                          Asignar empleado
+                        </button>
 
+                        @if (etapasSeleccionadas[i].idEmpleadoEmpresa) {
+                          <span class="ms-2 badge bg-success">
+                            ID asignado: {{ etapasSeleccionadas[i].idEmpleadoEmpresa }}
+                          </span>
+                        }                    
+                  </div>
+                  <div class="habilidades">
+                      @for (hab of habilidadesParaMostrar; track $index) {
+                      <span class="tag"> {{hab.habilidad.nombreHabilidad}} </span>
+                      }
+                  </div>
+                  <p>Añade las habilidades blandas y técnicas requeridas para tu puesto</p>
+              </div> 
               <div class="campo">
                 <label class="campo-label">Descripción</label>
                 <div class="editor-simulador">

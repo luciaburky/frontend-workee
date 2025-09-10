@@ -8,15 +8,16 @@ import { Empleado } from './empleado';
 })
 export class EmpleadoService {
 
-  private url: string = 'http://localhost:9090/empleados-empresa';
+  private url: string = 'http://localhost:9090/empleadosEmpresa';
   
   idSubject = new BehaviorSubject<number | null>(null);
 
   constructor(private http: HttpClient) { };
 
-  findAll(): Observable<Empleado[]> {
-    return this.http.get<Empleado[]>(`${this.url}/traerTodos/1`);
+  findAll(empresaId: number): Observable<Empleado[]> {
+    return this.http.get<Empleado[]>(`${this.url}/traerTodos/${empresaId}`);
   }
+
 
   cantidadActivos(): Observable<number> {
     return this.http.get<number>(`${this.url}/contarEmpleados/1`);
