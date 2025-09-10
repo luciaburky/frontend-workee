@@ -65,7 +65,7 @@
                         <tr (click)="irADetalle(usuario.idUsuario!)" style="cursor: pointer;">
                             <td class="celda-foto-correo">
                                 <!-- <img src="{{ usuario.urlFotoUsuario }}" alt="{{ usuario.nombreEntidad }}"> -->
-                                <img class="foto-usuario" src="../../../../../assets/img/foto-perfil.png" alt="{{ usuario.nombreEntidad }}">
+                                <img class="foto-usuario" [src]="usuario?.urlFotoUsuario ||'assets/img/foto-perfil.png'"  alt="{{ usuario.nombreEntidad }}">   
                                 {{ usuario.nombreEntidad }}
                             </td>
                             <td> 
