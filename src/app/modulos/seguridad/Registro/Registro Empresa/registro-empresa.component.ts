@@ -212,13 +212,19 @@ this.authService.registrarEmpresa(
   next: () => {
     this.submitForm = true;
     Swal.fire({
-      toast: true,
-      position: "top-end",
       icon: "success",
-      title: "La empresa se ha registrado correctamente",
-      timer: 3000,
+      title: "Registro exitoso",
+      text: "Tu empresa fue registrada correctamente. El administrador revisará tu solicitud para habilitar tu cuenta.",
+      showCloseButton: true,
       showConfirmButton: false,
+      timer: 6000,
+      timerProgressBar: false,
+      position: "center",
     });
+
+    setTimeout(() => {
+      this.router.navigate(['/login']); 
+    }, 3000);
   },
   error: (error: any) => {
       if (error.error.message === "El correo ingresado ya se encuentra en uso") {
