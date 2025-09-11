@@ -10,15 +10,18 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { BusquedaEmpresa } from './busqueda-empresa';
 import { SelectModule } from 'primeng/select';
+import { SpinnerComponent } from "../../../compartidos/spinner/spinner/spinner.component";
 
 @Component({
   selector: 'app-busqueda-empresas',
-  imports: [MultiSelect, CommonModule, FormsModule, ReactiveFormsModule, SelectModule],
+  imports: [MultiSelect, CommonModule, FormsModule, ReactiveFormsModule, SelectModule, SpinnerComponent],
   templateUrl: './busqueda-empresas.component.html',
   styleUrl: './busqueda-empresas.component.css'
 })
 export class BusquedaEmpresasComponent implements OnInit{
+  isLoading: boolean = false;
   
+
   filtrosUbicacion: FiltroUbicacion[] = [];
   filtrosRubro: Rubro[] = [];
   filtrosOferta: any;
@@ -99,6 +102,7 @@ export class BusquedaEmpresasComponent implements OnInit{
   }
 
   buscarPorNombre(textoEmpresa: string): void {
+    this.isLoading = true;
     this.busquedaRealizada = true;
     this.busquedaService.buscarEmpresasPorNombre(textoEmpresa).subscribe(data => {
       this.empresaList = data;
@@ -108,10 +112,13 @@ export class BusquedaEmpresasComponent implements OnInit{
       sessionStorage.setItem('filtrosUbicacion', JSON.stringify(this.filtrosSeleccionadosUbicacion));
       sessionStorage.setItem('filtrosRubro', JSON.stringify(this.filtrosSeleccionadosRubros));
       sessionStorage.setItem('filtrosOferta', JSON.stringify(this.filtrosSeleccionadosOfertas));
+      this.isLoading = false;
     });
+
   }
   
   filtrarEmpresas() {
+    this.isLoading = true;
     const idsProvincias = this.filtrosSeleccionadosUbicacion?.length ? this.filtrosSeleccionadosUbicacion : null;
     const idsRubros = this.filtrosSeleccionadosRubros?.length ? this.filtrosSeleccionadosRubros : null;
     const tieneOfertasAbiertas = this.filtrosSeleccionadosOfertas ?? null;
@@ -124,6 +131,7 @@ export class BusquedaEmpresasComponent implements OnInit{
       sessionStorage.setItem('filtrosUbicacion', JSON.stringify(this.filtrosSeleccionadosUbicacion));
       sessionStorage.setItem('filtrosRubro', JSON.stringify(this.filtrosSeleccionadosRubros));
       sessionStorage.setItem('filtrosOferta', JSON.stringify(this.filtrosSeleccionadosOfertas));
+      this.isLoading = false;
     })
   }
 

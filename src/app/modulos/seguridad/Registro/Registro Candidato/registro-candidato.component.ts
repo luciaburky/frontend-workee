@@ -22,15 +22,19 @@ import { HabilidadService } from '../../../../admin/ABMHabilidad/habilidad.servi
 import { CandidatoHabilidad } from '../../../candidato/candidato-habilidad';
 import { AuthService } from '../../auth.service';
 import { Storage, ref, uploadBytes, getDownloadURL, StorageReference} from '@angular/fire/storage';
+import { SpinnerComponent } from "../../../../compartidos/spinner/spinner/spinner.component";
 
 @Component({
   selector: 'app-registro-candidato',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, SpinnerComponent],
   templateUrl: './registro-candidato.component.html',
   styleUrl: './registro-candidato.component.css'
 })
 export class RegistroCandidatoComponent {
+  isLoading: boolean = false;
+
+
   candidatoForm: FormGroup;
   submitForm: boolean = false;
   backendEmailInvalido = false;
@@ -181,6 +185,7 @@ async enviarDatos() {
   }
 
   try {
+    this.isLoading = true;
     let urlFotoPerfil = '';
     let enlaceCV = '';
 
@@ -223,6 +228,10 @@ async enviarDatos() {
       urlFotoPerfil
     ).subscribe({
       next: () => {
+        this.isLoading = false;
+        setTimeout(() => {
+          this.router.navigate(['/login']);
+        }, 100);
         Swal.fire({
           icon: "success",
           title: "Registro exitoso",
@@ -234,11 +243,9 @@ async enviarDatos() {
           position: "center",
         });
         
-        setTimeout(() => {
-          this.router.navigate(['/login']);
-        }, 3000);
       },
       error: (error: any) => {
+        this.isLoading = false;
         if (error.error.message === "El correo ingresado ya se encuentra en uso") {
           Swal.fire({
             toast: true,
@@ -260,6 +267,7 @@ async enviarDatos() {
     });
 
   } catch (error) {
+    this.isLoading = false;
     console.error('Error al subir la imagen:', error);
     Swal.fire({
       toast: true,

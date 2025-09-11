@@ -76,6 +76,10 @@
         </div>
     </div>   
     <div class="listado-contenido row row-cols-1 row-cols-md-2 g-4">
+        <div *ngIf="isLoading; else results">
+            <app-spinner type="inline" message="Cargando resultados..."></app-spinner>
+        </div>
+        <ng-template #results> 
         @if (candidatoList.length === 0) {
             <div class="sin-resultados">
                 @if (!busquedaRealizada) {
@@ -124,6 +128,7 @@
                 </div>
             }
         }
+        </ng-template>
     </div>
     
     <nav *ngIf="totalPaginas > 1">

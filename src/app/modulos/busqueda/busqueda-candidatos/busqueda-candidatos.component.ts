@@ -14,10 +14,11 @@ import { Provincia } from '../../../admin/ABMProvincia/provincia';
 import { EstadoBusquedaLaboralService } from '../../../admin/ABMEstadoBusquedaLaboral/estado-busqueda-laboral.service';
 import { Router } from '@angular/router';
 import { forkJoin } from 'rxjs';
+import { SpinnerComponent } from "../../../compartidos/spinner/spinner/spinner.component";
 
 @Component({
   selector: 'app-busqueda-candidatos',
-  imports: [MultiSelect, CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [MultiSelect, CommonModule, FormsModule, ReactiveFormsModule, SpinnerComponent],
   templateUrl: './busqueda-candidatos.component.html',
   styleUrl: './busqueda-candidatos.component.css'
 })
@@ -40,6 +41,8 @@ export class BusquedaCandidatosComponent implements OnInit {
 
   paginaActual: number = 1;
   elementosPorPagina: number = 10;
+
+  isLoading: boolean = false;
 
   habilidadesRandomMap: { [id: number]: any[] } = {};
 
@@ -121,6 +124,7 @@ export class BusquedaCandidatosComponent implements OnInit {
 
   buscarPorNombre(textoCandidato: string): void {
     this.busquedaRealizada = true;
+    this.isLoading = true;
     this.busquedaService.buscarCandidatosPorNombre(textoCandidato).subscribe(data => {
       this.candidatoList = data;
       sessionStorage.setItem('textoCandidato',JSON.stringify(this.textoCandidato));
@@ -129,10 +133,12 @@ export class BusquedaCandidatosComponent implements OnInit {
       sessionStorage.setItem('filtrosEstado', JSON.stringify(this.filtrosSeleccionadosEstado));
       sessionStorage.setItem('filtrosPais', JSON.stringify(this.filtrosSeleccionadosPais));
       sessionStorage.setItem('filtrosProvincia', JSON.stringify(this.filtrosSeleccionadosProvincia));
+      this.isLoading = false;
     });
   }
 
   filtrarEmpresas() {
+    this.isLoading = true;
     const idsHabilidades = this.filtrosSeleccionadosHabilidad?.length ? this.filtrosSeleccionadosHabilidad : null;
     const idsPaises = this.filtrosSeleccionadosPais?.length ? this.filtrosSeleccionadosPais : null;
     const idsProvincias = this.filtrosSeleccionadosProvincia?.length ? this.filtrosSeleccionadosProvincia : null;
@@ -149,6 +155,7 @@ export class BusquedaCandidatosComponent implements OnInit {
       sessionStorage.setItem('filtrosEstado', JSON.stringify(this.filtrosSeleccionadosEstado));
       sessionStorage.setItem('filtrosPais', JSON.stringify(this.filtrosSeleccionadosPais));
       sessionStorage.setItem('filtrosProvincia', JSON.stringify(this.filtrosSeleccionadosProvincia));
+      this.isLoading = false;
     })
   }
 
