@@ -152,24 +152,38 @@
                     Adjuntar Documentos
                   </button>
                   <div class="doc-help">
-                    Formatos permitidos: <strong>PDF, DOC, DOCX, XLS, XLSX</strong> (máx 5MB)
+                    Formato permitido: <strong>PDF</strong> (máx 5MB)
                   </div>
                 </div>
               }
 
-              <!-- Mostrar la tarjeta del archivo cuando ya está cargado -->
               @if (previewPorEtapa[i]) {
-                <div class="doc-box">
-                  <span class="material-symbols-outlined icono-pdf">description</span>
-                  <div class="doc-detalle">
-                    <p>
-                      <a [href]="previewPorEtapa[i]" target="_blank">{{ nombresArchivoPorEtapa[i] }}</a>
-                    </p>
-                    <small>Actualizado el {{ today | date:'dd/MM/yyyy' }}</small>
+                <div class="doc-box doc-card" role="group" aria-label="Archivo adjunto">
+                  <div class="doc-icon">
+                    <span class="material-symbols-outlined">description</span>
                   </div>
-                  <div class="doc-acciones">
-                    <button id="icon-button" type="button" (click)="eliminarArchivoEtapa(i)">
-                      <span class="material-symbols-outlined eliminar-doc" title="Eliminar">delete</span>
+
+                  <div class="doc-info">
+                    <a class="doc-name" [href]="previewPorEtapa[i]" target="_blank" rel="noopener">
+                      {{ nombresArchivoPorEtapa[i] }}
+                    </a>
+                    <div class="doc-meta">
+                      <span class="doc-badge">PDF</span>
+                      <span class="dot">•</span>
+                      <span>Actualizado el {{ today | date:'dd/MM/yyyy' }}</span>
+                    </div>
+                  </div>
+
+                  <div class="doc-actions">
+                    <!-- Usa tu misma función para reabrir el selector y reemplazar -->
+                    <button type="button" class="btn-ghost" (click)="abrirSelectorArchivoEtapa(i)">
+                      <span class="material-symbols-outlined">edit</span>
+                      Cambiar
+                    </button>
+
+                    <button type="button" class="btn-ghost danger" (click)="eliminarArchivoEtapa(i)">
+                      <span class="material-symbols-outlined">delete</span>
+                      Eliminar
                     </button>
                   </div>
                 </div>

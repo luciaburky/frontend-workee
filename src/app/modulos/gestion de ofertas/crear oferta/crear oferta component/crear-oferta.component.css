@@ -178,3 +178,68 @@ form .habilidades .tag {
   color:#6B7280;
   margin-left:.15rem;
 }
+
+
+/* Card del archivo subido */
+.doc-card{
+  display:flex; align-items:center; gap:14px;
+  padding:14px 16px;
+  border:1px solid #E5EAF1; border-radius:12px;
+  background:#ffffff;
+  box-shadow:0 1px 2px rgba(16,24,40,.06);
+  transition:border-color .15s ease, box-shadow .15s ease, transform .05s ease;
+}
+.doc-card:hover{
+  border-color:#8BD1F1;
+  box-shadow:0 0 0 3px rgba(49,165,221,.12);
+}
+
+/* Icono del documento */
+.doc-icon{
+  width:44px; height:44px; border-radius:10px;
+  background:linear-gradient(180deg,#EAF5FE, #F5FBFF);
+  display:flex; align-items:center; justify-content:center;
+  flex:0 0 44px;
+}
+.doc-icon .material-symbols-outlined{
+  font-size:24px; color:#1c7fb9;
+}
+
+/* Info */
+.doc-info{ min-width:0; flex:1; }
+.doc-name{
+  display:block; font-weight:600; color:#0f172a;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.doc-name:hover{ color:#1c7fb9; text-decoration:underline; }
+
+.doc-meta{
+  display:flex; align-items:center; gap:.4rem;
+  font-size:.82rem; color:#6b7280; margin-top:2px;
+}
+.doc-badge{
+  background:#E1F0FA; color:#1c7fb9;
+  font-weight:700; border-radius:6px;
+  padding:.08rem .4rem; font-size:.72rem;
+}
+.doc-meta .dot{ opacity:.6 }
+
+/* Acciones */
+.doc-actions{ display:flex; gap:.45rem; }
+.btn-ghost{
+  display:inline-flex; align-items:center; gap:.35rem;
+  padding:.45rem .65rem; border-radius:8px;
+  border:1px solid #E5EAF1; background:#fff; color:#374151;
+  transition:border-color .15s ease, background-color .15s ease, box-shadow .15s ease;
+}
+.btn-ghost .material-symbols-outlined{ font-size:18px; line-height:1; }
+.btn-ghost:hover{ border-color:#8BD1F1; background:#F8FAFC; box-shadow:0 0 0 3px rgba(49,165,221,.08); }
+
+.btn-ghost.danger{ border-color:#fde2e2; color:#B91C1C; }
+.btn-ghost.danger:hover{ background:#FEF2F2; border-color:#FCA5A5; box-shadow:none; }
+
+/* Responsivo */
+@media (max-width: 620px){
+  .doc-card{ align-items:flex-start; }
+  .doc-actions{ flex-wrap:wrap; justify-content:flex-end; }
+}
