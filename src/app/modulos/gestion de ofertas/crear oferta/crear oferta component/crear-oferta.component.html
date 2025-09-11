@@ -109,32 +109,33 @@
                 <button type="button" class="btn btn-danger btn-cerrar" (click)="quitarEtapa(i)">Quitar</button>
               </div>
               <div class="form-group">
+                    <label class="campo-label">Asignar Empleado</label>   
                   <div class="titulo-habilidades">
-                      <label>Asignar Empleado</label>                      
                       <!-- donde listás cada etapa -->
-                        <button type="button" class="btn btn-outline-primary" (click)="seleccionarEmpleado(i)">
-                          Asignar empleado
+
+                        @if (!etapasSeleccionadas[i].idEmpleadoEmpresa) { 
+                          <button type="button" class="material-symbols-outlined" (click)="seleccionarEmpleado(i)">
+                          add
                         </button>
+                        }
+                        
 
                         @if (etapasSeleccionadas[i].idEmpleadoEmpresa) {
-                          <span class="ms-2 badge bg-success">
-                            ID asignado: {{ etapasSeleccionadas[i].idEmpleadoEmpresa }}
-                          </span>
-                        }                    
+                          <button type="button" class="material-symbols-outlined" (click)="borrarEmpleado(i)">
+                          check_indeterminate_small
+                          </button>
+                          <div >
+                            {{ empleadosPorId[etapasSeleccionadas[i].idEmpleadoEmpresa] || ('Empleado ' + etapasSeleccionadas[i].idEmpleadoEmpresa) }}
+                          </div>
+                          
+                        }
+                  
                   </div>
-                  <div class="habilidades">
-                      @for (hab of habilidadesParaMostrar; track $index) {
-                      <span class="tag"> {{hab.habilidad.nombreHabilidad}} </span>
-                      }
-                  </div>
-                  <p>Añade las habilidades blandas y técnicas requeridas para tu puesto</p>
               </div> 
               <div class="campo">
                 <label class="campo-label">Descripción</label>
                 <div class="editor-simulador">
                   <div class="editor-toolbar">
-                    <!-- Aca iria lo de negrita y demas  PARA LA CAMIIIIIIIII
-                     IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII-->
                   </div>
                   <textarea class="form-control editor-area"
                             [(ngModel)]="etapasSeleccionadas[i].descripcionAdicional" [ngModelOptions]="{ standalone: true }"></textarea>
@@ -189,9 +190,11 @@
             </label>
             </div>
           }
+        <div class="botones">
+          <button type="button" class="btn btn-primary guardar" (click)="enviarDatos()">Crear oferta</button>
         </div>
+        </div>
+        
       </div>
-      <div class="botones">
-          <button type="button" class="btn btn-primary guardar" (click)="enviarDatos()">Guardar oferta</button>
-      </div>
+
 </form>

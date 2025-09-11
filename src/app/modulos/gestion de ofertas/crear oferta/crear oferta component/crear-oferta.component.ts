@@ -22,6 +22,7 @@ import { EmpresaService } from '../../../empresa/empresa/empresa.service';
 import { ofertaEtapaDTO } from '../ofertaEtapaDTO';
 import { Storage, ref, uploadBytes, getDownloadURL, StorageReference } from '@angular/fire/storage';
 import { EmpleadoModalComponent } from '../modal empleados/empleado-modal.component';
+import { EmpleadoService } from '../../../empresa/empleados/empleado.service';
 
 @Component({
   selector: 'app-crear-oferta',
@@ -37,6 +38,9 @@ export class CrearOfertaComponent implements OnInit {
   tipocontratos: TipoContrato[] = [];
   modalidades: Modalidad [] = [];
   modalRef?: NgbModalRef;
+
+  empleadosPorId: Record<number, string> = {};
+  
 
   todasHabilidades: Habilidad[] = [];
   habilidadesSeleccionadasID: number[] = []; // array de ids de las habildiades que le quedaron 
@@ -67,6 +71,7 @@ export class CrearOfertaComponent implements OnInit {
     private empresaService: EmpresaService,
     private changeDetectorRef: ChangeDetectorRef,
     private storage: Storage,
+    private empleadoService: EmpleadoService,
 
   ){
   this.crearofertaForm = new FormGroup({
@@ -335,7 +340,30 @@ toggleAdjuntaEnlace(i: number, checked: boolean) {
   this.etapasSeleccionadas[i].adjuntaEnlace = esPrimeraElegida ? checked : false;
 
  console.log('etapas seleccionadas: ', this.etapasSeleccionadas)
-}
+ }
+
+// seleccionarEmpleado(i: number) {
+//   if (!this.idEmpresaObtenida) return;
+
+//   this.modalRef = this.modalService.open(EmpleadoModalComponent, {
+//     centered: true,
+//     scrollable: true,
+//     size: 'lg'
+//   });
+
+//   this.modalRef.componentInstance.empresaId = this.idEmpresaObtenida;
+//   // this.modalRef.componentInstance.preseleccionadoId = this.etapasSeleccionadas[i].idEmpleadoEmpresa;
+
+//   // 👇 ahora esperamos un number (id)
+//   this.modalRef.result.then((empleadoId: number) => {
+//     if (empleadoId != null) {
+//       this.etapasSeleccionadas[i].idEmpleadoEmpresa = empleadoId;
+//       console.log(`Empleado ${empleadoId} asignado a la etapa #${i + 1}`);
+//       this.nombreempleadoetapa = this.empleadoService.findById(empleadoId)
+//       console.log('nombre empleado etapa: ', this.nombreempleadoetapa)
+//     }
+//   }).catch(() => {});
+// }
 
 seleccionarEmpleado(i: number) {
   if (!this.idEmpresaObtenida) return;
@@ -347,15 +375,34 @@ seleccionarEmpleado(i: number) {
   });
 
   this.modalRef.componentInstance.empresaId = this.idEmpresaObtenida;
-  // this.modalRef.componentInstance.preseleccionadoId = this.etapasSeleccionadas[i].idEmpleadoEmpresa;
 
-  // 👇 ahora esperamos un number (id)
-  this.modalRef.result.then((empleadoId: number) => {
-    if (empleadoId != null) {
-      this.etapasSeleccionadas[i].idEmpleadoEmpresa = empleadoId;
-      console.log(`Empleado ${empleadoId} asignado a la etapa #${i + 1}`);
-    }
-  }).catch(() => {});
+  this.modalRef.result
+    .then((empleadoId: number) => {
+      if (empleadoId != null) {
+        // 1) seteo el ID en la etapa (como ya hacías)
+        this.etapasSeleccionadas[i].idEmpleadoEmpresa = empleadoId;
+        console.log(`Empleado ${empleadoId} asignado a la etapa #${i + 1}`);
+
+        // 2) traigo el nombre UNA vez y lo cacheo para pintar en la vista
+        this.empleadoService.findById(empleadoId).subscribe({
+          next: (emp: Empleado) => {
+            const nombre = [emp?.nombreEmpleadoEmpresa, emp?.apellidoEmpleadoEmpresa].filter(Boolean).join(' ');
+            this.empleadosPorId[empleadoId] = nombre || `Empleado ${empleadoId}`;
+            this.changeDetectorRef.detectChanges();
+          },
+          error: () => {
+            // fallback por si falla
+            this.empleadosPorId[empleadoId] = `Empleado ${empleadoId}`;
+            this.changeDetectorRef.detectChanges();
+          }
+        });
+      }
+    })
+    .catch(() => {});
+}
+
+borrarEmpleado(i: number){
+  this.etapasSeleccionadas[i].idEmpleadoEmpresa = 0;
 }
 
 
