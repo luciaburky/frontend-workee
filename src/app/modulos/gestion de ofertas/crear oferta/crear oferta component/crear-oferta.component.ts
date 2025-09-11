@@ -40,6 +40,10 @@ export class CrearOfertaComponent implements OnInit {
   modalRef?: NgbModalRef;
 
   empleadosPorId: Record<number, string> = {};
+  private archivosPorEtapa: Record<number, File> = {};
+  previewPorEtapa: Record<number, string> = {};
+  nombresArchivoPorEtapa: Record<number, string> = {};
+  erroresArchivo: Record<number, { formato?: boolean; tamanioInvalido?: boolean }> = {};
   
 
   todasHabilidades: Habilidad[] = [];
@@ -81,7 +85,6 @@ export class CrearOfertaComponent implements OnInit {
     descripcionOferta: new FormControl('', [Validators.required]),
     responsabilidadesOferta: new FormControl('', [Validators.required]),
     habilidadesOferta: new FormControl(''),
-    enlaceArchivoEtapa: new FormControl(''),
   });
   }
 
@@ -139,75 +142,98 @@ ngOnInit(){
 
 }
 
-  async enviarDatos(){
-    this.submitForm = true;
+async enviarDatos() {
+  this.submitForm = true;
+  if (this.crearofertaForm.invalid) {
+    Swal.fire({ icon: 'warning', title: 'Formulario incompleto', text: 'Por favor, complete todos los campos obligatorios.' });
+    return;
+  }
 
-    if (this.crearofertaForm.invalid) {
-      Swal.fire({
-        icon: 'warning',
-        title: 'Formulario incompleto',
-        text: 'Por favor, complete todos los campos obligatorios y acepte los Términos y Condiciones.',
-      });
-      return;
-    }
+  const titulo = this.crearofertaForm.get('titulo')?.value;
+  const descripcion = this.crearofertaForm.get('descripcionOferta')?.value;
+  const modalidadSeleccionada = this.crearofertaForm.get('modalidad')?.value.id;
+  const tipocontratoSeleccionado = this.crearofertaForm.get('tipocontrato')?.value.id;
+  const responsabilidades = this.crearofertaForm.get('responsabilidadesOferta')?.value;
 
-    
+  try {
+    // (A) SUBIR ARCHIVOS DE TODAS LAS ETAPAS QUE TENGAN FILE
+    await this.subirAdjuntosAntesDePost(titulo);
 
-    // try{
-
-    // } catch(error){
-      
-    // }
-    // let enlaceArchivoEtapa = '';
-    // if (this.fileArchivoEtapa) {
-    //   this.docRef = ref(this.storage, `Archivo Adjunto/${this.fileArchivoEtapa.name}`);
-    //   const snapshot = await uploadBytes(this.docRef, this.fileArchivoEtapa);
-    //   enlaceArchivoEtapa = await getDownloadURL(snapshot.ref);
-    // }
-      
-    const titulo = this.crearofertaForm.get('titulo')?.value;
-    const descripcion = this.crearofertaForm.get('descripcionOferta')?.value;
-    const modalidadSeleccionada = this.crearofertaForm.get('modalidad')?.value.id;
-    const tipocontratoSeleccionado = this.crearofertaForm.get('tipocontrato')?.value.id;
-    const responsabilidades = this.crearofertaForm.get('responsabilidadesOferta')?.value;
-
-      console.log(
-    '💩 DATOS A ENVIAR 💩',
-    {
+    // (B) POST con ofertaEtapas ya completas (archivoAdjunto = downloadURL o '')
+    this.ofertaService.crearOferta(
       titulo,
       descripcion,
       responsabilidades,
       modalidadSeleccionada,
       tipocontratoSeleccionado,
-      habilidadesSeleccionadasID: this.habilidadesSeleccionadasID,
-      empresaId: this.idEmpresaObtenida,
-      etapas: this.etapasSeleccionadas
-    }
-  );
-
-    this.ofertaService.crearOferta(
-      titulo,
-      descripcion,
-      responsabilidades,
-      modalidadSeleccionada, 
-      tipocontratoSeleccionado,
       this.habilidadesSeleccionadasID,
       this.idEmpresaObtenida,
       this.etapasSeleccionadas
     ).subscribe({
-        next: () => {
-                Swal.fire({
-                  toast: true,
-                  position: "top-end",
-                  icon: "success",
-                  title: "La oferta se ha creado exitosamente",
-                  timer: 3000,
-                  showConfirmButton: false,
-                });
-              },
-    })
-    
+      next: () => {
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'success',
+          title: 'La oferta se ha creado exitosamente',
+          timer: 3000,
+          showConfirmButton: false,
+        });
+        // Limpieza opcional
+        this.archivosPorEtapa = {};
+        this.previewPorEtapa = {};
+        this.nombresArchivoPorEtapa = {};
+      },
+      error: (err) => {
+        console.error('Error al crear oferta', err);
+        Swal.fire({ icon: 'error', title: 'Error al crear la oferta', text: 'Revisá los datos e intentá nuevamente.' });
+      }
+    });
+  } catch (e) {
+    console.error('Error al subir adjuntos', e);
+    Swal.fire({ icon: 'error', title: 'Error al subir documentos', text: 'Revisá los archivos (PDF, <=5MB) e intentá nuevamente.' });
   }
+}
+
+
+private async subirAdjuntosAntesDePost(titulo: string): Promise<void> {
+  const tareas: Promise<void>[] = [];
+
+  const carpetaOferta = `ofertas/${this.sanitize(titulo)}_${Date.now()}`;
+
+  for (const [idxStr, file] of Object.entries(this.archivosPorEtapa)) {
+    const i = Number(idxStr);
+    const etapa = this.etapasSeleccionadas[i];
+    if (!etapa || !file) continue;
+
+    const tarea = (async () => {
+      const path = `${carpetaOferta}/etapa-${etapa.numeroEtapa}/${file.name}`;
+      const storageRef = ref(this.storage, path);
+      const snapshot = await uploadBytes(storageRef, file);
+      const url = await getDownloadURL(snapshot.ref);
+
+      // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+      // PUNTO CLAVE: Seteamos el atributo que espera el backend
+      etapa.archivoAdjunto = url;
+      // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    })();
+
+    tareas.push(tarea);
+  }
+
+  await Promise.all(tareas);
+}
+
+private sanitize(s: string): string {
+  return (s || '')
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // quita acentos
+    .replace(/[^a-zA-Z0-9-_ ]/g, '')                  // quita raros
+    .trim()
+    .replace(/\s+/g, '-')
+    .toLowerCase();
+}
+
+
 
   isCampoInvalido(nombreCampo: string): boolean {
     const control = this.crearofertaForm.get(nombreCampo);
@@ -281,59 +307,68 @@ ngOnInit(){
   }));
 }
 
-onFileSelected(event: Event, index: number) {
-
-}
-
 getNombreEtapa(idEtapa: number): string {
   const etapa = this.etapasDisponibles.find(e => e.id === idEtapa);
   return etapa ? etapa.nombreEtapa! : '';
 }
 
-abrirSelectorArchivoEtapa() {
-  document.getElementById('fileArchivoEtapa')?.click(); 
+abrirSelectorArchivoEtapa(i: number) {
+  document.getElementById('fileArchivoEtapa_' + i)?.click();
 }
 
-eliminarArchivoEtapa() {
-  this.fileArchivoEtapa = null;
-  this.ArchivoEtapaTemporal = null;
-  this.crearofertaForm.get('enlaceArchivoEtapa')?.reset();
-  
-  // Forzar la detección de cambios para que la UI se actualice inmediatamente
+onArchivoEtapaSelected(event: any, i: number ) {
+  const inputEl = event.target as HTMLInputElement;
+  const file = inputEl.files?.[0];
+  if (!file) return;
+
+  // Reset de errores de esa etapa
+  this.erroresArchivo[i] = {};
+
+  // Validaciones
+  if (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')) {
+    this.erroresArchivo[i].formato = true;
+    this.changeDetectorRef.detectChanges();
+    // Limpio el input para permitir reintento inmediato
+    inputEl.value = '';
+    return;
+  }
+  if (file.size > 5 * 1024 * 1024) {
+    this.erroresArchivo[i].tamanioInvalido = true;
+    this.changeDetectorRef.detectChanges();
+    inputEl.value = '';
+    return;
+  }
+
+  // Guardar para subir luego
+  this.archivosPorEtapa[i] = file;
+  this.previewPorEtapa[i] = URL.createObjectURL(file);
+  this.nombresArchivoPorEtapa[i] = file.name;
+
+  // NO metas blob-URL en el DTO
+  this.etapasSeleccionadas[i].archivoAdjunto = '';
+
+  // Dejo el input vacío así puedo volver a elegir el mismo archivo si quiero
+  inputEl.value = '';
+
   this.changeDetectorRef.detectChanges();
 }
 
-onArchivoEtapaSelected(event: any) {
-    const file = event.target.files[0];
-    if (!file) return;
 
-    // Resetear errores previos
-    this.crearofertaForm.get('enlaceArchivoEtapa')?.setErrors(null);
+eliminarArchivoEtapa(i: number) {
+  delete this.archivosPorEtapa[i];
+  delete this.previewPorEtapa[i];
+  delete this.nombresArchivoPorEtapa[i];
+  delete this.erroresArchivo[i];
 
-    // Validar formato
-    if (file.type !== 'application/pdf') {
-      this.crearofertaForm.get('enlaceArchivoEtapa')?.setErrors({ formato: true });
-      this.fileArchivoEtapa = null; // Asegúrate de que fileArchivoEtapa esté nulo si hay un error
-      this.changeDetectorRef.detectChanges(); // Forzar la actualización
-      return;
-    }
+  this.etapasSeleccionadas[i].archivoAdjunto = '';
 
-    // Validar tamaño (máx 5MB)
-    if (file.size > 5 * 1024 * 1024) {
-      this.crearofertaForm.get('enlaceArchivoEtapa')?.setErrors({ tamanioInvalido: true });
-      this.fileArchivoEtapa = null; // Asegúrate de que fileArchivoEtapa esté nulo si hay un error
-      this.changeDetectorRef.detectChanges(); // Forzar la actualización
-      return;
-    }
+  // Resetear el input file de esa etapa para permitir re-seleccionar el mismo archivo
+  const input = document.getElementById('fileArchivoEtapa_' + i) as HTMLInputElement | null;
+  if (input) input.value = '';
 
-    // Guardar archivo y generar preview
-    this.fileArchivoEtapa = file;
-    this.ArchivoEtapaTemporal = URL.createObjectURL(file);
-    this.crearofertaForm.get('enlaceArchivoEtapa')?.setValue(file);
-    
-    // Forzar la detección de cambios para que la UI se actualice inmediatamente
-    this.changeDetectorRef.detectChanges();
+  this.changeDetectorRef.detectChanges();
 }
+
 
 toggleAdjuntaEnlace(i: number, checked: boolean) {
   const esPrimeraElegida = this.etapasSeleccionadas[i].numeroEtapa === 1;
@@ -342,28 +377,7 @@ toggleAdjuntaEnlace(i: number, checked: boolean) {
  console.log('etapas seleccionadas: ', this.etapasSeleccionadas)
  }
 
-// seleccionarEmpleado(i: number) {
-//   if (!this.idEmpresaObtenida) return;
 
-//   this.modalRef = this.modalService.open(EmpleadoModalComponent, {
-//     centered: true,
-//     scrollable: true,
-//     size: 'lg'
-//   });
-
-//   this.modalRef.componentInstance.empresaId = this.idEmpresaObtenida;
-//   // this.modalRef.componentInstance.preseleccionadoId = this.etapasSeleccionadas[i].idEmpleadoEmpresa;
-
-//   // 👇 ahora esperamos un number (id)
-//   this.modalRef.result.then((empleadoId: number) => {
-//     if (empleadoId != null) {
-//       this.etapasSeleccionadas[i].idEmpleadoEmpresa = empleadoId;
-//       console.log(`Empleado ${empleadoId} asignado a la etapa #${i + 1}`);
-//       this.nombreempleadoetapa = this.empleadoService.findById(empleadoId)
-//       console.log('nombre empleado etapa: ', this.nombreempleadoetapa)
-//     }
-//   }).catch(() => {});
-// }
 
 seleccionarEmpleado(i: number) {
   if (!this.idEmpresaObtenida) return;
@@ -390,7 +404,7 @@ seleccionarEmpleado(i: number) {
             this.empleadosPorId[empleadoId] = nombre || `Empleado ${empleadoId}`;
             this.changeDetectorRef.detectChanges();
           },
-          error: () => {
+          error: () => { 
             // fallback por si falla
             this.empleadosPorId[empleadoId] = `Empleado ${empleadoId}`;
             this.changeDetectorRef.detectChanges();
