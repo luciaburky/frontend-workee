@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors } from "@angular/forms";
 import { Router } from '@angular/router';
 import { TipoContrato } from '../../../../admin/ABMTipoContrato/tipo-contrato';
 import { TipoContratoService } from '../../../../admin/ABMTipoContrato/tipo-contrato.service';
@@ -24,6 +24,10 @@ import { Storage, ref, uploadBytes, getDownloadURL, StorageReference } from '@an
 import { EmpleadoModalComponent } from '../modal empleados/empleado-modal.component';
 import { EmpleadoService } from '../../../empresa/empleados/empleado.service';
 
+ function noWhitespaceValidator(ctrl: AbstractControl): ValidationErrors | null {
+    const v = (ctrl.value ?? '').toString();
+    return v.trim().length > 0 ? null : { whitespace: true };
+  }
 @Component({
   selector: 'app-crear-oferta',
   standalone: true,
@@ -33,6 +37,9 @@ import { EmpleadoService } from '../../../empresa/empleados/empleado.service';
 })
 export class CrearOfertaComponent implements OnInit {
 
+  faltasEmpleado: number[] = [];
+  
+  submitted = false;
   crearofertaForm: FormGroup;
   submitForm: boolean = false;
   tipocontratos: TipoContrato[] = [];
@@ -44,6 +51,7 @@ export class CrearOfertaComponent implements OnInit {
   previewPorEtapa: Record<number, string> = {};
   nombresArchivoPorEtapa: Record<number, string> = {};
   erroresArchivo: Record<number, { formato?: boolean; tamanioInvalido?: boolean }> = {};
+  erroresEtapas: Array<{ sinEmpleado?: boolean }> = [];
   
 
   todasHabilidades: Habilidad[] = [];
@@ -79,11 +87,11 @@ export class CrearOfertaComponent implements OnInit {
 
   ){
   this.crearofertaForm = new FormGroup({
-    titulo: new FormControl('', [Validators.required]),
-    tipocontrato: new FormControl('', [Validators.required]),
-    modalidad: new FormControl('', [Validators.required]),
-    descripcionOferta: new FormControl('', [Validators.required]),
-    responsabilidadesOferta: new FormControl('', [Validators.required]),
+    titulo: new FormControl<string>('', { nonNullable: true, validators: [Validators.required, noWhitespaceValidator] }),
+    tipocontrato: new FormControl<any | null>(null, { validators: [Validators.required] }),
+    modalidad: new FormControl<any | null>(null, { validators: [Validators.required] }),
+    descripcionOferta: new FormControl<string>('', { nonNullable: true, validators: [Validators.required, noWhitespaceValidator] }),
+    responsabilidadesOferta: new FormControl<string>('', { nonNullable: true, validators: [Validators.required, noWhitespaceValidator] }),
     habilidadesOferta: new FormControl(''),
   });
   }
@@ -138,8 +146,15 @@ ngOnInit(){
         }
     });
   }
+}
 
+isCampoInvalido(nombre: string): boolean {
+  const c = this.crearofertaForm.get(nombre);
+  return !!c && c.invalid && (c.touched || this.submitted);
+}
 
+marcarTodoTocado() {
+  Object.values(this.crearofertaForm.controls).forEach(c => c.markAsTouched());
 }
 
 async enviarDatos() {
@@ -149,6 +164,25 @@ async enviarDatos() {
     return;
   }
 
+  const etapasOk = this.validarEtapas();
+  if (this.crearofertaForm.invalid || !etapasOk) {
+    Swal.fire({ icon: 'warning', title: 'Debes tener al menos una etapa en tu oferta', text: 'Por favor, complete todos los campos obligatorios.' });    
+    return;
+  }
+
+    if (!etapasOk) {
+    const detalle = this.faltasEmpleado.length
+      ? `Falta asignar un empleado responsable en las etapas: <b>${this.faltasEmpleado.join(', ')}</b>.`
+      : 'Revisá los datos de las etapas.';
+
+    Swal.fire({
+      icon: 'warning',
+      title: 'Asigná responsables',
+      html: detalle
+    });
+    return;
+  }
+  
   const titulo = this.crearofertaForm.get('titulo')?.value;
   const descripcion = this.crearofertaForm.get('descripcionOferta')?.value;
   const modalidadSeleccionada = this.crearofertaForm.get('modalidad')?.value.id;
@@ -233,12 +267,6 @@ private sanitize(s: string): string {
     .toLowerCase();
 }
 
-
-
-  isCampoInvalido(nombreCampo: string): boolean {
-    const control = this.crearofertaForm.get(nombreCampo);
-    return !!(control && control.invalid && (control.touched || this.submitForm));
-  }
   compararTipoContrato = (p1: TipoContrato, p2: TipoContrato) => p1 && p2 ? p1.id === p2.id : p1 === p2;
 
 
@@ -417,6 +445,42 @@ seleccionarEmpleado(i: number) {
 
 borrarEmpleado(i: number){
   this.etapasSeleccionadas[i].idEmpleadoEmpresa = 0;
+}
+
+private validarEtapas(): boolean {
+  this.erroresEtapas = [];
+  this.faltasEmpleado = [];
+
+  if (!this.etapasSeleccionadas || this.etapasSeleccionadas.length === 0) {
+    return false; // sin etapas
+  }
+
+  let ok = true;
+
+  this.etapasSeleccionadas.forEach((e: any, idx: number) => {
+    const err: { sinEmpleado?: boolean } = {};
+
+    // adjuntaEnlace como boolean por las dudas
+    if (e.adjuntaEnlace === undefined || e.adjuntaEnlace === null) {
+      e.adjuntaEnlace = false;
+    }
+
+    // idEtapa fallback si guardaste 'id'
+    if (e.idEtapa == null && e.id != null) {
+      e.idEtapa = e.id;
+    }
+
+    // ⚠️ Falta empleado si es null/undefined o 0
+    if (e.idEmpleadoEmpresa == null || e.idEmpleadoEmpresa === 0) {
+      err.sinEmpleado = true;
+      ok = false;
+      this.faltasEmpleado.push((e.numeroEtapa ?? idx + 1));
+    }
+
+    this.erroresEtapas[idx] = err;
+  });
+
+  return ok;
 }
 
 
