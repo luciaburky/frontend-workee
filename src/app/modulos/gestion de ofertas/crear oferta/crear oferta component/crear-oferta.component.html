@@ -62,7 +62,7 @@
                 <label>Habilidades</label>
                 
                 <button id="icon-button" (click)="seleccionarHabilidades()">
-                    <span class="material-symbols-outlined editar-cv" title="Editar habilidades">edit</span>
+                    <span class="material-symbols-outlined editar-doc" title="Editar habilidades">edit</span>
                 </button>
                 
             </div>
@@ -142,45 +142,51 @@
                 </div>
               </div>
 
-              <div class="form-group cv-wrapper">
-              <label for="fileCV" class="p-0 my-0 mb-2">Documentos Adjuntos</label>            
-              <div class="cv-drop-area" (click)="abrirSelectorArchivoEtapa(i)">
-                <p class="cv-texto">Adjuntar documentos</p>
-              </div>
-                                  <!-- antes: @if (fileArchivoEtapa) { ... } -->
+              <div class="form-group doc-wrapper">
+              <label for="fileCV" class="p-0 my-0 mb-2">Documentos Adjuntos</label>
+
+              <!-- Mostrar el botón/área de adjuntar SOLO si todavía no hay archivo -->
+              @if (!previewPorEtapa[i]) {
+                <div class="doc-drop-area" (click)="abrirSelectorArchivoEtapa(i)">
+                  <p class="doc-texto">Adjuntar documentos</p>
+                </div>
+              }
+
+              <!-- Mostrar la tarjeta del archivo cuando ya está cargado -->
               @if (previewPorEtapa[i]) {
-                <div class="cv-box">
+                <div class="doc-box">
                   <span class="material-symbols-outlined icono-pdf">description</span>
-                  <div class="cv-detalle">
+                  <div class="doc-detalle">
                     <p>
                       <a [href]="previewPorEtapa[i]" target="_blank">{{ nombresArchivoPorEtapa[i] }}</a>
                     </p>
                     <small>Actualizado el {{ today | date:'dd/MM/yyyy' }}</small>
                   </div>
-                  <div class="cv-acciones">
+                  <div class="doc-acciones">
                     <button id="icon-button" type="button" (click)="eliminarArchivoEtapa(i)">
-                      <span class="material-symbols-outlined eliminar-cv" title="Eliminar">delete</span>
+                      <span class="material-symbols-outlined eliminar-doc" title="Eliminar">delete</span>
                     </button>
                   </div>
                 </div>
               }
-              
-            <input
-              type="file"
-              [id]="'fileArchivoEtapa_'+i"
-              accept="application/pdf"
-              hidden
-              (change)="onArchivoEtapaSelected($event, i)"
-            />
 
-            <!-- Mensajes de error por etapa -->
-            @if (erroresArchivo[i]?.formato) {
-              <p class="text-error">El formato del archivo seleccionado no es válido. Debe ser .pdf</p>
-            }
-            @if (erroresArchivo[i]?.tamanioInvalido) {
-              <p class="text-error">El documento no debe superar los 5MB.</p>
-            }
-            </div> 
+              <input
+                type="file"
+                [id]="'fileArchivoEtapa_'+i"
+                accept="application/pdf"
+                hidden
+                (change)="onArchivoEtapaSelected($event, i)"
+              />
+
+              <!-- Mensajes de error por etapa -->
+              @if (erroresArchivo[i]?.formato) {
+                <p class="text-error">El formato del archivo seleccionado no es válido. Debe ser .pdf</p>
+              }
+              @if (erroresArchivo[i]?.tamanioInvalido) {
+                <p class="text-error">El documento no debe superar los 5MB.</p>
+              }
+            </div>
+
             <label class="check-row">
               <input
                 #cb
