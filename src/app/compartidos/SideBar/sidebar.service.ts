@@ -6,14 +6,6 @@ import { MenuItem } from './menu-item';
   providedIn: 'root'
 })
 export class SidebarService {
-
-  // menu: any[]=[{
-  //   titulo:`Ofertas`,
-  //   icono:``
-    
-  // }]
-
-  // sidebar.service.ts
   menu: MenuItem[] = [
     { titulo: "Buscar", ruta: "", icono: "search",
       children: [

@@ -31,6 +31,7 @@ export class SesionService {
   ) {}
 
   logout(): void {
+    this.rolUsuarioSubject.next(null); 
     this.clearLocalSession();
     this.router.navigate(['/inicio']);
   }
