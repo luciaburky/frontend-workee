@@ -145,10 +145,15 @@
               <div class="form-group doc-wrapper">
               <label for="fileCV" class="p-0 my-0 mb-2">Documentos Adjuntos</label>
 
-              <!-- Mostrar el botón/área de adjuntar SOLO si todavía no hay archivo -->
               @if (!previewPorEtapa[i]) {
-                <div class="doc-drop-area" (click)="abrirSelectorArchivoEtapa(i)">
-                  <p class="doc-texto">Adjuntar documentos</p>
+                <div class="doc-uploader">
+                  <button type="button" class="doc-upload-btn" (click)="abrirSelectorArchivoEtapa(i)">
+                    <span class="material-symbols-outlined">attach_file</span>
+                    Adjuntar Documentos
+                  </button>
+                  <div class="doc-help">
+                    Formatos permitidos: <strong>PDF, DOC, DOCX, XLS, XLSX</strong> (máx 5MB)
+                  </div>
                 </div>
               }
 

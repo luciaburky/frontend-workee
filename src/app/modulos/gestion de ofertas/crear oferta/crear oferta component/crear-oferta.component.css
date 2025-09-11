@@ -137,3 +137,44 @@ form .habilidades .tag {
 /* Checkbox final */
 .check-row{display:flex;align-items:center;gap:8px;margin-top:10px;color:#374151}
 .check-row input[type="checkbox"]{width:16px;height:16px;accent-color:#31A5DD}
+
+
+/* Contenedor del uploader (estado previo a carga) */
+.doc-uploader{
+  display:flex;
+  flex-direction:column;
+  gap:.35rem;
+}
+
+/* Botón estilo “pill” con borde punteado */
+.doc-upload-btn{
+  display:inline-flex;
+  align-items:center;
+  gap:.5rem;
+  padding:.55rem 1rem;
+  border-radius:14px;
+  border:1px dashed #CFD8E3;
+  background:#F7F9FC;
+  color:#475569;
+  font-weight:600;
+  cursor:pointer;
+  transition:background-color .15s ease, border-color .15s ease, box-shadow .15s ease;
+}
+
+.doc-upload-btn .material-symbols-outlined{
+  font-size:18px;
+  line-height:1;
+}
+
+.doc-upload-btn:hover{
+  background:#EEF2F7;
+  border-color:#8BD1F1;
+  box-shadow:0 0 0 3px rgba(49,165,221,.15);
+}
+
+/* Leyenda de formatos */
+.doc-help{
+  font-size:.78rem;
+  color:#6B7280;
+  margin-left:.15rem;
+}
