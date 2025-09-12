@@ -21,14 +21,13 @@ export class EmpresaService {
   }
   
   modificarEmpresa(idEmpresa: number,
-                   nombreEmpresa: string,
-                   descripcionEmpresa: string,
-                   idRubro: number,
-                   telefonoEmpresa: number,
-                   direccionEmpresa: string,
-                   sitioWebEmpresa: string,
-                   contrasenia: string,
-                   repetirContrasenia: string) {
+                    nombreEmpresa: string,
+                    descripcionEmpresa: string,
+                    idRubro: number,
+                    telefonoEmpresa: number,
+                    direccionEmpresa: string,
+                    sitioWebEmpresa: string,
+                    urlFotoPerfil: string) {
     const body = {
       "sitioWebEmpresa": sitioWebEmpresa,
       "nombreEmpresa": nombreEmpresa,
@@ -38,15 +37,27 @@ export class EmpresaService {
       "idRubro": idRubro,
       "numeroIdentificacionFiscal": null,
       "emailEmpresa": null,
-      "contrasenia": contrasenia,
-      "repetirContrasenia": repetirContrasenia,
-      "idProvincia": null
+      "contrasenia": null,
+      "repetirContrasenia": null,
+      "idProvincia": null,
+      "urlFotoPerfil": urlFotoPerfil,
+      "urlDocumentoLegal": null
     }
+    console.log("estoy desde el service, este es mi cuerpa: ", body);
     return this.http.put(`${this.url}/modificarPerfil/${idEmpresa}`, body);
   }
 
   eliminarEmpresa(idEmpresa: number) {
     return this.http.delete<void>(`${this.url}/${idEmpresa}`);
+  }
+
+  getidEmpresabyCorreo(){
+    const correo = this.sesionService.getCorreoUsuario();
+    if (!correo) {
+      console.error("No se pudo obtener el correo del token para obtener el id Empresa.");
+      return;
+    }
+    return this.http.get<number>(`${this.url}/idEmpresaPorCorreo/${correo}`);
   }
   
   getidEmpresabyCorreo(){

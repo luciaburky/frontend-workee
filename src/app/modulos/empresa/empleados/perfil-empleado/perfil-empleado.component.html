@@ -7,7 +7,11 @@
   }
   <div class="perfil-header" [class.mt-0]="esEmpleado">
     <div>
-      <h1>{{empleado.nombreEmpleadoEmpresa}} {{empleado.apellidoEmpleadoEmpresa}}</h1>
+      @if (esEmpleado) {
+        <h1>Mi perfil</h1>
+      } @else {
+        <h1>{{empleado.nombreEmpleadoEmpresa}} {{empleado.apellidoEmpleadoEmpresa}}</h1>
+      }
       @if (!esEmpleado) {
         <p>Gestiona la información de tus empleados</p>
       } @else {
@@ -19,7 +23,7 @@
         <span class="material-symbols-outlined">edit</span>
         Editar
       </button>
-    } @else if (modoEdicion && esEmpleado){
+    } @else if (modoEdicion && esEmpleado) {
       <button type="button" class="boton" (click)="volverAListado()">
         <span class="material-symbols-outlined">arrow_back</span>
         Volver
@@ -28,9 +32,27 @@
   </div>
   <form>
   <div class="form-grid-logo">
-    <div class="logo-seccion">
-      <img [src]="'assets/img/foto-perfil.png'" alt="foto" class="foto" />
-    </div>
+    <div class="foto-seccion">
+        <div class="foto-container">
+          <img 
+            [src]="fotoTemporal || empleado.usuario?.urlFotoUsuario || 'assets/img/foto-perfil.png'" 
+            alt="foto" 
+            class="foto" 
+          />
+          @if (modoEdicion) {
+            <label for="fileInput" class="icono-editar" title="Editar foto">
+              <span class="material-symbols-outlined icono-foto">photo_camera</span>
+            </label>
+            <input 
+              type="file"
+              id="fileInput"
+              accept="image/jpg, image/jpeg, image/png"
+              hidden
+              (change)="onFileSelectedFoto($event)" 
+            /> 
+          }
+        </div>
+      </div>
     <div class="al-lado m-0 p-0">
       <div class="form-group">
         <label for="nombreEmpleado" class="p-0 my-0 mb-2">Nombre</label>
@@ -38,7 +60,7 @@
           type="text"
           class="form-control"
           name="nombreEmpleado"
-          [value]="empleado.nombreEmpleadoEmpresa"
+          [(ngModel)]="empleado.nombreEmpleadoEmpresa"
           [readonly]="!esEmpleado || !modoEdicion">
       </div>
       <div class="form-group">
@@ -47,7 +69,7 @@
           type="text"
           class="form-control"
           name="apellidoEmpleado"
-          [value]="empleado.apellidoEmpleadoEmpresa"
+          [(ngModel)]="empleado.apellidoEmpleadoEmpresa"
           [readonly]="!esEmpleado || !modoEdicion">
       </div>
     </div>
@@ -72,42 +94,21 @@
       </div>
     
     @if (esEmpleado) {
-      <div class="form-group full-width">
-        <label for="contrasenia" class="p-0 my-0 mb-2">Contraseña</label>
-        <div class="input-group">
-          <input
-            [type]="verContrasenia ? 'text' : 'password'"
-            class="form-control"
-            name="contrasenia"
-            [(ngModel)]="empleado.usuario!.contraseniaUsuario"
-            [readonly]="!modoEdicion"
-            (input)="mostrarCampoRepetir = !!empleado.usuario?.contraseniaUsuario"/>
-          <span class="input-group-text" (click)="verContrasenia = !verContrasenia" style="cursor: pointer;">
-            <span class="material-symbols-outlined">
-              {{ verContrasenia ? 'visibility' : 'visibility_off' }}
-            </span>
+      <div class="form-group">
+        <label for="cambiarContrasenia" class="p-0 my-0 mb-2">Contraseña</label>
+        <button
+          type="button"
+          class="boton-cambio-contrasenia"
+          [class.disabled-btn]="!modoEdicion"
+          [disabled]="!modoEdicion"
+          (click)="abrirModalContrasenia()" >
+          <span class="material-symbols-outlined">
+            {{ modoEdicion ? 'lock_open_right' : 'lock' }}
           </span>
-        </div>
-      </div>
-      @if (mostrarCampoRepetir) {
-      <div class="form-group full-width">
-        <label for="repetirContrasenia" class="p-0 my-0 mb-2">Repetir contraseña</label>
-        <div class="input-group">
-          <input
-            [type]="verContrasenia ? 'text' : 'password'"
-            class="form-control"
-            name="repetirContrasenia"
-            [(ngModel)]="repetirContrasenia"
-            [readonly]="!modoEdicion"/>
-          <span class="input-group-text" (click)="verContrasenia = !verContrasenia" style="cursor: pointer;">
-            <span class="material-symbols-outlined">
-              {{ verContrasenia ? 'visibility' : 'visibility_off' }}
-            </span>
-          </span>
-        </div>
+          Cambiar contraseña
+        </button>
       </div>
     }
-  }
     </div>
   </div>
 </form>

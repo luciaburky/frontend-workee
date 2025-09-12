@@ -118,7 +118,7 @@ export class PerfilCandidatoComponent implements OnInit {
       fechaDeNacimiento: new FormControl('', [Validators.required]),
       provinciaCandidato: new FormControl({ value: null, disabled: true }, [Validators.required]),
       paisCandidato: new FormControl({ value: null, disabled: true }, [Validators.required]),
-      estadoBusquedaCandidato: new FormControl(''),
+      estadoBusquedaCandidato: new FormControl(null, [Validators.required]),
       generoCandidato: new FormControl({ value: null, disabled: true }, [Validators.required]),
       habilidadesCandidato: new FormControl(''),
       enlaceCV: new FormControl(''),
@@ -130,14 +130,11 @@ export class PerfilCandidatoComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // console.log(this.modoEdicion)
-    const id = Number(this.route.snapshot.paramMap.get('idCandidato'));
-    
     this.provinciaService.findAllActivas().subscribe({
       next: (data) => {
         this.provincias = data;
         
-        this.usuarioService.getUsuario(id).subscribe({
+        this.usuarioService.getUsuario().subscribe({
           next: (data) => {
             this.candidato = data;
 
@@ -161,18 +158,6 @@ export class PerfilCandidatoComponent implements OnInit {
             this.filtrarProvinciasPorPais(this.candidato.provincia?.pais ?? null);
           }
         })
-
-        // this.candidatoService.findById(id).subscribe({
-        //   next: (data) => {
-        //     this.candidato = data;
-        //     this.candidatoOriginal = JSON.parse(JSON.stringify(data));
-        //     this.paisSeleccionado = this.candidato.provincia?.pais;
-        //     this.filtrarProvinciasPorPais(this.paisSeleccionado || null);
-        //   },
-        //   error: (error) => {
-        //     console.error('Error al obtener el candidato', error);
-        //   }
-        // });
       },
       error: (error) => {
         console.error('Error al obtener provincias', error);
@@ -315,8 +300,6 @@ export class PerfilCandidatoComponent implements OnInit {
         } else {
           habilidadesAEnviar = this.habilidadesSeleccionadasID;
         }
-        const contrasenia = this.candidato.usuario?.contraseniaUsuario ?? '';
-        const repetirContrasenia = this.repetirContrasenia ?? '';
         const formValue = this.candidatoForm.value;
 
         let fotoURL = this.candidato.usuario?.urlFotoUsuario ?? '';
@@ -325,6 +308,8 @@ export class PerfilCandidatoComponent implements OnInit {
           if (subida) fotoURL = subida;
         }
 
+        const enlaceCV = this.candidato.candidatoCV?.enlaceCV ?? null;
+
         this.candidatoService.modificarCandidato(this.candidato.id!,
                               formValue.nombreCandidato,
                               formValue.apellidoCandidato,
@@ -332,11 +317,12 @@ export class PerfilCandidatoComponent implements OnInit {
                               formValue.estadoBusquedaCandidato?.id ?? 0,
                               formValue.generoCandidato?.id ?? 0,
                               habilidadesAEnviar,
-                              // contrasenia,
-                              fotoURL
-                              // repetirContrasenia
+                              fotoURL,
+                              enlaceCV ?? '',
         ).subscribe({
           next: () => {
+
+            this.candidato.estadoBusqueda = formValue.estadoBusquedaCandidato;
             this.candidatoOriginal = JSON.parse(JSON.stringify(this.candidato));
             this.modoEdicion = false;
             this.candidatoForm.get('generoCandidato')?.disable();
@@ -501,23 +487,49 @@ export class PerfilCandidatoComponent implements OnInit {
   async subirCV(file: File) {
     if (!file) return;
     try {
-      // if (this.file.size > 5242880) {
-      //   this.candidatoForm.get('candidatoCV')?.setErrors({ tamanioInvalido: true });
-      // }
+      console.log("entre al try")
       const filePath = `cv/${file.name}`;
       const fileRef = ref(this.storage, filePath);
+
+      const snapshot = await uploadBytes(fileRef, file);
+
       const downloadURL = await getDownloadURL(fileRef);
 
       this.candidato.candidatoCV = {
         enlaceCV: downloadURL,
-        fechaHoraAlta: new Date().toISOString()
+        fechaHoraAlta: new Date().toISOString(),
+        fechaHoraBaja: null
       };
+
+      this.candidato = {
+        ...this.candidato,
+        candidatoCV: { ...this.candidato.candidatoCV }
+      };
+
+      this.candidatoForm.patchValue({
+        enlaceCV: downloadURL
+      });
+
       this.candidatoService.actualizarCV(
         this.candidato.id!,
-        this.candidato.candidatoCV?.enlaceCV ?? ''
+        this.candidato.candidatoCV!.enlaceCV ?? ''
       ).subscribe({
-        next: (res) => {
-          // console.log("CV guardado en la BD:", res);
+        next: () => {
+
+          console.log("genial, ya cambie el cv, el candidatoCV nuevo es:", this.candidato.candidatoCV)
+          // this.candidato = { ...this.candidato, candidatoCV: this.candidato.candidatoCV };
+          // this.usuarioService.getUsuario().subscribe(candidatoActualizado => {
+          //   this.candidato = candidatoActualizado;
+          // });
+
+          Swal.fire({
+            toast: true,
+            position: "top-end",
+            icon: "success",
+            title: "CV subido correctamente",
+            timer: 3000,
+            showConfirmButton: false,
+          });
         },
         error: (err) => {
           console.error("Error al guardar CV en BD:", err);

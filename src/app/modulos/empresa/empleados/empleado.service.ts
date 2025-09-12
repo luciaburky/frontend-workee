@@ -18,9 +18,8 @@ export class EmpleadoService {
     return this.http.get<Empleado[]>(`${this.url}/traerTodos/${empresaId}`);
   }
 
-
-  cantidadActivos(): Observable<number> {
-    return this.http.get<number>(`${this.url}/contarEmpleados/1`);
+  cantidadActivos(empresaId: number): Observable<number> {
+    return this.http.get<number>(`${this.url}/contarEmpleados/${empresaId}`);
   }
   
   crearEmpleado(nombreEmpleadoEmpresa: string,
@@ -28,7 +27,8 @@ export class EmpleadoService {
                 puestoEmpleadoEmpresa: string,
                 correoEmpleadoEmpresa: string,
                 contrasenia: string,
-                repetirContrasenia: string) {
+                repetirContrasenia: string,
+                idEmpresa: number) {
     const body = {
       "nombreEmpleadoEmpresa": nombreEmpleadoEmpresa,
       "apellidoEmpleadoEmpresa": apellidoEmpleadoEmpresa,
@@ -36,13 +36,13 @@ export class EmpleadoService {
       "correoEmpleadoEmpresa": correoEmpleadoEmpresa,
       "contrasenia": contrasenia,
       "repetirContrasenia": repetirContrasenia,
-      "idEmpresa": 1,
-      "urlFotoPerfil": "urlFoto"
+      "idEmpresa": idEmpresa,
+      "urlFotoPerfil": null
     }
     return this.http.post(this.url,body);
   }
 
-  modificarEmpleadoComoEmpresa(puestoEmpleadoEmpresa: string, idEmpleado: number) {
+  modificarEmpleadoComoEmpresa(puestoEmpleadoEmpresa: string, idEmpleado: number, idEmpresa: number) {
     const body = {
       "nombreEmpleadoEmpresa": null,
       "apellidoEmpleadoEmpresa": null,
@@ -50,7 +50,7 @@ export class EmpleadoService {
       "correoEmpleadoEmpresa": null,
       "contrasenia": null,
       "repetirContrasenia": null,
-      "idEmpresa": 1
+      "idEmpresa": idEmpresa
     }
     console.log(body);
     return this.http.put(`${this.url}/actualizarPerfilPorAdmin/${idEmpleado}`,body);
@@ -58,19 +58,20 @@ export class EmpleadoService {
 
   modificarEmpleadoComoEmpleado(nombreEmpleadoEmpresa: string,
                                 apellidoEmpleadoEmpresa: string,
-                                contrasenia: string,
-                                repetirContrasenia: string,
-                                idEmpleado: number) {
-    const body = {
+                                idEmpleado: number,
+                                idEmpresa: number,
+                                urlFotoPerfil: string) {
+                                  const body = {
       "nombreEmpleadoEmpresa": nombreEmpleadoEmpresa,
       "apellidoEmpleadoEmpresa": apellidoEmpleadoEmpresa,
       "puestoEmpleadoEmpresa": null,
       "correoEmpleadoEmpresa": null,
-      "contrasenia": contrasenia,
-      "repetirContrasenia": repetirContrasenia,
-      "idEmpresa": 1
+      "contrasenia": null,
+      "repetirContrasenia": null,
+      "idEmpresa": idEmpresa,
+      "urlFotoPerfil": urlFotoPerfil,
+      "contraseniaActual": null
     }
-    console.log(body);
     return this.http.put(`${this.url}/actualizarPerfilPropio/${idEmpleado}`,body);
   }
 
@@ -90,23 +91,5 @@ export class EmpleadoService {
     return this.http.delete<void>(`${this.url}/${idEmpleado}`);
   }
   
-  // findAllActivos(): Observable<TipoHabilidad[]> {
-  //   return this.http.get<any[]>(`${this.url}/activos`);
-  // }
-  
-  // habilitar(idTipoHabilidad: number) {
-  //   const body = {
-  //     "idTipoHabilidad": idTipoHabilidad
-  //   }
-  //   return this.http.put<TipoHabilidad>(`${this.url}/habilitar/${idTipoHabilidad}`, body);
-  // }
-  
-  
-  // modificarTipoHabilidad(idTipoHabilidad: number, nombreTipoHabilidad: string) {
-  //   const body = {
-  //     "nombreTipoHabilidad": nombreTipoHabilidad
-  //   }
-  //   return this.http.put(`${this.url}/${idTipoHabilidad}`,body);
-  // }
 }
 
