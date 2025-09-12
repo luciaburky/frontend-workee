@@ -1,13 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { EmpresaService } from '../empresa.service';
 import { Empresa } from '../empresa';
 import { RubroService } from '../../../../admin/ABMRubro/rubro.service';
 import { ProvinciaService } from '../../../../admin/ABMProvincia/provincia.service';
 import { Rubro } from '../../../../admin/ABMRubro/rubro';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import Swal from 'sweetalert2';
+import { UsuarioService } from '../../../seguridad/usuarios/usuario.service';
+import { CambioContraseniaComponent } from '../../../../compartidos/cambio-contrasenia/cambio-contrasenia.component';
+import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { ModalService } from '../../../../compartidos/modal/modal.service';
+import { ref, StorageReference, Storage, uploadBytes, getDownloadURL, uploadBytesResumable } from '@angular/fire/storage';
+
 
 @Component({
   standalone: true,
@@ -41,40 +47,59 @@ export class PerfilEmpresaComponent implements OnInit {
   repetirContrasenia = '';
   idProvincia? = 0;
   nombrePais? = '';
-  verContrasenia: boolean = false;
-  mostrarCampoRepetir: boolean = false;
+
+  empresaForm: FormGroup;
+  submitForm: boolean = false;
+
+  modalRef?: NgbModalRef;
+
+  private storage = inject(Storage);
+  fotoTemporal: string = '';
+  file!: File;
+  imgRef!: StorageReference;
 
   constructor(
     private empresaService: EmpresaService,
-    private route: ActivatedRoute,
     private router: Router,
     private rubroService: RubroService,
-    private provinciaService: ProvinciaService
-  ) {}
+    private usuarioService: UsuarioService,
+    private modalService: ModalService,
+  ) {
+    this.empresaForm = new FormGroup({
+      nombreEmpresa: new FormControl('', [Validators.required]),
+      descripcionEmpresa: new FormControl('', [Validators.required]),
+      telefonoEmpresa: new FormControl('', [Validators.required]),
+      direccionEmpresa: new FormControl('', [Validators.required,]),
+      // urlFotoPerfil: new FormControl(''),
+      rubroEmpresa: new FormControl({ value: null, disabled: true }, [Validators.required]),
+      sitioWebEmpresa: new FormControl(''),
+    })
+  }
 
   ngOnInit(): void {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.empresaService.findById(id).subscribe({
+    this.usuarioService.getUsuario().subscribe({
       next: (data) => {
         this.empresa = data;
+        console.log(this.empresa);
         this.empresaOriginal = JSON.parse(JSON.stringify(data));
         this.idProvincia = this.empresa.provincia?.id;
+        console.log("el id de la provincia es ", this.idProvincia)
         this.idEmpresa = this.empresa.id ?? 0;
-        console.log(this.empresa.usuario?.contraseniaUsuario)
+
+        this.empresaForm.patchValue({
+          nombreEmpresa: this.empresa.nombreEmpresa,
+          descripcionEmpresa: this.empresa.descripcionEmpresa,
+          telefonoEmpresa: this.empresa.telefonoEmpresa,
+          direccionEmpresa: this.empresa.direccionEmpresa,
+          // urlFotoPerfil: this.empresa.usuario?.urlFotoUsuario,
+          rubroEmpresa: this.empresa.rubro,
+          sitioWebEmpresa: this.empresa.sitioWebEmpresa
+        });
       },
       error: (error) => {
         console.error('Error al obtener empresa', error);
       }
-    });
-
-    if (this.idProvincia !== undefined && this.idProvincia !== null) {
-      this.provinciaService.findById(this.idProvincia).subscribe({
-        next: (provincia) => {
-          this.nombrePais = provincia.pais?.nombrePais;
-          console.log(this.nombrePais)
-        }
-      });
-    }
+    })
     
     this.rubroService.findAllActivos().subscribe({
       next: (data) => {
@@ -88,7 +113,42 @@ export class PerfilEmpresaComponent implements OnInit {
 
   modificarEmpresa() {
     this.modoEdicion = true;
-    
+    this.empresaForm.get('rubroEmpresa')?.enable();
+  }
+
+  onFileSelectedFoto(event: any) {
+    const file: File = event.target.files[0];
+    if (file) {
+      this.file = file;
+      const reader = new FileReader();
+      reader.onload = e => this.fotoTemporal = e.target?.result as string;
+      reader.readAsDataURL(file);
+    }
+  }
+
+  async subirFoto(file: File): Promise<string | null> {
+    if (!file) return null;
+    try {
+      const filePath = `logo/${file.name}`;
+      const fileRef = ref(this.storage, filePath);
+      await uploadBytes(fileRef, file);
+      const downloadURL = await getDownloadURL(fileRef);
+
+      return downloadURL;
+    } catch (error) {
+      console.error("Error al subir la foto:", error);
+      return null;
+    }
+  }
+
+  verificarFormatoFoto(nombreArchivo: string): boolean {
+    const extensionesPermitidas = /\.(jpg|jpeg|png)$/i;
+    return extensionesPermitidas.test(nombreArchivo);
+  }
+
+  isCampoInvalido(nombreCampo: string): boolean {
+    const control = this.empresaForm.get(nombreCampo);
+    return !!(control && control.invalid && (control.touched || this.submitForm));
   }
 
   eliminarCuenta() {
@@ -143,7 +203,7 @@ export class PerfilEmpresaComponent implements OnInit {
       }});
   }
 
-  enviarDatos() {
+  async enviarDatos() {
     Swal.fire({
       title: '¿Desea confirmar los cambios realizados?',
       icon: "question",
@@ -157,23 +217,29 @@ export class PerfilEmpresaComponent implements OnInit {
       customClass: {
         title: 'titulo-chico',
       }
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
-        const contrasenia = this.empresa.usuario?.contraseniaUsuario ?? '';
-        const repetirContrasenia = this.repetirContrasenia ?? '';
+        const formValue = this.empresaForm.value;
+        
+        let fotoURL = this.empresa.usuario?.urlFotoUsuario ?? '';
+        if (this.file) {
+          const subida = await this.subirFoto(this.file);
+          if (subida) fotoURL = subida;
+        }
+
         this.empresaService.modificarEmpresa(this.empresa.id!,
-                                            this.empresa.nombreEmpresa ?? '',
-                                            this.empresa.descripcionEmpresa ?? '', 
-                                            this.empresa.rubro?.id ?? 0,
-                                            this.empresa.telefonoEmpresa ?? 0,
-                                            this.empresa.direccionEmpresa ?? '',
-                                            this.empresa.sitioWebEmpresa ?? '',
-                                            contrasenia,
-                                            repetirContrasenia
+                                            formValue.nombreEmpresa,
+                                            formValue.descripcionEmpresa,
+                                            formValue.rubroEmpresa.id,
+                                            formValue.telefonoEmpresa,
+                                            formValue.direccionEmpresa,
+                                            formValue.sitioWebEmpresa,
+                                            fotoURL
         ).subscribe({
           next: () => {
             this.empresaOriginal = JSON.parse(JSON.stringify(this.empresa));
             this.modoEdicion = false;
+            this.empresaForm.get('rubroEmpresa')?.disable();
             Swal.fire({
               toast: true,
               position: "top-end",
@@ -234,35 +300,34 @@ export class PerfilEmpresaComponent implements OnInit {
         }
       }).then((result) => {
         if (result.isConfirmed) {
+          this.fotoTemporal = '';
           this.empresa = JSON.parse(JSON.stringify(this.empresaOriginal));
+          this.empresaForm.get('rubroEmpresa')?.disable();
           this.modoEdicion = false;
+          this.empresaForm.patchValue({
+            nombreEmpresa: this.empresa.nombreEmpresa,
+            descripcionEmpresa: this.empresa.descripcionEmpresa,
+            telefonoEmpresa: this.empresa.telefonoEmpresa,
+            direccionEmpresa: this.empresa.direccionEmpresa,
+            // urlFotoPerfil: this.empresa.usuario?.urlFotoUsuario,
+            rubroEmpresa: this.empresa.rubro,
+            sitioWebEmpresa: this.empresa.sitioWebEmpresa
+          });
       }});
     }
   }
 
-  // async editarFoto() {
-  //   const { value: file } = await Swal.fire({
-  //     title: "Select image",
-  //     input: "file",
-  //     inputAttributes: {
-  //       "accept": "image/*",
-  //       "aria-label": "Upload your profile picture"
-  //     }
-  //   });
-  //   if (file) {
-  //     const reader = new FileReader();
-  //     reader.onload = (e) => {
-  //       Swal.fire({
-  //         title: "Your uploaded picture",
-  //         imageUrl: e.target.result,
-  //         imageAlt: "The uploaded picture"
-  //       });
-  //     };
-  //     reader.readAsDataURL(file);
-  //   }
-  // }
-
   compararRubros = (r1: Rubro, r2: Rubro): boolean => {
     return r1 && r2 ? r1.id === r2.id : r1 === r2;
   };
+
+  abrirModalContrasenia() {
+    this.modalRef = this.modalService.open(CambioContraseniaComponent, {
+      centered: true,
+      scrollable: true,
+      size: 'md'
+    });
+
+    this.modalRef.componentInstance.usuarioId = this.empresa.usuario!.id;
+  }
 }
