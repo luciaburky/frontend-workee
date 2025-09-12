@@ -8,7 +8,7 @@ import { Empleado } from './empleado';
 })
 export class EmpleadoService {
 
-  private url: string = 'http://localhost:9090/empleados-empresa';
+  private url: string = 'http://localhost:9090/empleadosEmpresa';
   
   idSubject = new BehaviorSubject<number | null>(null);
 
@@ -57,19 +57,20 @@ export class EmpleadoService {
 
   modificarEmpleadoComoEmpleado(nombreEmpleadoEmpresa: string,
                                 apellidoEmpleadoEmpresa: string,
-                                contrasenia: string,
-                                repetirContrasenia: string,
-                                idEmpleado: number) {
-    const body = {
+                                idEmpleado: number,
+                                idEmpresa: number,
+                                urlFotoPerfil: string) {
+                                  const body = {
       "nombreEmpleadoEmpresa": nombreEmpleadoEmpresa,
       "apellidoEmpleadoEmpresa": apellidoEmpleadoEmpresa,
       "puestoEmpleadoEmpresa": null,
       "correoEmpleadoEmpresa": null,
-      "contrasenia": contrasenia,
-      "repetirContrasenia": repetirContrasenia,
-      "idEmpresa": 1
+      "contrasenia": null,
+      "repetirContrasenia": null,
+      "idEmpresa": idEmpresa,
+      "urlFotoPerfil": urlFotoPerfil,
+      "contraseniaActual": null
     }
-    console.log(body);
     return this.http.put(`${this.url}/actualizarPerfilPropio/${idEmpleado}`,body);
   }
 

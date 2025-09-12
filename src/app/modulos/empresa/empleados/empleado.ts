@@ -1,4 +1,5 @@
 import { Usuario } from "../../seguridad/usuario";
+import { Empresa } from "../empresa/empresa";
 
 export class Empleado {
     id?: number;
@@ -7,6 +8,6 @@ export class Empleado {
     puestoEmpleadoEmpresa?: string;
     fechaHoraAlta?: string;
     fechaHoraBaja?: string | null;
-    idEmpresa?: number;
+    empresa?: Empresa;
     usuario?: Usuario;
 }

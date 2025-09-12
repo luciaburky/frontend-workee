@@ -72,7 +72,7 @@
   display: flex;
   justify-content: space-between;
   width: 100%;
-  margin-top: 2rem;
+  /* margin-top: 2rem; */
 }
 
 .ml-auto {
@@ -105,7 +105,7 @@ form .al-lado {
   display: grid;
   grid-template-columns: minmax(160px, 1fr) 3fr;
   gap: 1rem;
-  margin-bottom: 2rem;
+  /* margin-bottom: 2rem; */
   align-items: start;
 }
 
@@ -126,7 +126,7 @@ form .al-lado {
 }
 
 .form-group {
-  display: flex;
+  /* display: flex; */
   flex-direction: column;
   width: 100%;
 }
@@ -155,4 +155,91 @@ input.form-control {
   border-left: none;
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
+}
+
+.boton-cambio-contrasenia {
+  background-color: #ffffff;
+  color: #31A5DD;
+  border: 2px solid #31A5DD;    
+  border-radius: 8px;
+  padding: 6px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.boton-cambio-contrasenia:disabled,
+.boton-cambio-contrasenia.disabled-btn {
+  background-color: #d6d6d6;
+  color: #888;
+  cursor: not-allowed;
+  border-color: #d6d6d6;
+}
+
+.foto-seccion {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.foto-seccion .foto {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  background-color: #e0e0e0;
+  object-fit: cover;
+  margin-bottom: 0.8rem;
+  border: 3px solid #f0f0f0;
+}
+
+.foto-seccion label {
+  font-weight: 600;
+  color: black;
+  font-size: 0.9rem;
+}
+
+.foto-container {
+  position: relative;
+  width: 150px;
+  height: 150px;
+}
+
+.foto {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #ddd;
+}
+
+.icono-editar {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background-color: rgba(255, 255, 255, 0.8);
+  border: 1px solid #93999e;
+  border-radius: 50%;
+  padding: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 200px;
+  .icono-foto {
+    color: #898d90;
+  }
+}
+
+.icono-editar:hover {
+  background-color: #93999e;
+  .icono-foto {
+    color: white;
+  }
+}
+
+.icono-editar span {
+  font-size: 24px;
 }

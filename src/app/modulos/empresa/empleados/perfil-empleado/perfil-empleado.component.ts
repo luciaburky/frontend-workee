@@ -1,9 +1,16 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, inject, Inject, Input, OnInit } from '@angular/core';
 import { EmpleadoService } from '../empleado.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { Empleado } from '../empleado';
 import Swal from 'sweetalert2';
+import { UsuarioService } from '../../../seguridad/usuarios/usuario.service';
+import { ModalService } from '../../../../compartidos/modal/modal.service';
+import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { CambioContraseniaComponent } from '../../../../compartidos/cambio-contrasenia/cambio-contrasenia.component';
+import { SesionService } from '../../../../interceptors/sesion.service';
+import { RolService } from '../../../seguridad/usuarios/rol.service';
+import { ref, StorageReference, Storage, uploadBytes, getDownloadURL, uploadBytesResumable } from '@angular/fire/storage';
 
 @Component({
   selector: 'app-perfil-empleado',
@@ -31,31 +38,44 @@ export class PerfilEmpleadoComponent implements OnInit {
   
   // CON ESTA VARIABLE, la idea es que cuando se trate del usuario empleado, aparezcan los campos que el mismo puede editar (no el admin)
   // si el empleado ha ingresado en su perfil, esta variable esta en true
-  @Input() esEmpleado: boolean = true;
+  // @Input() esEmpleado: boolean = true;
+  esEmpleado!: boolean;
   verContrasenia: boolean = false;
   mostrarCampoRepetir: boolean = false;
   repetirContrasenia: string = '';
 
+  modalRef?: NgbModalRef;
+  
+  //PARA FOTO DE PERFIL
+  urlFoto = '';
+  file!: File;
+  imgRef!: StorageReference;
+  previewUrl!: string;
+  fotoTemporal: string = '';
+  private storage = inject(Storage);
+
   constructor(
     private empleadoService: EmpleadoService,
     private route: ActivatedRoute,
-    private router: Router
-  ) {}
-  
+    private router: Router,
+    private usuarioService: UsuarioService,
+    private modalService: ModalService,
+    private rolService: RolService,
+    private sesionService: SesionService) {}
   
   ngOnInit(): void {
-    this.idEmpleado = Number(this.route.snapshot.paramMap.get('idEmpleado'));
-    this.empleadoService.findById(this.idEmpleado).subscribe({
+    this.usuarioService.getUsuario().subscribe({
       next: (data) => {
-        this.empleado = { ...data };
-        console.log(data)
-        this.puestoOriginal = data.puestoEmpleadoEmpresa ?? '';
-      },
-      error: (error) => {
-        console.error('Error al obtener el empleado', error);
+        this.empleado = data;
+        console.log(this.empleado)
+        const rol = this.sesionService.getRolActual()?.codigoRol
+        if (rol === 'EMPLEADO_EMPRESA') {
+          this.esEmpleado = true;
+        } else {
+          this.esEmpleado = false;
+        }
       }
-    });
-
+    })
   }
 
   modificarEmpleado() {
@@ -91,7 +111,7 @@ export class PerfilEmpleadoComponent implements OnInit {
     }
   }
 
-  enviarDatos() {
+  async enviarDatos() {
     Swal.fire({
       title: '¿Desea confirmar los cambios realizados?',
       icon: "question",
@@ -105,12 +125,12 @@ export class PerfilEmpleadoComponent implements OnInit {
       customClass: {
         title: 'titulo-chico',
       }
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
         const nuevoPuesto = this.empleado.puestoEmpleadoEmpresa;
         if (!this.esEmpleado) {
           // El administrador es quien esta modificando el perfil del empleado
-          this.empleadoService.modificarEmpleadoComoEmpresa(nuevoPuesto ?? '', this.idEmpleado).subscribe({
+          this.empleadoService.modificarEmpleadoComoEmpresa(nuevoPuesto ?? '', this.empleado.id!).subscribe({
             next: () => {
               this.puestoOriginal = nuevoPuesto ?? '';
               this.modoEdicion = false;
@@ -128,41 +148,22 @@ export class PerfilEmpleadoComponent implements OnInit {
             }
           })
         } else {
-          // El empleado es quien esta modificando su perfil
-          const contrasenia = this.empleado.usuario?.contraseniaUsuario ?? '';
-          const repetirContrasenia = this.repetirContrasenia ?? '';
-          if (contrasenia) {
-            if (contrasenia.length < 8) {
-              Swal.fire({
-                toast: true,
-                icon: 'warning',
-                title: 'La contraseña debe tener al menos 8 caracteres',
-                position: 'top-end',
-                timer: 3000,
-                showConfirmButton: false
-              });
-              return;
-            }
+
+          let fotoURL = this.empleado.usuario?.urlFotoUsuario ?? '';
+          if (this.file) {
+            const subida = await this.subirFoto(this.file);
+            if (subida) fotoURL = subida;
           }
-          if (contrasenia !== repetirContrasenia) {
-            Swal.fire({
-              toast: true,
-              icon: 'warning',
-              title: 'Las contraseñas no coinciden',
-              position: 'top-end',
-              timer: 3000,
-              showConfirmButton: false
-            });
-            return;
-          }
+          console.log("desde el perfil, esto voy a mandar: ", this.empleado.id!)
           this.empleadoService.modificarEmpleadoComoEmpleado(
           this.empleado.nombreEmpleadoEmpresa ?? '',
           this.empleado.apellidoEmpleadoEmpresa ?? '',
-          contrasenia,
-          repetirContrasenia,
-          this.idEmpleado
+          this.empleado.id!,
+          this.empleado.empresa?.id ?? 0,
+          fotoURL
         ).subscribe({
           next: () => {
+            console.log("pude mandar bien la request")
             this.puestoOriginal = nuevoPuesto ?? '';
             this.modoEdicion = false;
             this.repetirContrasenia = '';
@@ -175,6 +176,7 @@ export class PerfilEmpleadoComponent implements OnInit {
               timer: 3000,
               showConfirmButton: false,
             });
+            
           },
           error: (error) => console.error('Error al modificar empleado', error)
           });
@@ -226,11 +228,50 @@ export class PerfilEmpleadoComponent implements OnInit {
                 timer: 3000,
                 showConfirmButton: false,
               })
-              }
-            
+            }
           }
         })
     }});
+  }
+
+  onFileSelectedFoto(event: any) {
+    const file: File = event.target.files[0];
+    if (file) {
+      this.file = file;
+      const reader = new FileReader();
+      reader.onload = e => this.fotoTemporal = e.target?.result as string;
+      reader.readAsDataURL(file);
+    }
+  }
+
+  async subirFoto(file: File): Promise<string | null> {
+    if (!file) return null;
+    try {
+      const filePath = `foto/${file.name}`;
+      const fileRef = ref(this.storage, filePath);
+      await uploadBytes(fileRef, file);
+      const downloadURL = await getDownloadURL(fileRef);
+
+      return downloadURL;
+    } catch (error) {
+      console.error("Error al subir la foto:", error);
+      return null;
+    }
+  }
+
+  verificarFormatoFoto(nombreArchivo: string): boolean {
+    const extensionesPermitidas = /\.(jpg|jpeg|png)$/i;
+    return extensionesPermitidas.test(nombreArchivo);
+  }
+
+  abrirModalContrasenia() {
+    this.modalRef = this.modalService.open(CambioContraseniaComponent, {
+      centered: true,
+      scrollable: true,
+      size: 'md'
+    });
+
+    this.modalRef.componentInstance.usuarioId = this.empleado.usuario!.id;
   }
 
 }
