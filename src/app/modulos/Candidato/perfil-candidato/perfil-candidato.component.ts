@@ -8,7 +8,7 @@ import { Genero } from '../../../admin/ABMGenero/genero';
 import { Pais } from '../../../admin/ABMPais/pais';
 import { Provincia } from '../../../admin/ABMProvincia/provincia';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Candidato } from '../candidato';
+import { Candidato } from '../../candidato/candidato';
 import { ModalService } from '../../../compartidos/modal/modal.service';
 import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { SeleccionHabilidadesComponent } from './seleccion-habilidades/seleccion-habilidades.component';

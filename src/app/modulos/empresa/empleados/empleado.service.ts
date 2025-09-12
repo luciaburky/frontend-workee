@@ -91,23 +91,5 @@ export class EmpleadoService {
     return this.http.delete<void>(`${this.url}/${idEmpleado}`);
   }
   
-  // findAllActivos(): Observable<TipoHabilidad[]> {
-  //   return this.http.get<any[]>(`${this.url}/activos`);
-  // }
-  
-  // habilitar(idTipoHabilidad: number) {
-  //   const body = {
-  //     "idTipoHabilidad": idTipoHabilidad
-  //   }
-  //   return this.http.put<TipoHabilidad>(`${this.url}/habilitar/${idTipoHabilidad}`, body);
-  // }
-  
-  
-  // modificarTipoHabilidad(idTipoHabilidad: number, nombreTipoHabilidad: string) {
-  //   const body = {
-  //     "nombreTipoHabilidad": nombreTipoHabilidad
-  //   }
-  //   return this.http.put(`${this.url}/${idTipoHabilidad}`,body);
-  // }
 }
 

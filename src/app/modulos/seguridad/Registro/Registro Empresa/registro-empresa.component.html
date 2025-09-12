@@ -1,3 +1,9 @@
+<app-spinner 
+  *ngIf="isLoading; else loginFormTemplate"
+  type="overlay"
+  message="Cargando..."
+></app-spinner>
+<ng-template #loginFormTemplate>
 <form [formGroup]="empresaForm">
   @if (numeropaginaregistro == 1) {
     <div class="container">
@@ -303,3 +309,4 @@
 
   }
 </form>
+</ng-template>

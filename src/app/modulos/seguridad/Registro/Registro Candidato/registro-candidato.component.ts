@@ -16,21 +16,25 @@ import Swal from 'sweetalert2';
 import { url } from 'inspector';
 import { ModalService } from '../../../../compartidos/modal/modal.service';
 import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { SeleccionHabilidadesComponent } from '../../../candidato/perfil-candidato/seleccion-habilidades/seleccion-habilidades.component';
 import { Habilidad } from '../../../../admin/ABMHabilidad/habilidad';
 import { HabilidadService } from '../../../../admin/ABMHabilidad/habilidad.service';
 import { CandidatoHabilidad } from '../../../candidato/candidato-habilidad';
 import { AuthService } from '../../auth.service';
 import { Storage, ref, uploadBytes, getDownloadURL, StorageReference} from '@angular/fire/storage';
+import { SpinnerComponent } from "../../../../compartidos/spinner/spinner/spinner.component";
+import { SeleccionHabilidadesComponent } from '../../../candidato/perfil-candidato/seleccion-habilidades/seleccion-habilidades.component';
 
 @Component({
   selector: 'app-registro-candidato',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, SpinnerComponent],
   templateUrl: './registro-candidato.component.html',
   styleUrl: './registro-candidato.component.css'
 })
 export class RegistroCandidatoComponent {
+  isLoading: boolean = false;
+
+
   candidatoForm: FormGroup;
   submitForm: boolean = false;
   backendEmailInvalido = false;
@@ -181,6 +185,7 @@ async enviarDatos() {
   }
 
   try {
+    this.isLoading = true;
     let urlFotoPerfil = '';
     let enlaceCV = '';
 
@@ -223,16 +228,24 @@ async enviarDatos() {
       urlFotoPerfil
     ).subscribe({
       next: () => {
+        this.isLoading = false;
+        setTimeout(() => {
+          this.router.navigate(['/login']);
+        }, 100);
         Swal.fire({
-          toast: true,
-          position: "top-end",
           icon: "success",
-          title: "Te has registrado correctamente",
-          timer: 3000,
+          title: "Registro exitoso",
+          text: "Ya estas registrado. Revisa tu correo para verificar tu cuenta.",
           showConfirmButton: false,
+          showCloseButton: true,
+          timer: 6000,
+          timerProgressBar: false,
+          position: "center",
         });
+        
       },
       error: (error: any) => {
+        this.isLoading = false;
         if (error.error.message === "El correo ingresado ya se encuentra en uso") {
           Swal.fire({
             toast: true,
@@ -254,6 +267,7 @@ async enviarDatos() {
     });
 
   } catch (error) {
+    this.isLoading = false;
     console.error('Error al subir la imagen:', error);
     Swal.fire({
       toast: true,

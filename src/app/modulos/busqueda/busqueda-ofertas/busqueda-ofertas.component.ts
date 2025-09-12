@@ -11,14 +11,17 @@ import { Modalidad } from '../../../admin/ABMModalidad/modalidad';
 import { ModalidadService } from '../../../admin/ABMModalidad/modalidad.service';
 import { Oferta } from '../../oferta/oferta';
 import { FormsModule } from '@angular/forms';
+import { SpinnerComponent } from "../../../compartidos/spinner/spinner/spinner.component";
 
 @Component({
   selector: 'app-busqueda-ofertas',
-  imports: [MultiSelect, CommonModule, FormsModule, SelectModule],
+  imports: [MultiSelect, CommonModule, FormsModule, SelectModule, SpinnerComponent],
   templateUrl: './busqueda-ofertas.component.html',
   styleUrl: './busqueda-ofertas.component.css'
 })
 export class BusquedaOfertasComponent implements OnInit {
+  isLoading: boolean = false;
+
   // Para filtros de ubicacion
   filtrosUbicacion: FiltroUbicacion[] = [];
   filtrosSeleccionadosUbicacion: any[] = [];
@@ -121,6 +124,7 @@ export class BusquedaOfertasComponent implements OnInit {
   }
 
   buscarPorNombre(textoOferta: string): void {
+      this.isLoading = true;
     this.busquedaRealizada = true;
     this.busquedaService.buscarOfertasPorNombre(textoOferta).subscribe(data => {
       this.ofertaList = data;
@@ -129,10 +133,12 @@ export class BusquedaOfertasComponent implements OnInit {
       sessionStorage.setItem('filtrosTipoContrato', JSON.stringify(this.filtrosSeleccionadosTipoContrato));
       sessionStorage.setItem('filtrosModalidad', JSON.stringify(this.filtrosSeleccionadosModalidad));
       sessionStorage.setItem('filtrosFecha', JSON.stringify(this.filtrosSeleccionadosFecha));
+      this.isLoading = false;
     });
   }
   
   filtrarEmpresas() {
+    this.isLoading = true;
     const idsProvincias = this.filtrosSeleccionadosUbicacion?.length ? this.filtrosSeleccionadosUbicacion : null;
     const idsTipoContrato = this.filtrosSeleccionadosTipoContrato?.length ? this.filtrosSeleccionadosTipoContrato : null;
     const idsModalidad = this.filtrosSeleccionadosModalidad?.length ? this.filtrosSeleccionadosModalidad : null;
@@ -148,6 +154,7 @@ export class BusquedaOfertasComponent implements OnInit {
       sessionStorage.setItem('filtrosTipoContrato', JSON.stringify(this.filtrosSeleccionadosTipoContrato));
       sessionStorage.setItem('filtrosModalidad', JSON.stringify(this.filtrosSeleccionadosModalidad));
       sessionStorage.setItem('filtrosFecha', JSON.stringify(this.filtrosSeleccionadosFecha));
+      this.isLoading = false;
     })
   }
   

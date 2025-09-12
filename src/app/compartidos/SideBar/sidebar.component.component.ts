@@ -5,6 +5,7 @@ import { SesionService } from '../../interceptors/sesion.service';
 import { PermisoService } from '../../modulos/seguridad/Gestion de roles/permiso.service';
 import { permiso } from '../../modulos/seguridad/Gestion de roles/permiso';
 import { CommonModule } from '@angular/common';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-sidebar',
@@ -31,7 +32,33 @@ export class SidebarComponent implements OnInit {
   }
 
   logout(){
+    Swal.fire({
+      title: "¿Está seguro de que desea cerrar sesión?",
+      icon: "question",
+      iconColor: "#31A5DD",
+      showCancelButton: true,
+      confirmButtonColor: "#31A5DD",
+      cancelButtonColor: "#697077",
+      confirmButtonText: "Sí, salir",
+      cancelButtonText: "No, volver",
+      reverseButtons: true
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.sesionService.logout();
 
+        Swal.fire({
+          toast: true,
+          position: "top-end",
+          icon: "success",
+          title: "Sesión cerrada correctamente",
+          showConfirmButton: false,
+          timer: 2000
+        });
+      }
+    });
+
+
+    
   }
 
 

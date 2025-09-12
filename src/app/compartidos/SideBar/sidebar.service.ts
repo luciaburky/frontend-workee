@@ -6,19 +6,11 @@ import { MenuItem } from './menu-item';
   providedIn: 'root'
 })
 export class SidebarService {
-
-  // menu: any[]=[{
-  //   titulo:`Ofertas`,
-  //   icono:``
-    
-  // }]
-
-  // sidebar.service.ts
   menu: MenuItem[] = [
     { titulo: "Buscar", ruta: "", icono: "search",
       children: [
         { titulo: "Buscar Empresa", ruta: "/buscar-empresas", icono: "search", codigoPermiso: "BUSCAR_EMPRESAS"},
-        { titulo: "Buscar Ofertas", ruta: "/buscar-candidatos", icono: "search", codigoPermiso: "BUSCAR_OFERTAS"},
+        { titulo: "Buscar Ofertas", ruta: "/buscar-ofertas", icono: "search", codigoPermiso: "BUSCAR_OFERTAS"},
         { titulo: "Buscar Candidatos", ruta: "/buscar-candidatos", icono: "search", codigoPermiso: "BUSCAR_CANDIDATOS"}
       ]
      },
@@ -26,7 +18,7 @@ export class SidebarService {
     { titulo: "Notificaciones", ruta: "/notificaciones", icono: "notifications", codigoPermiso: "" }, //TODO: Falta
     { titulo: "Ofertas", icono: "card_giftcard",
       children: [
-        { titulo: "Ofertas", ruta: "/ofertas", icono: "", codigoPermiso: "GESTION_OFERTAS"},
+        { titulo: "Ofertas", ruta: "/crear-oferta", icono: "", codigoPermiso: "GESTION_OFERTAS"}, //TODO: Cambiar, nada mas q como aun no esta el listado, para probar puse esto
         { titulo: "Etapas", ruta: "/ofertas/etapas", icono: "", codigoPermiso: "GESTION_ETAPA_PERSONALIZADA"}
       ]
      },

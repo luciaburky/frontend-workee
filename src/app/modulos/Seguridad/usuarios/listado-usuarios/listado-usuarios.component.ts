@@ -22,6 +22,7 @@ export class ListadoUsuariosComponent implements OnInit {
   usuarioList: UsuarioListadoDTO[] = [];
   usuarioListOriginal: UsuarioListadoDTO[] = [];
 
+  fotoPerfilDefecto: string = '../../../../../assets/img/foto-perfil.png';
   texto: string = '';
 
   filtrosRol: Rol[] = [];
@@ -43,8 +44,28 @@ export class ListadoUsuariosComponent implements OnInit {
     const correoActualUsuario = this.sessionService.getCorreoUsuario();
 
     this.usuarioService.findAll().subscribe(data => {
-      this.usuarioListOriginal = data;
-      this.usuarioList = [...data];
+      const usuariosFiltrados: UsuarioListadoDTO[] = [];
+
+      data.forEach(usuario => {
+      if (usuario.correoUsuario) {
+        this.rolService.buscarRolPorCorreoUsuario(usuario.correoUsuario).subscribe(rol => {
+          // Si el rol no es ADMIN_SISTEMA, lo agrego a la lista
+          if (rol.codigoRol !== 'ADMIN_SISTEMA') {
+            if (!usuario.urlFotoUsuario) {
+              usuario.urlFotoUsuario = this.fotoPerfilDefecto;
+              console.log(usuario.urlFotoUsuario);
+            }
+            usuariosFiltrados.push(usuario);
+          }
+
+          // Actualizo las listas después de cada validación
+          this.usuarioListOriginal = usuariosFiltrados;
+          this.usuarioList = [...usuariosFiltrados];
+        });
+      }
+    });
+
+
     });
 
 
@@ -63,6 +84,7 @@ export class ListadoUsuariosComponent implements OnInit {
     
     if (textoLimpio === '') {
       this.usuarioList = [... this.usuarioListOriginal ];
+      
       return;
     }
 

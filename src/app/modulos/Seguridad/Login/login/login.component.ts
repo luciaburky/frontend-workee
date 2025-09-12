@@ -70,14 +70,36 @@ export class LoginComponent implements OnInit{
       //this.router.navigate(['/registro']);
       this.sesionService.cargarRolUsuario();
     },
-    error: () => {
-      console.log('Credenciales inválidas');
-      Swal.fire({ icon: 'error', title: 'Credenciales inválidas' });
-    }
-  }
-);
+    error: (err) => {
+      console.error('Error al iniciar sesión:', err);
 
-  }
+      let errorMsg = err?.error?.message || err?.error || 'Error desconocido';
+
+      if (errorMsg.includes("no se encuentra habilitado")) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Usuario no habilitado',
+          text: 'Tu cuenta aún no está habilitada para iniciar sesión.',
+          confirmButtonColor: '#31A5DD'
+        });
+      } else if (errorMsg.includes("Credenciales inválidas")) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Credenciales inválidas',
+          text: 'Correo electrónico o contraseña incorrectos.',
+          confirmButtonColor: '#31A5DD'
+        });
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error en el inicio de sesión',
+          text: 'Ha ocurrido un error inesperado. Intenta nuevamente más tarde.',
+          confirmButtonColor: '#31A5DD'
+        });
+      }
+    }
+  });
+}
 
 togglePasswordView() {
 throw new Error('Method not implemented.');

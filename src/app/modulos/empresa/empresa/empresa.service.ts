@@ -60,4 +60,12 @@ export class EmpresaService {
     return this.http.get<number>(`${this.url}/idEmpresaPorCorreo/${correo}`);
   }
   
+  getidEmpresabyCorreo(){
+    const correo = this.sesionService.getCorreoUsuario();
+    if (!correo) {
+      console.error("No se pudo obtener el correo del token para obtener el id Empresa.");
+      return;
+    }
+    return this.http.get<number>(`${this.url}/idEmpresaPorCorreo/${correo}`);
+  }
 }

@@ -6,13 +6,19 @@ export const publicGuard: CanActivateFn = (route, state) => {
   const sesionService = inject(SesionService);
   const router = inject(Router);
 
-  // Si la sesión está activa, redirige al dashboard.
   if (sesionService.isLoggedIn()) {
+    
     sesionService.setLoading(true);
-    sesionService.cargarRolUsuario();
+    
+    if (sesionService.redirectUrl) {
+      router.navigateByUrl(sesionService.redirectUrl);
+    } else {
+      sesionService.cargarRolUsuario();
+    }
     return false; 
   }
 
   // Si no está logueado, permite el acceso.
+  sesionService.setLoading(false);
   return true;
 };
