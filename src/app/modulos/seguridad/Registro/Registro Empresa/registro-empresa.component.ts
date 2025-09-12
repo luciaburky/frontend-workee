@@ -15,16 +15,20 @@ import Swal from 'sweetalert2';
 import { dir } from 'console';
 import { AuthService } from '../../auth.service';
 import { Storage, ref, uploadBytes, getDownloadURL, StorageReference} from '@angular/fire/storage';
+import { SpinnerComponent } from "../../../../compartidos/spinner/spinner/spinner.component";
 
 
 @Component({
   selector: 'app-registro-empresa',
   standalone: true, 
-  imports: [CommonModule, ReactiveFormsModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, SpinnerComponent],
   templateUrl: './registro-empresa.component.html',
   styleUrl: './registro-empresa.component.css'
 })
 export class RegistroEmpresaComponent implements OnInit{
+  isLoading: boolean = false;
+
+
   empresaForm: FormGroup;
   submitForm: boolean = false;
   backendEmailInvalido = false;
@@ -177,6 +181,8 @@ constructor(
     }
 
     try {
+      this.isLoading = true;
+
     let urlFotoPerfil = '';
     let urlDocumentoLegal = '';
 
@@ -210,17 +216,25 @@ this.authService.registrarEmpresa(
   sitioWebEmpresa
 ).subscribe({
   next: () => {
+    this.isLoading = false;
     this.submitForm = true;
+    setTimeout(() => {
+      this.router.navigate(['/login']); 
+    }, 100);
     Swal.fire({
-      toast: true,
-      position: "top-end",
       icon: "success",
-      title: "La empresa se ha registrado correctamente",
-      timer: 3000,
+      title: "Registro exitoso",
+      text: "Tu empresa fue registrada correctamente. El administrador revisará tu solicitud para habilitar tu cuenta.",
+      showCloseButton: true,
       showConfirmButton: false,
+      timer: 6000,
+      timerProgressBar: false,
+      position: "center",
     });
+
   },
   error: (error: any) => {
+    this.isLoading = false;
       if (error.error.message === "El correo ingresado ya se encuentra en uso") {
         Swal.fire({
           toast: true,
@@ -241,6 +255,7 @@ this.authService.registrarEmpresa(
     }
   });    
     }catch (error) {
+    this.isLoading = false;
       console.error('Error al subir la imagen:', error);
       Swal.fire({
         toast: true,

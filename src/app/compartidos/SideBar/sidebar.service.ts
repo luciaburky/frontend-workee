@@ -6,19 +6,11 @@ import { MenuItem } from './menu-item';
   providedIn: 'root'
 })
 export class SidebarService {
-
-  // menu: any[]=[{
-  //   titulo:`Ofertas`,
-  //   icono:``
-    
-  // }]
-
-  // sidebar.service.ts
   menu: MenuItem[] = [
     { titulo: "Buscar", ruta: "", icono: "search",
       children: [
         { titulo: "Buscar Empresa", ruta: "/buscar-empresas", icono: "search", codigoPermiso: "BUSCAR_EMPRESAS"},
-        { titulo: "Buscar Ofertas", ruta: "/buscar-candidatos", icono: "search", codigoPermiso: "BUSCAR_OFERTAS"},
+        { titulo: "Buscar Ofertas", ruta: "/buscar-ofertas", icono: "search", codigoPermiso: "BUSCAR_OFERTAS"},
         { titulo: "Buscar Candidatos", ruta: "/buscar-candidatos", icono: "search", codigoPermiso: "BUSCAR_CANDIDATOS"}
       ]
      },

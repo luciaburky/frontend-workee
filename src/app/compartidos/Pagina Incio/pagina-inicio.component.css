@@ -38,6 +38,7 @@
   font-weight: 600;
   cursor: pointer;
   transition: background 0.3s;
+  text-decoration: none;
 }
 
 .btn-blue:hover {
@@ -53,6 +54,10 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s;
+  text-decoration: none;
+}
+.btn-outline-blue a {
+  font-style: none;
 }
 
 .btn-outline-blue:hover {

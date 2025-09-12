@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { AdministradorService } from './administrador.service';
-import { Empresa } from '../../empresa/empresa/empresa';
 import { CommonModule } from '@angular/common';
+import { EmpresaPendienteDTO } from './empresa-pendiente-dto';
+import { Empresa } from '../../empresa/empresa/empresa';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-habilitacion-empresas',
@@ -11,19 +13,21 @@ import { CommonModule } from '@angular/common';
 })
 export class HabilitacionEmpresasComponent implements OnInit {
   
-  empresas: Empresa[] = [];
+  empresas: EmpresaPendienteDTO[] = [];
     
   paginaActual: number = 1;
   elementosPorPagina: number = 10;
 
 
   constructor(
-    private administradorService: AdministradorService
+    private administradorService: AdministradorService,
+    private router: Router
   ) {}
   
   ngOnInit(): void {
     this.administradorService.getEmpresasPorHabilitar().subscribe(data => {
       this.empresas = data;
+      console.log(this.empresas);
     })
   }
 
@@ -36,7 +40,7 @@ export class HabilitacionEmpresasComponent implements OnInit {
     return Array.from({ length: this.totalPaginas }, (_, i) => i + 1);
   }
 
-  obtenerEmpresasPaginadas(): Empresa[] {
+  obtenerEmpresasPaginadas(): EmpresaPendienteDTO[] {
     const inicio = (this.paginaActual - 1) * this.elementosPorPagina;
     const fin = inicio + this.elementosPorPagina;
     return this.empresas.slice(inicio, fin);
@@ -58,6 +62,10 @@ export class HabilitacionEmpresasComponent implements OnInit {
     if (pagina >= 1 && pagina <= this.totalPaginas) {
       this.paginaActual = pagina;
     }
+  }
+
+  verDetalleEmpresa(idEmpresa: number){
+    this.router.navigate(['/habilitaciones/detalle-empresa', idEmpresa]);
   }
   
 }

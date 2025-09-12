@@ -12,8 +12,8 @@
                 type="text" 
                 placeholder="Buscar..." 
                 class="input-search"
-                [(ngModel)]="texto" />
-            <button id="icon-button" (click)="buscarPorNombre(texto)">
+                [(ngModel)]="textoCandidato" />
+            <button id="icon-button" (click)="buscarPorNombre(textoCandidato)">
                 <span class="material-symbols-outlined search-icon">search</span>
             </button>
         </div>
@@ -76,6 +76,10 @@
         </div>
     </div>   
     <div class="listado-contenido row row-cols-1 row-cols-md-2 g-4">
+        <div *ngIf="isLoading; else results">
+            <app-spinner type="inline" message="Cargando resultados..."></app-spinner>
+        </div>
+        <ng-template #results> 
         @if (candidatoList.length === 0) {
             <div class="sin-resultados">
                 @if (!busquedaRealizada) {
@@ -94,7 +98,8 @@
             @for (candidato of obtenerCandidatosPaginados(); track $index) {
                 <div class="tarjeta-candidato" (click)="irADetalle(candidato.id!)" role="button">
                     <div class="foto-container">
-                        <img [src]="'assets/img/foto-empresa.png'" alt="Foto de {{ candidato.nombreCandidato }} {{ candidato.apellidoCandidato }}" />
+                        <img [src]="candidato.usuario?.urlFotoUsuario" 
+                            alt="Foto de {{ candidato.nombreCandidato }} {{ candidato.apellidoCandidato }}" />
                     </div>
                     <div class="contenido">
                         <div class="header">
@@ -115,7 +120,7 @@
                             <p>{{ candidato.provincia?.nombreProvincia }}, {{ candidato.provincia?.pais?.nombrePais }}</p>
                         </div>
                         <div class="habilidades">
-                            @for (hab of candidato.habilidades; track $index) {
+                            @for (hab of obtenerHabilidadesAleatorias(candidato); track $index) {
                                 <span class="tag"> {{hab.habilidad?.nombreHabilidad}} </span>
                             }
                         </div>
@@ -123,26 +128,35 @@
                 </div>
             }
         }
+        </ng-template>
     </div>
     
-    @if (totalPaginas > 1) {
-        <nav class="paginador">
-            <ul class="pagination justify-content-center mb-0">
-                <li class="page-item" [class.disabled]="paginaActual === 1">
-                    <button class="page-link" (click)="retrocederPagina()">Anterior</button>
-                </li>
-                <li 
-                *ngFor="let pagina of paginas"
-                class="page-item" 
-                [class.active]="paginaActual === pagina">
-                    <button class="page-link" (click)="irAPagina(pagina)">
-                        {{ pagina }}
-                    </button>
-                </li>
-                <li class="page-item" [class.disabled]="paginaActual === totalPaginas">
-                    <button class="page-link" (click)="avanzarPagina()">Siguiente</button>
-                </li>
-            </ul>
-        </nav>
-    }
+    <nav *ngIf="totalPaginas > 1">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" [class.disabled]="paginaActual === 1">
+                <button class="page-link" (click)="retrocederPagina()">Anterior</button>
+            </li>
+
+            <li 
+            *ngFor="let pagina of paginasMostradas"
+            class="page-item"
+            [class.active]="paginaActual === pagina"
+            [class.disabled]="pagina === '...'">
+
+            <ng-container *ngIf="pagina !== '...'; else puntos">
+                <button class="page-link" (click)="irAPagina(+pagina)">
+                {{ pagina }}
+                </button>
+            </ng-container>
+
+            <ng-template #puntos>
+                <span class="page-link">...</span>
+            </ng-template>
+            </li>
+
+            <li class="page-item" [class.disabled]="paginaActual === totalPaginas">
+                <button class="page-link" (click)="avanzarPagina()">Siguiente</button>
+            </li>
+        </ul>
+    </nav>
 </div>

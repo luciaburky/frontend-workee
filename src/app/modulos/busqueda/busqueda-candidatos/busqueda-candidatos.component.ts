@@ -3,7 +3,7 @@ import { BusquedaService } from '../busqueda.service';
 import { ProvinciaService } from '../../../admin/ABMProvincia/provincia.service';
 import { PaisService } from '../../../admin/ABMPais/pais.service';
 import { HabilidadService } from '../../../admin/ABMHabilidad/habilidad.service';
-import { Candidato } from '../../Candidato/candidato';
+import { Candidato } from '../../candidato/candidato';
 import { MultiSelect } from 'primeng/multiselect';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -14,17 +14,18 @@ import { Provincia } from '../../../admin/ABMProvincia/provincia';
 import { EstadoBusquedaLaboralService } from '../../../admin/ABMEstadoBusquedaLaboral/estado-busqueda-laboral.service';
 import { Router } from '@angular/router';
 import { forkJoin } from 'rxjs';
+import { SpinnerComponent } from "../../../compartidos/spinner/spinner/spinner.component";
 
 @Component({
   selector: 'app-busqueda-candidatos',
-  imports: [MultiSelect, CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [MultiSelect, CommonModule, FormsModule, ReactiveFormsModule, SpinnerComponent],
   templateUrl: './busqueda-candidatos.component.html',
   styleUrl: './busqueda-candidatos.component.css'
 })
 export class BusquedaCandidatosComponent implements OnInit {
   
   candidatoList: Candidato[] = [];
-  texto: string = '';
+  textoCandidato: string = '';
 
   busquedaRealizada: boolean = true;
 
@@ -41,6 +42,10 @@ export class BusquedaCandidatosComponent implements OnInit {
   paginaActual: number = 1;
   elementosPorPagina: number = 10;
 
+  isLoading: boolean = false;
+
+  habilidadesRandomMap: { [id: number]: any[] } = {};
+
   constructor(
     private busquedaService: BusquedaService,
     private habilidadService: HabilidadService,
@@ -55,21 +60,21 @@ export class BusquedaCandidatosComponent implements OnInit {
       sessionStorage.clear();
     });
 
-    const listaGuardada = sessionStorage.getItem('candidatoList');
-    const textoGuardado = sessionStorage.getItem('texto');
+    const listaGuardadaCandidato = sessionStorage.getItem('candidatoList');
+    const textoGuardadoCandidato = sessionStorage.getItem('textoCandidato');
     const filtrosHabilidadGuardados = sessionStorage.getItem('filtrosHabilidad');
     const filtrosEstadoGuardados = sessionStorage.getItem('filtrosEstado');
     const filtrosPaisGuardados = sessionStorage.getItem('filtrosPais');
     const filtrosProvinciaGuardados = sessionStorage.getItem('filtrosProvincia');
 
-    if (listaGuardada) {
-      this.candidatoList = JSON.parse(listaGuardada);
+    if (listaGuardadaCandidato) {
+      this.candidatoList = JSON.parse(listaGuardadaCandidato);
       console.log(this.candidatoList)
       this.busquedaRealizada = true;
     }
 
-    if (textoGuardado) {
-      this.texto = JSON.parse(textoGuardado);
+    if (textoGuardadoCandidato) {
+      this.textoCandidato = JSON.parse(textoGuardadoCandidato);
     }
 
     if (filtrosHabilidadGuardados) {
@@ -117,20 +122,23 @@ export class BusquedaCandidatosComponent implements OnInit {
     
   }
 
-  buscarPorNombre(texto: string): void {
+  buscarPorNombre(textoCandidato: string): void {
     this.busquedaRealizada = true;
-    this.busquedaService.buscarCandidatosPorNombre(texto).subscribe(data => {
+    this.isLoading = true;
+    this.busquedaService.buscarCandidatosPorNombre(textoCandidato).subscribe(data => {
       this.candidatoList = data;
-      sessionStorage.setItem('texto',JSON.stringify(this.texto));
+      sessionStorage.setItem('textoCandidato',JSON.stringify(this.textoCandidato));
       sessionStorage.setItem('candidatoList', JSON.stringify(this.candidatoList));
       sessionStorage.setItem('filtrosHabilidad', JSON.stringify(this.filtrosSeleccionadosHabilidad));
       sessionStorage.setItem('filtrosEstado', JSON.stringify(this.filtrosSeleccionadosEstado));
       sessionStorage.setItem('filtrosPais', JSON.stringify(this.filtrosSeleccionadosPais));
       sessionStorage.setItem('filtrosProvincia', JSON.stringify(this.filtrosSeleccionadosProvincia));
+      this.isLoading = false;
     });
   }
 
   filtrarEmpresas() {
+    this.isLoading = true;
     const idsHabilidades = this.filtrosSeleccionadosHabilidad?.length ? this.filtrosSeleccionadosHabilidad : null;
     const idsPaises = this.filtrosSeleccionadosPais?.length ? this.filtrosSeleccionadosPais : null;
     const idsProvincias = this.filtrosSeleccionadosProvincia?.length ? this.filtrosSeleccionadosProvincia : null;
@@ -139,14 +147,15 @@ export class BusquedaCandidatosComponent implements OnInit {
     console.log("estados", idsEstadosDeBusqueda);
     console.log("habilidades", idsHabilidades);
     this.busquedaRealizada = true;
-    this.busquedaService.filtrarCandidatos(this.texto, idsProvincias, idsPaises, idsHabilidades, idsEstadosDeBusqueda).subscribe(data => {
+    this.busquedaService.filtrarCandidatos(this.textoCandidato, idsProvincias, idsPaises, idsHabilidades, idsEstadosDeBusqueda).subscribe(data => {
       this.candidatoList = data;
-      sessionStorage.setItem('texto',JSON.stringify(this.texto));
+      sessionStorage.setItem('textoCandidato',JSON.stringify(this.textoCandidato));
       sessionStorage.setItem('candidatoList', JSON.stringify(this.candidatoList));
       sessionStorage.setItem('filtrosHabilidad', JSON.stringify(this.filtrosSeleccionadosHabilidad));
       sessionStorage.setItem('filtrosEstado', JSON.stringify(this.filtrosSeleccionadosEstado));
       sessionStorage.setItem('filtrosPais', JSON.stringify(this.filtrosSeleccionadosPais));
       sessionStorage.setItem('filtrosProvincia', JSON.stringify(this.filtrosSeleccionadosProvincia));
+      this.isLoading = false;
     })
   }
 
@@ -180,6 +189,22 @@ export class BusquedaCandidatosComponent implements OnInit {
     this.router.navigate([`buscar-candidatos/detalle`,idCandidato]);
   }
 
+  // Para mostrar las 10 habilidades random del candidato
+  obtenerHabilidadesAleatorias(candidato: any): any[] {
+    if (this.habilidadesRandomMap[candidato.id]) {
+      return this.habilidadesRandomMap[candidato.id];
+    }
+
+    const copia = [...candidato.habilidades];
+    for (let i = copia.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [copia[i], copia[j]] = [copia[j], copia[i]];
+    }
+
+    this.habilidadesRandomMap[candidato.id] = copia.slice(0, 10);
+    return this.habilidadesRandomMap[candidato.id];
+  }
+
   // Para paginacion
   get totalPaginas(): number {
     return Math.ceil(this.candidatoList.length / this.elementosPorPagina);
@@ -205,6 +230,39 @@ export class BusquedaCandidatosComponent implements OnInit {
     if (this.paginaActual > 1) {
       this.paginaActual--;
     }
+  }
+  
+  get paginasMostradas(): (number | string)[] {
+    const total = this.totalPaginas;
+    const actual = this.paginaActual;
+    const paginas: (number | string)[] = [];
+
+    if (total <= 7) {
+      for (let i = 1; i <= total; i++) {
+        paginas.push(i);
+      }
+    } else {
+      paginas.push(1);
+
+      if (actual > 3) {
+        paginas.push('...');
+      }
+
+      const start = Math.max(2, actual - 1);
+      const end = Math.min(total - 1, actual + 1);
+
+      for (let i = start; i <= end; i++) {
+        paginas.push(i);
+      }
+
+      if (actual < total - 2) {
+        paginas.push('...');
+      }
+
+      paginas.push(total);
+    }
+
+    return paginas;
   }
 
   irAPagina(pagina: number): void {

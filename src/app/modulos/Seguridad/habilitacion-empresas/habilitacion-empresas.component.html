@@ -20,21 +20,25 @@
                         <th scope="col">EMPRESA</th>
                         <th scope="col">CONTACTO</th>
                         <th scope="col">FECHA DE REGISTRO</th>
+                        <th scope="col">ACCIONES</th>
                     </tr>
-                </thead>
+                </thead> 
                 <tbody>
                 @for (empresa of obtenerEmpresasPaginadas(); track $index) {
                         <tr  style="cursor: pointer;">
                             <td class="celda-foto-correo">
                                 <!-- <img src="{{ usuario.urlFotoUsuario }}" alt="{{ usuario.nombreEntidad }}"> -->
-                                <img class="foto-usuario" src="../../../../../assets/img/foto-perfil.png" alt="{{ empresa.usuario?.urlFotoUsuario }}">
+                                <img class="foto-usuario" src="{{ empresa.logoEmpresa }}" alt="{{ empresa.logoEmpresa }}">
                                 {{ empresa.nombreEmpresa }}
                             </td>
                             <td> 
-                                {{ empresa.usuario?.correoUsuario }}
+                                {{ empresa.correoEmpresa }}
                             </td>
                             <td> 
-                              empresa
+                              {{ empresa.fechaHoraRegistroEmpresa | date:'dd/MM/yyyy' }}
+                            </td>
+                            <td>
+                                <button class="btn btn-detalle" (click)="verDetalleEmpresa(empresa.idEmpresa)">Ver detalle</button>
                             </td>
                         </tr>
                     }
