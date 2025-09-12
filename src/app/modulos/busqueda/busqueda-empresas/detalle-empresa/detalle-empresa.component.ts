@@ -5,6 +5,7 @@ import { Empresa } from '../../../empresa/empresa/empresa';
 import { BusquedaService } from '../../busqueda.service';
 import { Oferta } from '../../../oferta/oferta';
 import { DatePipe } from '@angular/common';
+import { OfertaService } from '../../../oferta/oferta.service';
 
 @Component({
   selector: 'app-detalle-empresa',
@@ -20,7 +21,7 @@ export class DetalleEmpresaComponent implements OnInit {
     private empresaService: EmpresaService,
     private route: ActivatedRoute,
     private router: Router,
-    private busquedaService: BusquedaService,
+    private ofertaService: OfertaService,
   ) {}
   
   ngOnInit(): void {
@@ -30,7 +31,7 @@ export class DetalleEmpresaComponent implements OnInit {
     })
 
     // para buscar ofertas de la empresa
-    this.busquedaService.ofertasPorEmpresa(id).subscribe(data => {
+    this.ofertaService.getOfertasPorEmpresa(id).subscribe(data => {
       this.ofertas = data;
       console.log("estas son las ofertas que tiene la empresa", this.ofertas)
     })

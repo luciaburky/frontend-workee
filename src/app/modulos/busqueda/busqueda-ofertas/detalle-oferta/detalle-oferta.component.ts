@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BusquedaService } from '../../busqueda.service';
 import { Oferta } from '../../../oferta/oferta';
 import { DatePipe } from '@angular/common';
 import { SesionService } from '../../../../interceptors/sesion.service';
 import { Rol } from '../../../seguridad/rol';
+import { OfertaService } from '../../../oferta/oferta.service';
 
 @Component({
   selector: 'app-detalle-oferta',
@@ -21,13 +21,13 @@ export class DetalleOfertaComponent implements OnInit {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private busService: BusquedaService,
+    private ofertaService: OfertaService,
     private sesionService: SesionService
   ) {}
 
   ngOnInit() {
     const id = Number(this.route.snapshot.paramMap.get('idOferta'));
-    this.busService.oferta(id).subscribe(data => {
+    this.ofertaService.getOferta(id).subscribe(data => {
       this.oferta = data;
       // this.edadCandidato = this.calcularEdad(this.candidato.fechaDeNacimiento!)
     })

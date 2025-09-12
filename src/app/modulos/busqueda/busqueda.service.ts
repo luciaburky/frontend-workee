@@ -86,12 +86,4 @@ export class BusquedaService {
     return this.http.post<Oferta[]>(`${this.url}/ofertasFiltradas`, body);
   }
 
-
-  oferta(id: number): Observable<Oferta> {
-    return this.http.get<Oferta>(`http://localhost:9090/ofertas/${id}`);
-  }
-
-  ofertasPorEmpresa(id: number): Observable<Oferta[]> {
-    return this.http.get<Oferta[]>(`http://localhost:9090/ofertas/empresa/${id}`);
-  }
 }

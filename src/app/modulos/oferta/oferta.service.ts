@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ofertaEtapaDTO } from '../gestion de ofertas/crear oferta/ofertaEtapaDTO';
+import { Oferta } from './oferta';
 
 
 @Injectable({
@@ -35,5 +36,14 @@ export class OfertaService {
         ofertaEtapas,
     };
     return this.http.post(`${this.url}`, body);
+  }
+
+  getOferta(id: number): Observable<Oferta> {
+    return this.http.get<Oferta>(`${this.url}/${id}`);
+    
+  }
+
+  getOfertasPorEmpresa(id: number): Observable<Oferta[]> {
+    return this.http.get<Oferta[]>(`${this.url}/empresa/${id}`);
   }
 }
