@@ -11,6 +11,7 @@ import { CambioContraseniaComponent } from '../../../../compartidos/cambio-contr
 import { SesionService } from '../../../../interceptors/sesion.service';
 import { RolService } from '../../../seguridad/usuarios/rol.service';
 import { ref, StorageReference, Storage, uploadBytes, getDownloadURL, uploadBytesResumable } from '@angular/fire/storage';
+import { EmpresaService } from '../../empresa/empresa.service';
 
 @Component({
   selector: 'app-perfil-empleado',
@@ -44,6 +45,8 @@ export class PerfilEmpleadoComponent implements OnInit {
   mostrarCampoRepetir: boolean = false;
   repetirContrasenia: string = '';
 
+  idEmpresaObtenida!: number;
+
   modalRef?: NgbModalRef;
   
   //PARA FOTO DE PERFIL
@@ -61,21 +64,49 @@ export class PerfilEmpleadoComponent implements OnInit {
     private usuarioService: UsuarioService,
     private modalService: ModalService,
     private rolService: RolService,
-    private sesionService: SesionService) {}
+    private sesionService: SesionService,
+    private empresaService: EmpresaService) {}
   
   ngOnInit(): void {
-    this.usuarioService.getUsuario().subscribe({
-      next: (data) => {
-        this.empleado = data;
-        console.log(this.empleado)
-        const rol = this.sesionService.getRolActual()?.codigoRol
-        if (rol === 'EMPLEADO_EMPRESA') {
-          this.esEmpleado = true;
-        } else {
-          this.esEmpleado = false;
-        }
+    // ESTO SE TIENE QUE HACER PARA CUANDO EL ADMINISTRADOR ENTRA AL PERFIL DE UN EMPLEADO
+    const rol = this.sesionService.getRolActual()?.codigoRol
+      if (rol === 'EMPLEADO_EMPRESA') {
+        this.esEmpleado = true;
+        // Si es empleado, se obtiene su info desde el servicio de usuario
+        this.usuarioService.getUsuario().subscribe({
+          next: (data) => {
+            this.empleado = data;
+            console.log(this.empleado)
+          }
+        })
+      } else {
+        this.esEmpleado = false;
+        // Si no es empleado, se obtiene el id del empleado desde la ruta
+        const id = Number(this.route.snapshot.paramMap.get('idEmpleado'));
+        this.empresaService.getidEmpresabyCorreo()?.subscribe({
+          next: (idEmpresa) => {
+            if (idEmpresa !== undefined && idEmpresa !== null) {
+              this.idEmpresaObtenida = idEmpresa;
+              console.log('id empresa obtenido desde el perfil : ', idEmpresa)
+            } else {
+              console.error('El id de empresa obtenido es undefined o null');
+            }
+          },
+          error: (err) => {
+            console.error('Error al obtener id de empresa por correo', err);
+          }
+      });
+        this.empleadoService.findById(id).subscribe({
+          next: (data) => {
+            this.empleado = { ...data };
+            console.log(data)
+            this.puestoOriginal = data.puestoEmpleadoEmpresa ?? '';
+          },
+          error: (error) => {
+            console.error('Error al obtener el empleado', error);
+          }
+        });
       }
-    })
   }
 
   modificarEmpleado() {
@@ -130,7 +161,7 @@ export class PerfilEmpleadoComponent implements OnInit {
         const nuevoPuesto = this.empleado.puestoEmpleadoEmpresa;
         if (!this.esEmpleado) {
           // El administrador es quien esta modificando el perfil del empleado
-          this.empleadoService.modificarEmpleadoComoEmpresa(nuevoPuesto ?? '', this.empleado.id!).subscribe({
+          this.empleadoService.modificarEmpleadoComoEmpresa(nuevoPuesto ?? '', this.empleado.id!, this.idEmpresaObtenida).subscribe({
             next: () => {
               this.puestoOriginal = nuevoPuesto ?? '';
               this.modoEdicion = false;
@@ -217,13 +248,12 @@ export class PerfilEmpleadoComponent implements OnInit {
           },
           error: (error) => {
             console.error('Error al eliminar empleado', error);
-            if(error.error.message === "Empleado asociado a una etapa de oferta") {
-              // TODO: CAMBIAR MESSAGE DE ERROR SEGUN EL ERROR QUE SE AGREGUE EN EL BACK
+            if(error.error.message === "No se puede dar de baja: el empleado participa en ofertas no finalizadas.") {
               Swal.fire({
                 toast: true,
                 position: "top-end",
                 icon: "warning",
-                title: "¡El empleado está asociado a una etapa actualmente!",
+                title: "¡El empleado está asociado a una oferta actualmente!",
                 text: "No se puede eliminar un empleado que está asignado a una etapa en una oferta no finalizada",
                 timer: 3000,
                 showConfirmButton: false,

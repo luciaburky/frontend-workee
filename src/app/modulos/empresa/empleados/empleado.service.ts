@@ -42,7 +42,7 @@ export class EmpleadoService {
     return this.http.post(this.url,body);
   }
 
-  modificarEmpleadoComoEmpresa(puestoEmpleadoEmpresa: string, idEmpleado: number) {
+  modificarEmpleadoComoEmpresa(puestoEmpleadoEmpresa: string, idEmpleado: number, idEmpresa: number) {
     const body = {
       "nombreEmpleadoEmpresa": null,
       "apellidoEmpleadoEmpresa": null,
@@ -50,7 +50,7 @@ export class EmpleadoService {
       "correoEmpleadoEmpresa": null,
       "contrasenia": null,
       "repetirContrasenia": null,
-      "idEmpresa": 1
+      "idEmpresa": idEmpresa
     }
     console.log(body);
     return this.http.put(`${this.url}/actualizarPerfilPorAdmin/${idEmpleado}`,body);

@@ -73,6 +73,7 @@ export const routes: Routes = [
     { path: 'empleados', component: ListadoEmpleadosComponent, canActivate: [authGuard] },
     { path: 'empleados/crear', component: CrearEmpleadoComponent, canActivate: [authGuard] },
     { path: 'empleados/perfil', component: PerfilEmpleadoComponent, canActivate: [authGuard] },
+    { path: 'empleados/perfil/:idEmpleado', component: PerfilEmpleadoComponent, canActivate: [authGuard] },
     { path: 'inicio', component: PaginaInicioComponent, canActivate: [publicGuard] }, 
 
     { path: 'login', component: LoginPageComponent, canActivate: [publicGuard] },
