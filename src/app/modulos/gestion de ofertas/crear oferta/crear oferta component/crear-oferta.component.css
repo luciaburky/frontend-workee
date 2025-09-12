@@ -1,10 +1,92 @@
+.oferta-card {
+  background: #fff;
+  padding: 2rem 3rem;
+  border-radius: 12px;
+  max-width: 1000px;
+  margin: 2rem auto;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+
+.oferta-header {
+  background-color: white;
+  margin: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+.oferta-header h1 {
+  font-size: 1.8rem;
+  margin: 0;
+  color: #333;
+}
+.oferta-header p{
+  font-size: 0.95rem;
+  color: #777;
+}
+
 .oferta-wrapper{
   background-color: #ffffff;
-  padding: 3rem;
-  border-radius: 10px;
   max-width: 900px;
-  margin: 3rem auto;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  border-bottom: #cccccc solid 1px;
+  margin: 1rem;
+  margin-bottom: 3rem;
+  padding-bottom: 3rem;
+}
+
+#ultimo {
+  border-bottom: none;
+}
+
+
+.oferta-wrapper-header{
+  display: flex;
+  width: fit-content;
+  border-bottom: 1px solid #31A5DD;
+  margin: 0 auto;
+}
+
+.oferta-wrapper h3{
+  font-size: 1.5rem;
+  color: #31A5DD;
+  text-align: center;
+}
+
+.campo-texto{
+  border: 1px solid #E5E7EB; 
+  border-radius: 8px; 
+  padding: 12px; 
+  height: 140px;
+  resize: vertical;
+}
+
+.required {
+  color: red;
+}
+.oferta-label {
+  margin-bottom: 1rem;
+}
+
+#icon-button {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.editar-doc {
+  color: #31A5DD;
+}
+
+.editar-doc:hover {
+  color: #1c8fc5;
 }
 
 
@@ -31,21 +113,84 @@ form .habilidades .tag {
   display: flex;
   align-items: center;
   gap: 10px;
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
   margin-bottom: 16px;
 }
-
-.cv-drop-area {
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  padding: 30px;
-  text-align: center;
-  cursor: pointer;
-  transition: border-color 0.3s ease;
+.texto-habilidades{
+font-size: 0.8rem;
+color: #6b7280;
 }
+
+.etapa-disponible .tarjeta-etapa.etapa-seleccionada {
+  border-color: #31A5DD;
+  background: #EAF5FE;
+  box-shadow: 0 0 0 3px rgba(49,165,221,.15);
+}
+.etapa-disponible .tarjeta-etapa.etapa-seleccionada:hover {
+  border-color: #31A5DD;
+  background: #EAF5FE;
+}
+
+.btn-empleados {
+  background-color: #31A5DD;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 24px;
+  padding: 0;
+  line-height: 1;
+  border-radius: 4px;
+}
+
+/* .etapa-icono-seleccionada {
+  color: #31A5DD;
+} */
+
+.botones {
+  text-align: right;
+  padding-top: 20px;
+}
+
+.guardar {
+  background-color: #31A5DD;
+  color: white;
+  border-radius: 6px;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.disponible-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+/* Estilos para el número de etapa */
+.etapa-numero {
+  background-color: #31A5DD;
+  color: white;
+  border-radius: 6px;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+
+
+
+
 
 
 /* Títulos y subtítulos */
-.oferta-wrapper .seccion-titulo{font-size:1.25rem;font-weight:700;color:#1f2937;margin:.25rem 0 .35rem}
 .oferta-wrapper .seccion-sub{color:#6b7280;margin:.2rem 0 1rem}
 .oferta-wrapper .seccion-subtitulo{font-weight:600;color:#374151;margin:1.2rem 0 .8rem}
 
@@ -109,20 +254,7 @@ form .habilidades .tag {
 .campo{margin:12px 0}
 .campo-label{display:block;font-weight:600;color:#374151;margin-bottom:6px}
 
-/* Simulación de editor */
-.editor-simulador{border-radius:10px;overflow:hidden}
-.editor-toolbar{
-  display:flex;gap:6px;align-items:center;
-  border:1px solid #E5E7EB;border-bottom:none;
-  background:#F8FAFC;padding:6px 8px
-}
-.editor-toolbar .tool{
-  border:0;background:transparent;padding:4px 8px;border-radius:8px;cursor:default
-}
-.editor-area{
-  border:1px solid #E5E7EB;border-top:none;border-radius:0 0 10px 10px;
-  height:140px;resize:vertical
-}
+
 
 /* Adjuntar documentos */
 .adjuntar-btn{

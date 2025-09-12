@@ -26,7 +26,7 @@ export class ListadoEmpleadosComponent implements OnInit {
     this.empleadoService.cantidadActivos().subscribe(cantidad => {
       this.cantEmpleadosActivos = cantidad;
     })
-
+    //console.log("id empresa " + )
     // this.empleadoService.findAll().subscribe(empleados => {
     //   this.empleadoList = empleados;
     // })

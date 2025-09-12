@@ -79,28 +79,16 @@ export const routes: Routes = [
     { path: 'login', component: LoginPageComponent, canActivate: [publicGuard] },
     { path: 'candidato/perfil', component: PerfilCandidatoComponent, canActivate: [authGuard] },
 
-
-
-
     { path: 'registro', component: RegistroComponent, canActivate: [publicGuard]},
     { path: 'registro-empresa', component: RegistroEmpresaComponent, canActivate: [publicGuard] },
     { path: 'registro-candidato', component: RegistroCandidatoComponent, canActivate: [publicGuard] },
     { path: 'crear-oferta', component: CrearOfertaComponent},
-    { path: 'registro', component: RegistroComponent},
-    { path: 'registro-empresa', component: RegistroEmpresaComponent },
-    { path: 'registro-candidato', component: RegistroCandidatoComponent },
     { path: 'cuentaVerificada', component: ConfirmacionComponent},
-
-
 
     { path: 'usuarios', component: ListadoUsuariosComponent, canActivate: [authGuard] },
     { path: 'usuarios/detalle/:idUsuario', component: DetalleUsuarioComponent, canActivate: [authGuard] },
     { path: 'habilitaciones', component: HabilitacionEmpresasComponent, canActivate: [authGuard] },
     { path: 'habilitaciones/detalle-empresa/:id', component: DetalleEmpresaPendienteComponent, canActivate: [authGuard] },
-
-
-
-
 
     { path: 'buscar-candidatos', component: BusquedaCandidatosComponent, canActivate: [authGuard] },
     { path: 'buscar-candidatos/detalle/:idCandidato', component: DetalleCandidatoComponent, canActivate: [authGuard] },
@@ -109,15 +97,8 @@ export const routes: Routes = [
     { path: 'nuevaContrasenia', component: RecuperarContraseniaComponent, canActivate: [authGuard]},
     { path: 'gestion-de-roles', component: GestionderolesComponent, canActivate: [authGuard]},
 
-    { path: 'buscar-candidatos', component: BusquedaCandidatosComponent },
-    { path: 'buscar-candidatos/detalle/:idCandidato', component: DetalleCandidatoComponent },
-    { path: 'buscar-empresas', component: BusquedaEmpresasComponent },
-    { path: 'buscar-empresas/detalle/:idEmpresa', component: DetalleEmpresaComponent },
     { path: 'buscar-ofertas', component: BusquedaOfertasComponent },
     { path: 'buscar-ofertas/detalle/:idOferta', component: DetalleOfertaComponent },
-    // { path: 'buscar-empresas/detalle/:idEmpresa', component: DetalleEmpresaComponent },
-    { path: 'nuevaContrasenia', component: RecuperarContraseniaComponent},
-    { path: 'gestion-de-roles', component: GestionderolesComponent},
 
 
 

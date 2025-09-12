@@ -13,7 +13,7 @@ import { HabilidadService } from '../../../../admin/ABMHabilidad/habilidad.servi
 import { OfertaService } from '../../../oferta/oferta.service';
 import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { ModalService } from '../../../../compartidos/modal/modal.service';
-import { SeleccionHabilidadesComponent } from '../../../Candidato/perfil-candidato/seleccion-habilidades/seleccion-habilidades.component';
+import { SeleccionHabilidadesComponent } from '../../../candidato/perfil-candidato/seleccion-habilidades/seleccion-habilidades.component';
 import { EtapaService } from '../../../../admin/ABMEtapa/etapa.service';
 import { Etapa } from '../../../../admin/ABMEtapa/etapa';
 import { SesionService } from '../../../../interceptors/sesion.service';
@@ -96,66 +96,66 @@ export class CrearOfertaComponent implements OnInit {
   });
   }
 
-ngOnInit(){
-  this.tipocontratoService.findAll().subscribe({
-    next: (data) => {
-      this.tipocontratos = data;
-  },
-    error: (error) => {
-      console.error('Error al obtener los tipos de contrato', error);
-    }
-  })
+  ngOnInit(){
+    this.tipocontratoService.findAll().subscribe({
+      next: (data) => {
+        this.tipocontratos = data;
+    },
+      error: (error) => {
+        console.error('Error al obtener los tipos de contrato', error);
+      }
+    })
 
-  this.modalidadService.findAll().subscribe({
-    next: (data) => {
-      this.modalidades = data;
-  },
-    error: (error) => {
-      console.error('Error al obtener las modalidades', error);
-    }
-  })
+    this.modalidadService.findAll().subscribe({
+      next: (data) => {
+        this.modalidades = data;
+    },
+      error: (error) => {
+        console.error('Error al obtener las modalidades', error);
+      }
+    })
 
-  this.habilidadService.findAllActivas().subscribe(habilidades => {
-      this.todasHabilidades = habilidades;
-  });
-
-  this.habilidades = [];
-
-  if (this.empresaService) {
-    console.log('entra a empresa service')
-    this.empresaService.getidEmpresabyCorreo()?.subscribe({
-        next: (idEmpresa) => {
-          if (idEmpresa !== undefined && idEmpresa !== null) {
-            this.idEmpresaObtenida = idEmpresa;
-            console.log('id empresa obtenido: ', idEmpresa)
-            this.etapaService.obtenerEtapasDisponiblesParaEmpresa(idEmpresa).subscribe({
-              next: (etapas) => {
-                this.etapasDisponibles = etapas;
-                console.log('etapas disponibles: ', this.etapasDisponibles)
-              },
-              error: (err) => {
-                console.error('Error al obtener etapas disponibles', err);
-              }
-            });
-          } else {
-            console.error('El id de empresa obtenido es undefined o null');
-          }
-        },
-        error: (err) => {
-          console.error('Error al obtener id de empresa por correo', err);
-        }
+    this.habilidadService.findAllActivas().subscribe(habilidades => {
+        this.todasHabilidades = habilidades;
     });
+
+    this.habilidades = [];
+
+    if (this.empresaService) {
+      console.log('entra a empresa service')
+      this.empresaService.getidEmpresabyCorreo()?.subscribe({
+          next: (idEmpresa) => {
+            if (idEmpresa !== undefined && idEmpresa !== null) {
+              this.idEmpresaObtenida = idEmpresa;
+              console.log('id empresa obtenido: ', idEmpresa)
+              this.etapaService.obtenerEtapasDisponiblesParaEmpresa(idEmpresa).subscribe({
+                next: (etapas) => {
+                  this.etapasDisponibles = etapas;
+                  console.log('etapas disponibles: ', this.etapasDisponibles)
+                },
+                error: (err) => {
+                  console.error('Error al obtener etapas disponibles', err);
+                }
+              });
+            } else {
+              console.error('El id de empresa obtenido es undefined o null');
+            }
+          },
+          error: (err) => {
+            console.error('Error al obtener id de empresa por correo', err);
+          }
+      });
+    }
   }
-}
 
-isCampoInvalido(nombre: string): boolean {
-  const c = this.crearofertaForm.get(nombre);
-  return !!c && c.invalid && (c.touched || this.submitted);
-}
+  isCampoInvalido(nombre: string): boolean {
+    const c = this.crearofertaForm.get(nombre);
+    return !!c && c.invalid && (c.touched || this.submitted);
+  }
 
-marcarTodoTocado() {
-  Object.values(this.crearofertaForm.controls).forEach(c => c.markAsTouched());
-}
+  marcarTodoTocado() {
+    Object.values(this.crearofertaForm.controls).forEach(c => c.markAsTouched());
+  }
 
 async enviarDatos() {
   this.submitForm = true;
@@ -483,5 +483,14 @@ private validarEtapas(): boolean {
   return ok;
 }
 
+
+isEtapaSeleccionada(etapa: Etapa): boolean {
+  return this.etapasSeleccionadas.some(e => e.idEtapa === etapa.id);
+}
+
+getNumeroEtapa(idEtapa: number): number | null {
+  const index = this.etapasSeleccionadas.findIndex(e => e.idEtapa === idEtapa);
+  return index !== -1 ? index + 1 : null;
+}
 
 }
