@@ -3,6 +3,7 @@ import { EmpleadoService } from '../empleado.service';
 import { Empleado } from '../empleado';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { EmpresaService } from '../../empresa/empresa.service';
 
 @Component({
   selector: 'app-listado-empleados',
@@ -11,7 +12,9 @@ import { Router } from '@angular/router';
   styleUrl: './listado-empleados.component.css'
 })
 export class ListadoEmpleadosComponent implements OnInit {
-  
+
+  idEmpresaObtenida: number = 0;
+
   cantEmpleadosActivos!: number;
   empleadoList: Empleado[] = [];
   paginaActual: number = 1;
@@ -19,17 +22,40 @@ export class ListadoEmpleadosComponent implements OnInit {
   
   constructor(
     private empleadoService: EmpleadoService,
-    private router: Router
+    private router: Router,
+    private empresaService: EmpresaService,
   ) {}
 
   ngOnInit(): void {
-    this.empleadoService.cantidadActivos().subscribe(cantidad => {
-      this.cantEmpleadosActivos = cantidad;
-    })
 
-    this.empleadoService.findAll().subscribe(empleados => {
-      this.empleadoList = empleados;
-    })
+    if (this.empresaService) {
+      console.log('entra a empresa service')
+      this.empresaService.getidEmpresabyCorreo()?.subscribe({
+          next: (idEmpresa) => {
+            if (idEmpresa !== undefined && idEmpresa !== null) {
+              this.idEmpresaObtenida = idEmpresa;
+              console.log('id empresa obtenido: ', idEmpresa)
+              this.empleadoService.findAll(this.idEmpresaObtenida).subscribe({
+                next: (empleados) => {
+                  this.empleadoList = empleados; 
+                  console.log(this.empleadoList);
+                },
+                error: (err) => {
+                  console.error('Error al obtener empleados', err);
+                }
+              });
+              this.empleadoService.cantidadActivos(this.idEmpresaObtenida).subscribe(cantidad => {
+                this.cantEmpleadosActivos = cantidad;
+              })
+            } else {
+              console.error('El id de empresa obtenido es undefined o null');
+            }
+          },
+          error: (err) => {
+            console.error('Error al obtener id de empresa por correo', err);
+          }
+      });
+    }
   }
 
   crearEmpleado(): void {

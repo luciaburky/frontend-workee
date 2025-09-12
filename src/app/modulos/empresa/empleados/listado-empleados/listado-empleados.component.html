@@ -24,7 +24,7 @@
                 <div class="col">
                     <div class="card d-flex flex-row align-items-center p-3" (click)="visualizarEmpleado(empleado.id!)" role="button">
                         <img 
-                        [src]="'assets/img/foto-perfil.png'"
+                        [src]="empleado.usuario?.urlFotoUsuario"
                         alt="{{empleado.nombreEmpleadoEmpresa}} {{empleado.apellidoEmpleadoEmpresa}}" 
                         class="rounded-circle me-3" 
                         width="64" 

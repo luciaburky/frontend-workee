@@ -14,12 +14,12 @@ export class EmpleadoService {
 
   constructor(private http: HttpClient) { };
 
-  findAll(): Observable<Empleado[]> {
-    return this.http.get<Empleado[]>(`${this.url}/traerTodos/1`);
+  findAll(empresaId: number): Observable<Empleado[]> {
+    return this.http.get<Empleado[]>(`${this.url}/traerTodos/${empresaId}`);
   }
 
-  cantidadActivos(): Observable<number> {
-    return this.http.get<number>(`${this.url}/contarEmpleados/1`);
+  cantidadActivos(empresaId: number): Observable<number> {
+    return this.http.get<number>(`${this.url}/contarEmpleados/${empresaId}`);
   }
   
   crearEmpleado(nombreEmpleadoEmpresa: string,
@@ -27,7 +27,8 @@ export class EmpleadoService {
                 puestoEmpleadoEmpresa: string,
                 correoEmpleadoEmpresa: string,
                 contrasenia: string,
-                repetirContrasenia: string) {
+                repetirContrasenia: string,
+                idEmpresa: number) {
     const body = {
       "nombreEmpleadoEmpresa": nombreEmpleadoEmpresa,
       "apellidoEmpleadoEmpresa": apellidoEmpleadoEmpresa,
@@ -35,8 +36,8 @@ export class EmpleadoService {
       "correoEmpleadoEmpresa": correoEmpleadoEmpresa,
       "contrasenia": contrasenia,
       "repetirContrasenia": repetirContrasenia,
-      "idEmpresa": 1,
-      "urlFotoPerfil": "urlFoto"
+      "idEmpresa": idEmpresa,
+      "urlFotoPerfil": null
     }
     return this.http.post(this.url,body);
   }
