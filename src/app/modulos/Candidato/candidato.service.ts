@@ -1,7 +1,7 @@
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Candidato } from './candidato';
+import { Candidato } from '../candidato/candidato';
 
 @Injectable({
   providedIn: 'root',
@@ -24,6 +24,7 @@ export class CandidatoService {
     idGenero: number,
     idHabilidades: number[],
     urlFotoPerfil: string,
+    enlaceCV: string | null
     // contrasenia: string,
     // repetirContrasenia: string
   ) {
@@ -35,12 +36,9 @@ export class CandidatoService {
       "idEstadoBusqueda": idEstadoBusqueda,
       "idGenero": idGenero,
       "idHabilidades": idHabilidades,
-      "enlaceCV": null,
+      "enlaceCV": enlaceCV,
       "correoCandidato": null,
-      // "contrasenia": contrasenia,
-      // "repetirContrasenia": contrasenia,
       "urlFotoPerfil": urlFotoPerfil,
-      // "contraseniaActual": contrasenia
     }
     console.log("estoy desde el service, este es el body: ", body)
     return this.http.put(`${this.url}/${idCandidato}`, body);
