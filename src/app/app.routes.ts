@@ -46,6 +46,7 @@ import { DetalleOfertaComponent } from './modulos/busqueda/busqueda-ofertas/deta
 
 import { CrearOfertaComponent } from './modulos/gestion de ofertas/crear oferta/crear oferta component/crear-oferta.component';
 import { VisualizarOfertasPropiasComponent } from './modulos/gestion de ofertas/visualizar oferta/visualizar-ofertas-propias.component';
+import { EtapasEmpresaComponent } from './modulos/gestion de ofertas/etapas-empresa/etapas-empresa.component';
 
 export const routes: Routes = [
     // { path: 'buscar-ofertas', component: BuscarComponent },
@@ -101,7 +102,7 @@ export const routes: Routes = [
 
     { path: 'buscar-ofertas', component: BusquedaOfertasComponent },
     { path: 'buscar-ofertas/detalle/:idOferta', component: DetalleOfertaComponent },
-
+    { path: 'ofertas/etapas', component: EtapasEmpresaComponent },
 
 
 

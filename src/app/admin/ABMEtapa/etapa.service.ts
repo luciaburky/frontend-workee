@@ -64,5 +64,26 @@ export class EtapaService {
     return this.http.get<Etapa[]>(`${this.url}/disponibles/empresa/${idEmpresa}`);
   }
 
+  crearEtapaEmpresa(idEmpresa: number, nombreEtapa: string, descripcionEtapa: string) {
+    const body = {
+      "nombreEtapa": nombreEtapa,
+      "descripcionEtapa": descripcionEtapa
+    }
+    console.log("estoy desde el service, voy a mandar este body: ", body)
+    return this.http.post(`${this.url}/empresa/${idEmpresa}`, body);
+  }
+
+  modificarEtapaEmpresa(idEmpresa: number, nombreEtapa: string, descripcionEtapa: string) {
+    // const body = {
+    //   "nombreEtapa": nombreEtapa,
+    //   "descripcionEtapa": descripcionEtapa
+    // }
+    // return this.http.post(`${this.url}/disponibles/empresa/${idEmpresa}`, body);
+  }
+
+  eliminarEtapaEmpresa(idEtapa: number, idEmpresa: number) {
+    return this.http.delete(`${this.url}/${idEtapa}/empresa/${idEmpresa}`);
+  }
+
 }
 
