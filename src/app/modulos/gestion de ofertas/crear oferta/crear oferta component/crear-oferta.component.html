@@ -1,5 +1,9 @@
 <div class="oferta-card">
   <div class="oferta-header">
+    <button type="button" class="boton" [routerLink]="['/visualizar-oferta']">
+      <span class="material-symbols-outlined">arrow_back</span>
+      Volver
+    </button>
     <h1>Crear nueva oferta de empleo</h1>
     <p>Completa el formulario para publicar una nueva oferta de empleo en tu empresa</p>
   </div>
@@ -8,6 +12,7 @@
   <form [formGroup]="crearofertaForm">
     
       <div class="oferta-wrapper">
+
       <div class="oferta-wrapper-header">
         <h3>Informacion Basica</h3>
       </div>  

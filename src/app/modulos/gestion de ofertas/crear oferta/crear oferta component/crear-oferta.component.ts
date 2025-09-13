@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors } from "@angular/forms";
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { TipoContrato } from '../../../../admin/ABMTipoContrato/tipo-contrato';
 import { TipoContratoService } from '../../../../admin/ABMTipoContrato/tipo-contrato.service';
 import Swal from 'sweetalert2';
@@ -31,7 +31,7 @@ import { EmpleadoService } from '../../../empresa/empleados/empleado.service';
 @Component({
   selector: 'app-crear-oferta',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterModule],
   templateUrl: './crear-oferta.component.html',
   styleUrl: './crear-oferta.component.css'
 })
