@@ -143,9 +143,15 @@ color: #6b7280;
   border-radius: 4px;
 }
 
-/* .etapa-icono-seleccionada {
+.etapa-icono-seleccionada {
   color: #31A5DD;
-} */
+} 
+.etapa-titulo {
+  color: #31A5DD;
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 0;
+}
 
 .botones {
   text-align: right;
@@ -235,7 +241,6 @@ color: #6b7280;
 }
 .etapa-header{display:flex;align-items:center;gap:10px;margin-bottom:12px}
 .icon-tip::before{content:"💡";display:inline-block;font-size:18px}
-.etapa-titulo{margin:0;font-size:1rem;font-weight:700;color:#1c7fb9}
 
 /* Botón cerrar arriba a la derecha, usando tu mismo botón (click) */
 .btn-cerrar{

@@ -123,15 +123,11 @@
             @for (etapa of etapasSeleccionadas; track etapa.numeroEtapa; let i = $index) {
               <div class="etapa-card">
                 <div class="etapa-header">
-                  <!-- <span class="icon-tip" aria-hidden="true"></span>
-                  <h5 class="etapa-titulo">
-                    {{ etapa.numeroEtapa }}. {{ getNombreEtapa(etapa.idEtapa) }}
-                  </h5> -->
-                  <span class="material-symbols-outlined etapa-icono-seleccionada">lightbulb</span> 
+                  <span class="material-symbols-outlined etapa-icono-seleccionada">emoji_objects</span> 
                     <h5 class="etapa-titulo">
                       {{ i + 1 }}. {{ getNombreEtapa(etapa.idEtapa) }}
                     </h5>
-                  <!-- MISMA lógica: solo cambia el look/posición -->
+                  
                   <button type="button" class="btn btn-danger btn-cerrar" (click)="quitarEtapa(i)">Quitar</button>
                 </div>
                 <div class="form-group">
