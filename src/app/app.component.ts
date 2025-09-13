@@ -12,10 +12,8 @@ import { CommonModule } from '@angular/common';
 })
 export class AppComponent implements OnInit{
   title = 'angular-app';
-  
 
   sidebarVisible$!: Observable<boolean>;
-  spinner$!: Observable<boolean | null>;
   
   private sub!: Subscription;
 
@@ -28,7 +26,6 @@ export class AppComponent implements OnInit{
     this.sidebarVisible$ = this.sesionService.rolUsuario$.pipe(
       map(rol => !!rol)
     );
-    this.spinner$ = this.sesionService.spinner$;
   }
 
   ngOnDestroy(): void {

@@ -14,7 +14,7 @@ export const publicGuard: CanActivateFn = (route, state) => {
       icon: 'error',
       confirmButtonColor: '#e02929ff',
     });
-    
+    sesionService.setLoading(false);
     return false; 
   }
 
