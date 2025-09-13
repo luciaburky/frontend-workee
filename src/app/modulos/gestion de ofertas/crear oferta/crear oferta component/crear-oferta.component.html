@@ -217,13 +217,13 @@
                   (change)="onArchivoEtapaSelected($event, i)"
                 />
 
-                <!-- Mensajes de error por etapa -->
-                @if (erroresArchivo[i].formato) {
+                @if (erroresArchivo[i]?.formato) {
                   <p class="text-error">El formato del archivo seleccionado no es válido. Debe ser .pdf</p>
                 }
-                @if (erroresArchivo[i].tamanioInvalido) {
+                @if (erroresArchivo[i]?.tamanioInvalido) {
                   <p class="text-error">El documento no debe superar los 5MB.</p>
                 }
+
               </div>
 
               <label class="check-row">
