@@ -98,21 +98,24 @@
 
 // }
 
-
 import { Component, OnInit, Inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { FormsModule } from '@angular/forms'; // <-- NECESARIO para [(ngModel)]
+import { FormsModule } from '@angular/forms';
 import { PLATFORM_ID } from '@angular/core';
+
+import { MultiSelect } from 'primeng/multiselect'; // <-- NUEVO
 
 import { OfertaService } from '../../oferta/oferta.service';
 import { Oferta } from '../../oferta/oferta';
 import { EmpresaService } from '../../empresa/empresa/empresa.service';
 import { EstadoOferta } from '../../../admin/ABMEstadoOferta/estado-oferta';
 
+type OpcionEstado = { code: string; name: string };
+
 @Component({
   selector: 'app-visualizar-ofertas-propias',
   standalone: true,
-  imports: [CommonModule, FormsModule], // <-- agrega FormsModule
+  imports: [CommonModule, FormsModule, MultiSelect], // <-- AGREGA MultiSelect
   templateUrl: './visualizar-ofertas-propias.component.html',
   styleUrl: './visualizar-ofertas-propias.component.css'
 })
@@ -123,14 +126,17 @@ export class VisualizarOfertasPropiasComponent implements OnInit {
   /** Lista completa traída del backend (de tu empresa) */
   ofertasObtenidas: Oferta[] = [];
 
-  /** Lista que se muestra (filtrada por texto) */
+  /** Lista que se muestra (filtrada) */
   ofertas: Oferta[] = [];
 
   /** buscador de texto */
   textoOferta: string = '';
 
-  idEmpresaObtenida!: number;
+  /** === Filtro EstadoOferta === */
+  filtrosEstadoOferta: OpcionEstado[] = [];               // opciones únicas disponibles
+  filtrosSeleccionadosEstadoOferta: string[] = [];        // array de codes (p. ej. ['ABIERTA','CERRADA'])
 
+  idEmpresaObtenida!: number;
   private isBrowser = false; // para SSR-safe sessionStorage
 
   constructor(
@@ -142,10 +148,13 @@ export class VisualizarOfertasPropiasComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // restaurar texto de búsqueda si hay (SSR-safe)
+    // restaurar texto/estados si hay (SSR-safe)
     if (this.isBrowser) {
       const txt = sessionStorage.getItem('textoOfertaPropias');
       if (txt) this.textoOferta = JSON.parse(txt);
+
+      const est = sessionStorage.getItem('estadosOfertaSeleccionados');
+      if (est) this.filtrosSeleccionadosEstadoOferta = JSON.parse(est);
     }
 
     if (this.empresaService) {
@@ -164,8 +173,12 @@ export class VisualizarOfertasPropiasComponent implements OnInit {
                   estadoNombre: this.getEstadoActual(i)?.nombreEstadoOferta ?? '—',
                 }) as any);
 
-                // aplicar filtro inicial si había texto guardado
+                // construir opciones únicas de estado (en base al estado vigente de cada oferta)
+                this.cargarOpcionesEstados();
+
+                // aplicar filtros (texto + estados) si había algo guardado
                 this.aplicarFiltro();
+
                 console.log('Ofertas disponibles: ', this.ofertasObtenidas);
               },
               error: (err) => console.error('Error al obtener ofertas disponibles', err)
@@ -179,16 +192,37 @@ export class VisualizarOfertasPropiasComponent implements OnInit {
     }
   }
 
+  /** Construye el combo de estados a partir del estado vigente de cada oferta */
+  private cargarOpcionesEstados(): void {
+    const mapa = new Map<string, string>(); // code -> name
+
+    for (const o of this.ofertasObtenidas) {
+      const est = this.getEstadoActual(o);
+      const code = (est?.codigo ?? '').toUpperCase();
+      const name = est?.nombreEstadoOferta ?? '';
+      if (code && name && !mapa.has(code)) {
+        mapa.set(code, name);
+      }
+    }
+
+    // opcional: incluir "Sin estado" si hay alguna oferta sin estado vigente
+    const haySinEstado = this.ofertasObtenidas.some(o => !this.getEstadoActual(o));
+    if (haySinEstado) {
+      mapa.set('__NONE__', 'Sin estado');
+    }
+
+    this.filtrosEstadoOferta = Array.from(mapa.entries()).map(([code, name]) => ({ code, name }));
+  }
 
   private norm(s: string): string {
-  return (s ?? '')
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')  // quita diacríticos
-    .trim();
-}
+    return (s ?? '')
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .trim();
+  }
 
-  /** === BUSCADOR SOLO TEXTO (misma lógica, pero local y SSR-safe) === */
+  /** === BUSCADOR SOLO TEXTO === */
   buscarPorNombre(texto: string): void {
     this.textoOferta = texto ?? '';
     if (this.isBrowser) {
@@ -197,20 +231,31 @@ export class VisualizarOfertasPropiasComponent implements OnInit {
     this.aplicarFiltro();
   }
 
-  /** Aplica un filter local sobre las ofertas propias ya cargadas */
-  private aplicarFiltro(): void {
-    const t = this.norm(this.textoOferta);
-    if (!t) {
-      this.ofertas = [...this.ofertasObtenidas];
-      return;
+  /** Dispara al cambiar selección de estados */
+  onEstadosChange(): void {
+    if (this.isBrowser) {
+      sessionStorage.setItem('estadosOfertaSeleccionados', JSON.stringify(this.filtrosSeleccionadosEstadoOferta));
     }
-
-    this.ofertas = this.ofertasObtenidas.filter(o =>
-      this.norm(o.titulo).includes(t)
-    );
+    this.aplicarFiltro();
   }
 
-  /** ======= utilidades de estado (sin cambios) ======= */
+  /** Aplica filtros locales: texto + estado vigente */
+  private aplicarFiltro(): void {
+    const t = this.norm(this.textoOferta);
+    const seleccionados = (this.filtrosSeleccionadosEstadoOferta ?? []).map(s => (s ?? '').toUpperCase());
+
+    this.ofertas = this.ofertasObtenidas.filter(o => {
+      const coincideTexto = !t || this.norm(o.titulo).includes(t);
+      if (!coincideTexto) return false;
+
+      if (!seleccionados.length) return true; // sin filtro de estado
+
+      const vigenteCode = (this.getEstadoActual(o)?.codigo ?? '__NONE__').toUpperCase();
+      return seleccionados.includes(vigenteCode);
+    });
+  }
+
+  /** ======= utilidades de estado (sin cambios de lógica) ======= */
   getEstadoActual(oferta: Oferta): EstadoOferta | null {
     const lista = (oferta as any).estadosOferta ?? [];
     if (!lista.length) return null;

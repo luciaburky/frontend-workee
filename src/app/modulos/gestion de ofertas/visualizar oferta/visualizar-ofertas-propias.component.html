@@ -14,8 +14,25 @@
     </button>
   </div>
 </div>
+  <div class="seccion-filtros">
+    <div class="filtros">
 
-<p>estado</p>
+      <!-- Filtro por Estado de la Oferta -->
+      <p-multiselect
+        [options]="filtrosEstadoOferta"
+        placeholder="Estado"
+        optionLabel="name"
+        optionValue="code"
+        [maxSelectedLabels]="0"
+        [selectedItemsLabel]="'Estado ({0})'"
+        class="filtro w-full md:w-80"
+        [panelStyle]="{ 'background': '#fff' }"
+        [(ngModel)]="filtrosSeleccionadosEstadoOferta"
+        (onChange)="onEstadosChange()">
+      </p-multiselect>
+
+    </div>
+  </div>
 
 <div class="botones">
   <button type="button" class="btn btn-primary guardar" href="/crear-oferta">
