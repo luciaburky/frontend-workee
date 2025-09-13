@@ -275,9 +275,7 @@
         </div>
         <div class="habilidades">
           @for (hab of habilidadesParaMostrar; track $index) {
-            @if (hab.fechaHoraBaja === null) {
               <span class="tag"> {{hab.habilidad?.nombreHabilidad}} </span>
-            }
           }
         </div>
       </div> 
