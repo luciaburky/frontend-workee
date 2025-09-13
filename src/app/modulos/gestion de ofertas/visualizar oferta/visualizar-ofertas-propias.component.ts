@@ -109,13 +109,14 @@ import { OfertaService } from '../../oferta/oferta.service';
 import { Oferta } from '../../oferta/oferta';
 import { EmpresaService } from '../../empresa/empresa/empresa.service';
 import { EstadoOferta } from '../../../admin/ABMEstadoOferta/estado-oferta';
+import { RouterModule } from '@angular/router';
 
 type OpcionEstado = { code: string; name: string };
 
 @Component({
   selector: 'app-visualizar-ofertas-propias',
   standalone: true,
-  imports: [CommonModule, FormsModule, MultiSelect], // <-- AGREGA MultiSelect
+  imports: [CommonModule, FormsModule, MultiSelect, RouterModule], // <-- AGREGA MultiSelect
   templateUrl: './visualizar-ofertas-propias.component.html',
   styleUrl: './visualizar-ofertas-propias.component.css'
 })
