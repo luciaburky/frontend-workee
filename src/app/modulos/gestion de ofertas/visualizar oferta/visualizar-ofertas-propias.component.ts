@@ -109,7 +109,7 @@ import { OfertaService } from '../../oferta/oferta.service';
 import { Oferta } from '../../oferta/oferta';
 import { EmpresaService } from '../../empresa/empresa/empresa.service';
 import { EstadoOferta } from '../../../admin/ABMEstadoOferta/estado-oferta';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 
 type OpcionEstado = { code: string; name: string };
 
@@ -143,6 +143,7 @@ export class VisualizarOfertasPropiasComponent implements OnInit {
   constructor(
     private ofertaService: OfertaService,
     private empresaService: EmpresaService,
+    private router: Router,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {
     this.isBrowser = isPlatformBrowser(this.platformId);
@@ -282,5 +283,9 @@ export class VisualizarOfertasPropiasComponent implements OnInit {
 
   estadoTexto(oferta: Oferta): string {
     return this.getEstadoActual(oferta)?.nombreEstadoOferta ?? 'Sin estado';
+  }
+
+  irADetalle(id: number): void {
+    this.router.navigate(['/visualizar-oferta', id]);
   }
 }

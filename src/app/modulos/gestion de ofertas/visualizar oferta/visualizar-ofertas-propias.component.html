@@ -61,7 +61,12 @@
 
 <div class="ofertas-grid">
   @for (oferta of ofertas; track oferta.id) {
-    <article class="oferta-card" [ngClass]="estadoClase(oferta)" (click)="agregarEtapa()">
+    <article
+      class="oferta-card"
+      [ngClass]="estadoClase(oferta)"
+      (click)="irADetalle(oferta.id)"        
+      style="cursor: pointer"
+    >
       <div class="oferta-card__head">
         <h3 class="oferta-card__title">{{ oferta.titulo }}</h3>
         <span class="pill" [ngClass]="estadoClase(oferta)">{{ estadoTexto(oferta) }}</span>
@@ -72,6 +77,7 @@
     </article>
   }
 </div>
+
 
 <!-- === Bloque sin resultados === -->
 <div class="sin-resultados" *ngIf="ofertas.length === 0">

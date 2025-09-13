@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { OfertaService } from '../../../oferta/oferta.service';
 import { Oferta } from '../../../oferta/oferta';
 import { EstadoOfertaService } from './../../../../admin/ABMEstadoOferta/estado-oferta.service';
@@ -9,7 +9,7 @@ import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-detalle-oferta-propia',
-  imports: [DatePipe, CommonModule],
+  imports: [DatePipe, CommonModule,RouterModule],
   templateUrl: './detalle-oferta-propia.component.html',
   styleUrl: './detalle-oferta-propia.component.css'
 })
