@@ -22,10 +22,12 @@ import { EstadoBusquedaLaboral } from '../../../admin/ABMEstadoBusquedaLaboral/e
 import { UsuarioService } from '../../seguridad/usuarios/usuario.service';
 import { ref, StorageReference, Storage, uploadBytes, getDownloadURL, uploadBytesResumable } from '@angular/fire/storage';
 import { CambioContraseniaComponent } from '../../../compartidos/cambio-contrasenia/cambio-contrasenia.component';
+import { SpinnerService } from '../../../compartidos/spinner/spinner.service';
+import { SpinnerComponent } from "../../../compartidos/spinner/spinner/spinner.component";
 
 @Component({
   selector: 'app-perfil-candidato',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, SpinnerComponent],
   templateUrl: './perfil-candidato.component.html',
   styleUrls: ['./perfil-candidato.component.css'],
 })
@@ -75,6 +77,9 @@ export class PerfilCandidatoComponent implements OnInit {
   file!: File;
   imgRef!: StorageReference;
   previewUrl!: string;
+  
+  cargandoFoto: boolean = false;
+
 
   //PARA CV
   private storage = inject(Storage);
@@ -83,6 +88,8 @@ export class PerfilCandidatoComponent implements OnInit {
   docRef!: StorageReference;
   @ViewChild('fileInputCV') fileInputCV!: ElementRef<HTMLInputElement>;
   nombreArchivoCV: string = '';
+
+  cargandoCv: boolean = false;
 
   modalRef?: NgbModalRef;
 
@@ -111,6 +118,7 @@ export class PerfilCandidatoComponent implements OnInit {
     private modalService: ModalService,
     private route: ActivatedRoute,
     private usuarioService: UsuarioService,
+    private spinnerService: SpinnerService
   ) {
     this.candidatoForm = new FormGroup({
       nombreCandidato: new FormControl('', [Validators.required]),
@@ -434,10 +442,14 @@ export class PerfilCandidatoComponent implements OnInit {
   async subirFoto(file: File): Promise<string | null> {
     if (!file) return null;
     try {
+      this.cargandoFoto = true;
+      
       const filePath = `foto/${file.name}`;
       const fileRef = ref(this.storage, filePath);
       await uploadBytes(fileRef, file);
       const downloadURL = await getDownloadURL(fileRef);
+      
+      this.cargandoFoto = false;
 
       return downloadURL;
     } catch (error) {
@@ -487,6 +499,7 @@ export class PerfilCandidatoComponent implements OnInit {
   async subirCV(file: File) {
     if (!file) return;
     try {
+      this.cargandoCv = true;
       console.log("entre al try")
       const filePath = `cv/${file.name}`;
       const fileRef = ref(this.storage, filePath);
@@ -515,7 +528,7 @@ export class PerfilCandidatoComponent implements OnInit {
         this.candidato.candidatoCV!.enlaceCV ?? ''
       ).subscribe({
         next: () => {
-
+          this.cargandoCv = false;
           console.log("genial, ya cambie el cv, el candidatoCV nuevo es:", this.candidato.candidatoCV)
           // this.candidato = { ...this.candidato, candidatoCV: this.candidato.candidatoCV };
           // this.usuarioService.getUsuario().subscribe(candidatoActualizado => {

@@ -21,6 +21,9 @@
     <div class="form-grid-foto">
       <div class="foto-seccion">
         <div class="foto-container">
+          <div class="spinner-overlay" *ngIf="cargandoFoto">
+            <app-spinner type="inline"></app-spinner>
+          </div>
           <img 
             [src]="fotoTemporal || candidato.usuario?.urlFotoUsuario || 'assets/img/foto-perfil.png'" 
             alt="foto" 
@@ -189,27 +192,33 @@
             <label class="p-0 my-0 mb-2" for="cv">Curriculum Vitae</label>
             @if (candidato.candidatoCV && candidato.candidatoCV.fechaHoraBaja === null) {
               <div class="cv-box-contenedor">
-                <div class="cv-box">
-                  <span class="material-symbols-outlined icono-pdf">description</span>
-                  <div class="cv-detalle">
-                    <p>
-                      <a [href]="candidato.candidatoCV.enlaceCV" target="_blank">
-                        {{ mostrarNombreArchivoCV(candidato.candidatoCV.enlaceCV) }}
-                      </a>
-                    </p>
-                    <small>Actualizado el {{ candidato.candidatoCV.fechaHoraAlta | date:'dd/MM/yyyy' }}</small>
+                @if(cargandoCv){
+                  <div class="spinner-overlay" >
+                    <app-spinner type="inline"></app-spinner>
                   </div>
-                </div>
-                <div class="cv-acciones">
-                  @if (modoEdicion) {
-                    <button id="icon-button" [disabled]="!modoEdicion" (click)="fileInputCV.click()">
-                      <span class="material-symbols-outlined editar-cv" title="Editar">edit</span>
-                    </button>
-                    <button id="icon-button" [disabled]="!modoEdicion" (click)="eliminarCV()">
-                      <span class="material-symbols-outlined eliminar-cv" title="Eliminar">delete</span>
-                    </button>
-                  }
-                </div>
+                } @else {
+                  <div class="cv-box">
+                    <span class="material-symbols-outlined icono-pdf">description</span>
+                    <div class="cv-detalle">
+                      <p>
+                        <a [href]="candidato.candidatoCV.enlaceCV" target="_blank">
+                          {{ mostrarNombreArchivoCV(candidato.candidatoCV.enlaceCV) }}
+                        </a>
+                      </p>
+                      <small>Actualizado el {{ candidato.candidatoCV.fechaHoraAlta | date:'dd/MM/yyyy' }}</small>
+                    </div>
+                  </div>
+                  <div class="cv-acciones">
+                    @if (modoEdicion) {
+                      <button id="icon-button" [disabled]="!modoEdicion" (click)="fileInputCV.click()">
+                        <span class="material-symbols-outlined editar-cv" title="Editar">edit</span>
+                      </button>
+                      <button id="icon-button" [disabled]="!modoEdicion" (click)="eliminarCV()">
+                        <span class="material-symbols-outlined eliminar-cv" title="Eliminar">delete</span>
+                      </button>
+                    }
+                  </div>
+                }
               </div>
           
               <input 
@@ -219,20 +228,27 @@
                 style="display: none"
                 (change)="onFileSelectedCV($event)"/>
             } @else {
-              <button 
-                type="button"
-                class="boton-subir-cv"
-                (click)="fileInputCV.click()"
-                [class.disabled-btn]="!modoEdicion">
-                <span class="material-symbols-outlined">upload_file</span>
-                Agregar CV
-              </button>
-              <input 
-                type="file" 
-                #fileInputCV 
-                accept="application/pdf" 
-                style="display: none"
-                (change)="onFileSelectedCV($event)"/>
+              @if(cargandoCv){
+                <div class="spinner-overlay" >
+                    <app-spinner type="inline"></app-spinner>
+                  </div>
+              } @else {
+                <button 
+                  type="button"
+                  class="boton-subir-cv"
+                  (click)="fileInputCV.click()"
+                  [class.disabled-btn]="!modoEdicion">
+                  <span class="material-symbols-outlined">upload_file</span>
+                  Agregar CV
+                </button>
+                <input 
+                  type="file" 
+                  #fileInputCV 
+                  accept="application/pdf" 
+                  style="display: none"
+                  (change)="onFileSelectedCV($event)"/>
+
+              }
             }
         </div>
         <div class="form-group">
