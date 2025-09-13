@@ -16,6 +16,10 @@ export class EstadoOfertaService {
   findAll(): Observable<EstadoOferta[]> {
     return this.http.get<EstadoOferta[]>(this.url);
   }
+
+  findAllActivos(): Observable<EstadoOferta[]> {
+    return this.http.get<EstadoOferta[]>(`${this.url}/activos`);
+  }
   
   findById(idEstadoOferta:number): Observable<EstadoOferta> {
     return this.http.get<EstadoOferta>(`${this.url}/${idEstadoOferta}`);

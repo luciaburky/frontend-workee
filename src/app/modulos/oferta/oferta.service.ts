@@ -40,10 +40,13 @@ export class OfertaService {
 
   getOferta(id: number): Observable<Oferta> {
     return this.http.get<Oferta>(`${this.url}/${id}`);
-    
   }
 
   getOfertasPorEmpresa(id: number): Observable<Oferta[]> {
     return this.http.get<Oferta[]>(`${this.url}/empresa/${id}`);
+  }
+
+  cambiarEstadoOferta(idOferta: number, estado: string): Observable<Oferta[]> {
+    return this.http.post<Oferta[]>(`${this.url}/${idOferta}/cambiar-estado/${estado}`,null);
   }
 }
