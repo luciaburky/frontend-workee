@@ -3,4 +3,5 @@ export class EstadoOferta {
     nombreEstadoOferta?: string;
     fechaHoraAlta?: string;
     fechaHoraBaja?: string | null;
+    codigo!: 'ABIERTA' | 'CERRADA' | 'FINALIZADA';
 }

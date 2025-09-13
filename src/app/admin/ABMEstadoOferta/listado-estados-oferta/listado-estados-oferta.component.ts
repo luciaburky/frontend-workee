@@ -18,7 +18,7 @@ import { EstadoOferta } from '../estado-oferta';
   styleUrl: './listado-estados-oferta.component.css'
 })
 export class ListadoEstadosOfertaComponent {
-  estadoList: EstadoUsuario[] = [];
+  estadoList: EstadoOferta[] = [];
   modalRef?: NgbModalRef;
   paginaActual: number = 1;
   elementosPorPagina: number = 10;
