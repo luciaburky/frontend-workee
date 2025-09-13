@@ -1,104 +1,229 @@
-:host {
-  display: block;
-  background: #eaf3fb;
-  padding: 8px 12px 24px;
-  color: #0f172a;
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial, "Noto Sans";
+/* ====== Base ====== */
+:host{
+  --green:#22c55e;
+  --green-700:#16a34a;
+  --red:#ef4444;
+  --amber:#f59e0b;
+  --slate-50:#f8fafc;
+  --slate-100:#f1f5f9;
+  --slate-200:#e2e8f0;
+  --slate-600:#475569;
+  --slate-800:#1f2937;
+
+  display:block;
+  background:#eaf3fb;
+  padding:24px;
+  color:#0f172a;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,"Helvetica Neue",Arial,"Noto Sans";
 }
 
-/* GRID */
-.ofertas-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 20px;
-  align-items: stretch;
+/* Aplica Lato a TODO dentro del componente, sin romper los iconos Material */
+:host, :host *:not(.material-symbols-outlined){
+  font-family:"Lato", Arial, Helvetica, sans-serif !important;
 }
 
-/* Tarjeta */
-.oferta-card {
-  position: relative;
-  background: #fff;
-  border: 1px solid #e7eef6;
-  border-radius: 16px;
-  padding: 20px 22px;
-  box-shadow: 0 6px 18px rgba(16, 24, 40, 0.06);
-  transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
-  cursor: pointer;
-  min-height: 160px;
+/* ====== Controles superiores ====== */
+.buscador{ margin:0 0 12px 0; }
+.input-search-wrapper{
+  position:relative;                 /* para posicionar el icono */
+  display:inline-flex;
+  align-items:center;
+  width:320px;
+}
+.input-search{
+  width:100%;
+  padding:10px 40px 10px 12px;
+  border:1px solid var(--slate-200);
+  border-radius:10px;
+  font-size:14px;
+  background-color:#fff;
+  outline:none;
+}
+#icon-button{
+  position:absolute;
+  right:8px; top:50%;
+  transform:translateY(-50%);
+  background:transparent; border:0; padding:0; cursor:pointer;
+}
+.search-icon{ color:#9aa4b2; }
+.search-icon:hover{ color:#6b7280; }
+
+.seccion-filtros{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:12px 0 20px;
+  margin:0 0 8px 0;
+  border-bottom:1px solid #e5edf6;
+  flex-wrap:wrap;                 /* permite bajar a 2da línea en celulares */
 }
 
-/* Franja superior (color por estado) */
-.oferta-card::before {
-  content: "";
-  position: absolute;
-  inset: 0 0 auto 0;
-  height: 4px;
-  border-radius: 16px 16px 0 0;
-  background: #cbd5e1; /* neutro */
+.filtros{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+  margin:0;
 }
-.oferta-card.is-abierta::before    { background: #22c55e; } /* verde */
-.oferta-card.is-cerrada::before    { background: #f59e0b; } /* ámbar */
-.oferta-card.is-finalizada::before { background: #ef4444; } /* rojo */
 
-.oferta-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 24px rgba(16, 24, 40, 0.10);
-  border-color: #d8e5f2;
+.filtro{ min-width:200px; }       /* quepan lado a lado sin romperse */
+
+/* El botón se va a la derecha de la línea */
+.btn.btn-primary.guardar{
+  margin-left:auto;               /* empuja el botón al extremo derecho */
+}
+
+/* Si dejaste el contenedor viejo .botones, lo podés ocultar o borrar */
+.botones{ display:none; }
+
+
+/* Botón “Crear oferta” como pill azul */
+.botones {
+  text-align: right;
+  padding-top: 20px;
+}
+
+.btn.btn-primary.guardar{
+  display:inline-flex; align-items:center; gap:8px;
+  background:#31A5DD; border:1px solid #31A5DD; color:#fff;
+  border-radius:16px; padding:8px 14px; font-weight:600;
+  box-shadow:0 4px 12px rgba(49,165,221,.25);
+}
+.btn.btn-primary.guardar:hover{ filter:saturate(1.05) brightness(.98); }
+
+/* ====== Grid ====== */
+.ofertas-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(360px,1fr));
+  gap:24px;
+  align-items:stretch;
+}
+
+/* ====== Tarjeta ====== */
+.oferta-card{
+  position:relative;
+  background:#fff;
+  border:1px solid #e7eef6;
+  border-radius:14px;
+  padding:20px 22px;
+  transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+  cursor:pointer; min-height:160px; overflow:hidden;
+}
+
+/* Franja superior por estado */
+.oferta-card::before{
+  content:""; position:absolute; inset:0 0 auto 0; height:6px;
+  background:#cbd5e1; border-radius:14px 14px 0 0;
+}
+.oferta-card.is-abierta::before    { background:var(--green); }
+.oferta-card.is-cerrada::before    { background:var(--amber); }
+.oferta-card.is-finalizada::before { background:var(--red); }
+
+
+.oferta-card:hover{
+  transform:translateY(-2px);
+  box-shadow:0 12px 28px rgba(16,24,40,.12);
+  border-color:#d8e5f2;
 }
 
 /* Head */
-.oferta-card__head {
-  display: flex;
-  align-items: start;
-  justify-content: space-between;
-  gap: 12px;
+.oferta-card__head{
+  display:flex; align-items:flex-start; justify-content:space-between; gap:12px;
+}
+.oferta-card__title{
+  margin:6px 0 10px;
+  font-size:22px; line-height:1.25; font-weight:700; color:#111827;
+}
+.oferta-card__desc{
+  margin:0; font-size:14.5px; line-height:1.55; color:var(--slate-600);
+  display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden;
 }
 
-.oferta-card__title {
-  margin: 6px 0 10px;
-  font-size: 22px;
-  line-height: 1.25;
-  font-weight: 700;
-  color: #111827;
+/* Chip de estado (pill) */
+.pill{
+  display:inline-flex; align-items:center; gap:6px;
+  padding:4px 10px; border-radius:999px;
+  font-size:12px; font-weight:800; letter-spacing:.02em;
+  text-transform:uppercase;
+  border:1.5px solid #cbd5e1; background:var(--slate-50); color:#334155;
+}
+.pill.is-abierta{
+  border-color:var(--green); color:var(--green-700); background:#ecfdf5;
+}
+.pill.is-cerrada{
+  border-color:var(--amber); color:#92400e; background:#fffbeb; /* corregido a ámbar */
+}
+.pill.is-finalizada{
+  border-color:var(--red); color:#991b1b; background:#fef2f2;
 }
 
-.oferta-card__desc {
-  margin: 0;
-  font-size: 14.5px;
-  line-height: 1.55;
-  color: #475569;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+/* ====== Utilidades varias que ya tenías ====== */
+.sin-resultados{ text-align:center; display:flex; flex-direction:column; align-items:center; }
+.sin-resultados-img{ width:200px; max-width:100%; }
+.sin-resultados-txt{ font-size:18px; font-weight:600; color:#2b2b2b; margin-top:10px; }
+
+/* ===== Normalizar controles en la fila de filtros ===== */
+:host{ --ctrl-h:40px; }
+
+.filtros{ 
+  display:flex; 
+  gap:12px; 
+  flex-wrap:wrap; 
+  margin:0; 
+  align-items:center;              /* centra verticalmente todo */
 }
 
-/* Chip/etiqueta de estado */
-.pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 10px;
-  border-radius: 999px;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: .02em;
-  border: 1.5px solid #cbd5e1;
-  background: #f8fafc;
-  color: #334155;
+/* 1) Buscador dentro de la fila */
+.filtros .buscador{ margin:0 !important; }  /* anula margin-bottom del buscador */
+.filtros .input-search-wrapper{
+  height:var(--ctrl-h);
+  width:320px;                     /* ajustá si necesitás */
+  display:inline-flex;
+  align-items:center;
 }
-.pill.is-abierta {
-  border-color: #22c55e;
-  color: #166534;
-  background: #ecfdf5;
+.filtros .input-search{
+  height:100%;
+  padding:0 40px 0 12px !important;/* igual que el multi-select */
+  border:1px solid var(--slate-200);
+  border-radius:10px;
+  font-size:14px;
 }
-.pill.is-cerrada {
-  border-color: #FF5252;
-  color: #92400e;
-  background: #fffbeb;
+.filtros #icon-button{
+  height:100%;
+  width:32px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
-.pill.is-finalizada {
-  border-color: #ef4444;
-  color: #991b1b;
-  background: #fef2f2;
+
+/* 2) PrimeNG MultiSelect con la misma altura que el buscador */
+:host ::ng-deep p-multiselect.filtro > .p-multiselect{
+  box-sizing:border-box;
+  height:var(--ctrl-h) !important;
+  min-height:var(--ctrl-h) !important;
+  padding:0 !important;
+  border:1px solid var(--slate-200) !important;
+  border-radius:10px !important;
+  background:#fff !important;
 }
+:host ::ng-deep p-multiselect.filtro > .p-multiselect .p-multiselect-label-container{
+  height:100% !important;
+  display:flex !important;
+  align-items:center !important;
+  padding:0 !important;
+}
+:host ::ng-deep p-multiselect.filtro > .p-multiselect .p-multiselect-label{
+  padding:0 36px 0 12px !important;
+  font-size:14px !important;
+  white-space:nowrap !important;
+}
+:host ::ng-deep p-multiselect.filtro > .p-multiselect .p-multiselect-trigger{
+  height:100% !important;
+  width:32px !important;
+  border-left:1px solid #e7eef6 !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+}
+
+/* Botón a la derecha */
+.btn.btn-primary.guardar{ margin-left:auto; }
