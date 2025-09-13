@@ -115,7 +115,9 @@
                       } 
                       <span class="tarjeta-titulo">{{ etapa.nombreEtapa }}</span>
                     </div>
-                    <span class="tarjeta-subtitulo">{{ etapa.descripcionEtapa }}</span>
+                    <span class="tarjeta-subtitulo tarjeta-desc-corta" [title]="etapa.descripcionEtapa">
+                      {{ etapa.descripcionEtapa }}
+                    </span>
                   </button>
                 </div>
               }

@@ -392,3 +392,13 @@ color: #6b7280;
   .doc-card{ align-items:flex-start; }
   .doc-actions{ flex-wrap:wrap; justify-content:flex-end; }
 }
+
+.tarjeta-desc-corta {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%; 
+  color: #6b7280; 
+  font-size: 0.9rem;
+}
