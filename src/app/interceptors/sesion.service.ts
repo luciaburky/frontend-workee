@@ -18,6 +18,9 @@ export class SesionService {
   private rolUsuarioSubject = new BehaviorSubject<Rol | null>(null);
   rolUsuario$ = this.rolUsuarioSubject.asObservable();
 
+  private spinnerSubject = new BehaviorSubject<boolean | null>(null);
+  spinner$ = this.spinnerSubject.asObservable();
+
   private endpointURL = 'http://localhost:9090/auth';
 
   private loadingSubject = new BehaviorSubject<boolean>(true);
@@ -111,6 +114,36 @@ export class SesionService {
     console.log("el rol actual es: ", this.rolUsuarioSubject.value)
 
     return this.rolUsuarioSubject.value;
+  }
+
+  cargarRolUsuarioSinRedireccion(){
+    this.setLoading(true);
+    this.spinnerSubject.next(true);
+
+      const correo = this.getCorreoUsuario();
+      if (!correo) {
+        this.setLoading(false);
+      this.spinnerSubject.next(false);
+
+        console.error("No se pudo obtener el correo del token.");
+        return;
+      }
+
+      this.rolService.buscarRolPorCorreoUsuario(correo).subscribe({
+        next: (rol) => {
+          this.rolUsuarioSubject.next(rol); 
+          console.log("Rol del usuario cargado:", rol);
+          this.setLoading(false);
+          this.spinnerSubject.next(false);
+
+        },
+        error: (err) => {
+          console.error("Error al obtener rol del usuario:", err);
+          this.rolUsuarioSubject.next(null);
+          this.setLoading(false);
+          this.spinnerSubject.next(false);
+        }
+      });
   }
 
 

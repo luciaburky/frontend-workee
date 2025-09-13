@@ -106,7 +106,7 @@
                   <button type="button" class="tarjeta-etapa" [ngClass]="{ 'etapa-seleccionada': isEtapaSeleccionada(etapa) }">
                     <div class="disponible-header">
                       @if(isEtapaSeleccionada(etapa) && etapa.id != undefined){ 
-                        <span class="etapa-numero"> {{ getNumeroEtapa(etapa.id || 0) }}</span>
+                        <span class="etapa-numero"> {{ getNumeroEtapa(etapa.id) }}</span>
                       } 
                       <span class="tarjeta-titulo">{{ etapa.nombreEtapa }}</span>
                     </div>

@@ -12,27 +12,23 @@ import { CommonModule } from '@angular/common';
 })
 export class AppComponent implements OnInit{
   title = 'angular-app';
-  estaLogueado: boolean = false;
+  
 
   sidebarVisible$!: Observable<boolean>;
+  spinner$!: Observable<boolean | null>;
   
   private sub!: Subscription;
 
   constructor(private sesionService: SesionService){}
 
   ngOnInit(): void {
+    this.sesionService.cargarRolUsuarioSinRedireccion();
+
     //this.estaLogueado = this.sesionService.isLoggedIn(); 
     this.sidebarVisible$ = this.sesionService.rolUsuario$.pipe(
       map(rol => !!rol)
     );
-    // Suscripción a eventos de login/logout
-    this.sub = this.sesionService.announced$.subscribe(event => {
-      if (event === 'login') {
-        this.estaLogueado = true;
-      } else if (event === 'logout') {
-        this.estaLogueado = false;
-      }
-    });
+    this.spinner$ = this.sesionService.spinner$;
   }
 
   ngOnDestroy(): void {
