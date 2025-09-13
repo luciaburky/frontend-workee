@@ -97,7 +97,7 @@ export class CrearOfertaComponent implements OnInit {
   }
 
   ngOnInit(){
-    this.tipocontratoService.findAll().subscribe({
+    this.tipocontratoService.findAllActivos().subscribe({
       next: (data) => {
         this.tipocontratos = data;
     },
@@ -106,7 +106,7 @@ export class CrearOfertaComponent implements OnInit {
       }
     })
 
-    this.modalidadService.findAll().subscribe({
+    this.modalidadService.findAllActivas().subscribe({
       next: (data) => {
         this.modalidades = data;
     },
