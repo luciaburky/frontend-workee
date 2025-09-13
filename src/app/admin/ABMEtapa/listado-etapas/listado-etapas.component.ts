@@ -44,6 +44,8 @@ export class ListadoEtapasComponent {
     this.modalRef = this.modalService.open(CrearEtapaComponent, {
       centered: true,
     });
+
+    this.modalRef.componentInstance.idEmpresa = null;
   }
   
   // Modificacion de Etapa
@@ -112,7 +114,7 @@ export class ListadoEtapasComponent {
           });
           Toast.fire({
             icon: "success",
-            title: "Estado de usuario deshabilitado correctamente",
+            title: "Etapa deshabilitada correctamente",
           });
           },
           error: (error) => {

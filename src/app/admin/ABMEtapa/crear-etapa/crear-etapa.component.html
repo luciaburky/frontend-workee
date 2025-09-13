@@ -13,6 +13,7 @@
             type="text"
             class="form-control"
             formControlName="etapa"
+            maxlength="50"
             placeholder="Ingrese el nombre de la etapa"
             [ngClass]="{ 'is-invalid': isCampoInvalido('etapa') }"> 
             @if (isCampoInvalido('etapa')) {
@@ -27,6 +28,7 @@
             id="descripcionEtapa"
             type="text"
             class="form-control"
+            maxlength="200"
             formControlName="descripcion"
             placeholder="Ingrese la descripción de la etapa"
             [ngClass]="{ 'is-invalid': isCampoInvalido('descripcion') }">
