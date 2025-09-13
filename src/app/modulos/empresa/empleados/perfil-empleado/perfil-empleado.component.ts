@@ -12,10 +12,12 @@ import { SesionService } from '../../../../interceptors/sesion.service';
 import { RolService } from '../../../seguridad/usuarios/rol.service';
 import { ref, StorageReference, Storage, uploadBytes, getDownloadURL, uploadBytesResumable } from '@angular/fire/storage';
 import { EmpresaService } from '../../empresa/empresa.service';
+import { SpinnerComponent } from "../../../../compartidos/spinner/spinner/spinner.component";
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-perfil-empleado',
-  imports: [FormsModule],
+  imports: [FormsModule, SpinnerComponent, CommonModule],
   templateUrl: './perfil-empleado.component.html',
   styleUrl: './perfil-empleado.component.css'
 })
@@ -56,6 +58,8 @@ export class PerfilEmpleadoComponent implements OnInit {
   previewUrl!: string;
   fotoTemporal: string = '';
   private storage = inject(Storage);
+
+  cargandoFoto: boolean = false;
 
   constructor(
     private empleadoService: EmpleadoService,
@@ -277,13 +281,16 @@ export class PerfilEmpleadoComponent implements OnInit {
   async subirFoto(file: File): Promise<string | null> {
     if (!file) return null;
     try {
+      this.cargandoFoto = true;
       const filePath = `foto/${file.name}`;
       const fileRef = ref(this.storage, filePath);
       await uploadBytes(fileRef, file);
       const downloadURL = await getDownloadURL(fileRef);
 
+      this.cargandoFoto = false;
       return downloadURL;
     } catch (error) {
+      this.cargandoFoto = false;
       console.error("Error al subir la foto:", error);
       return null;
     }

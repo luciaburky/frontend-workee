@@ -13,11 +13,12 @@ import { CambioContraseniaComponent } from '../../../../compartidos/cambio-contr
 import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { ModalService } from '../../../../compartidos/modal/modal.service';
 import { ref, StorageReference, Storage, uploadBytes, getDownloadURL, uploadBytesResumable } from '@angular/fire/storage';
+import { SpinnerComponent } from "../../../../compartidos/spinner/spinner/spinner.component";
 
 
 @Component({
   standalone: true,
-  imports: [CommonModule,FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, SpinnerComponent],
   selector: 'app-visualizar-perfil-empresa',
   templateUrl: './perfil-empresa.component.html',
   styleUrls: ['./perfil-empresa.component.css']
@@ -57,6 +58,8 @@ export class PerfilEmpresaComponent implements OnInit {
   fotoTemporal: string = '';
   file!: File;
   imgRef!: StorageReference;
+
+  cargandoFoto: boolean = false;
 
   constructor(
     private empresaService: EmpresaService,
@@ -129,13 +132,17 @@ export class PerfilEmpresaComponent implements OnInit {
   async subirFoto(file: File): Promise<string | null> {
     if (!file) return null;
     try {
+      this.cargandoFoto = true;
+
       const filePath = `logo/${file.name}`;
       const fileRef = ref(this.storage, filePath);
       await uploadBytes(fileRef, file);
       const downloadURL = await getDownloadURL(fileRef);
 
+      this.cargandoFoto = false;
       return downloadURL;
     } catch (error) {
+      this.cargandoFoto = false;
       console.error("Error al subir la foto:", error);
       return null;
     }

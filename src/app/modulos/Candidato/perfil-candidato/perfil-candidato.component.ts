@@ -462,6 +462,7 @@ export class PerfilCandidatoComponent implements OnInit {
 
       return downloadURL;
     } catch (error) {
+      this.cargandoFoto = false;
       console.error("Error al subir la foto:", error);
       return null;
     }
@@ -554,10 +555,12 @@ export class PerfilCandidatoComponent implements OnInit {
           });
         },
         error: (err) => {
+          this.cargandoCv = false;
           console.error("Error al guardar CV en BD:", err);
         }
       });
     } catch (error) {
+      this.cargandoCv = false;
       console.error("Error al subir el CV:", error);
     }
   }

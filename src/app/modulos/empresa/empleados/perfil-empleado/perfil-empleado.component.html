@@ -34,6 +34,9 @@
   <div class="form-grid-logo">
     <div class="foto-seccion">
         <div class="foto-container">
+          <div class="spinner-overlay" *ngIf="cargandoFoto">
+            <app-spinner type="inline"></app-spinner>
+          </div>
           <img 
             [src]="fotoTemporal || empleado.usuario?.urlFotoUsuario || 'assets/img/foto-perfil.png'" 
             alt="foto" 
