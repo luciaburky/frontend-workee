@@ -91,7 +91,7 @@ export class SidebarComponent implements OnInit {
             console.log(this.permisosUsuario)
 
             // Filtramos el menú en base a los permisos
-            this.menuItems = this.sideBarService.menu.filter(item =>
+            this.menuItems = this.sideBarService.getMenu().filter(item =>
               this.puedeMostrar(item)
             );
           },

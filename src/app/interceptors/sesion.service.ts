@@ -99,8 +99,21 @@ export class SesionService {
         next: (rol) => {
           this.rolUsuarioSubject.next(rol); 
           console.log("Rol del usuario cargado:", rol);
-          this.redirectBasedOnRol();
-          this.setLoading(false);
+
+
+          //TODO: Revisar esto que agregue:
+          const currentUrl = this.router.url;
+          const rutasPublicas = ['/login', '/registro', '/inicio'];
+          if (currentUrl === '/' || rutasPublicas.includes(currentUrl)) {
+            this.redirectBasedOnRol();
+            this.setLoading(false);
+          } else {
+            
+            this.setLoading(false);
+          }
+          //Esto estaba antes:
+          //this.redirectBasedOnRol();
+          //this.setLoading(false);
         },
         error: (err) => {
           console.error("Error al obtener rol del usuario:", err);
