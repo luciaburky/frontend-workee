@@ -27,7 +27,7 @@ export class SidebarComponent implements OnInit {
 
   ngOnInit(): void {
     // Cargamos el rol apenas entra
-    this.sesionService.cargarRolUsuario();
+    this.sesionService.cargarRolUsuarioSinRedireccion();
     this.cargarPermisos();
   }
 
