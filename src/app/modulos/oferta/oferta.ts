@@ -3,6 +3,7 @@ import { Modalidad } from "../../admin/ABMModalidad/modalidad";
 import { Provincia } from "../../admin/ABMProvincia/provincia";
 import { TipoContrato } from "../../admin/ABMTipoContrato/tipo-contrato";
 import { Empresa } from "../empresa/empresa/empresa";
+import { OfertaEstadoOferta } from "./oferta-estado-oferta";
 import { OfertaEtapa } from "./oferta-etapa";
 import { OfertaHabilidad } from "./oferta-habilidad";
 
@@ -20,6 +21,7 @@ export class Oferta {
     tipoContratoOferta!: TipoContrato;
     provincia!: Provincia;
     habilidades!: OfertaHabilidad[];
-    estadosOferta!: EstadoOferta[];
+    //estadosOferta!: EstadoOferta[];
+    estadosOferta!: OfertaEstadoOferta[]; //Es de oferta --> Oferta Estado Oferta --> Estado oferta (param)
     ofertasEtapas!: OfertaEtapa[];
 }

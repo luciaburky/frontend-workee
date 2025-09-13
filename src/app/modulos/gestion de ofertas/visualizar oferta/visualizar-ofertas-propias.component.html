@@ -1,0 +1,28 @@
+<h1>Ofertas de empleo</h1>
+<p>Gestiona y visualiza todas las ofertas de empleo de tu empresa</p>
+
+<p>buscar</p>
+<p>estado</p>
+
+<div class="botones">
+  <button type="button" class="btn btn-primary guardar" href="/crear-oferta">
+    <span type="button" class="material-symbols-outlined">add</span>
+    Crear oferta
+  </button>
+</div>
+
+<div class="ofertas-grid">
+  @for (oferta of ofertasObtenidas; track oferta.id) {
+    <article class="oferta-card" [ngClass]="estadoClase(oferta)" (click)="agregarEtapa()">
+      <div class="oferta-card__head">
+        <h3 class="oferta-card__title">{{ oferta.titulo }}</h3>
+        <span class="pill" [ngClass]="estadoClase(oferta)">{{ estadoTexto(oferta) }}</span>
+      </div>
+      <p class="oferta-card__desc">
+        {{ oferta.descripcion }}
+      </p>
+    </article>
+  }
+</div>
+
+

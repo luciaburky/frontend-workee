@@ -1,0 +1,104 @@
+:host {
+  display: block;
+  background: #eaf3fb;
+  padding: 8px 12px 24px;
+  color: #0f172a;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial, "Noto Sans";
+}
+
+/* GRID */
+.ofertas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 20px;
+  align-items: stretch;
+}
+
+/* Tarjeta */
+.oferta-card {
+  position: relative;
+  background: #fff;
+  border: 1px solid #e7eef6;
+  border-radius: 16px;
+  padding: 20px 22px;
+  box-shadow: 0 6px 18px rgba(16, 24, 40, 0.06);
+  transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+  cursor: pointer;
+  min-height: 160px;
+}
+
+/* Franja superior (color por estado) */
+.oferta-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 4px;
+  border-radius: 16px 16px 0 0;
+  background: #cbd5e1; /* neutro */
+}
+.oferta-card.is-abierta::before    { background: #22c55e; } /* verde */
+.oferta-card.is-cerrada::before    { background: #f59e0b; } /* ámbar */
+.oferta-card.is-finalizada::before { background: #ef4444; } /* rojo */
+
+.oferta-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(16, 24, 40, 0.10);
+  border-color: #d8e5f2;
+}
+
+/* Head */
+.oferta-card__head {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.oferta-card__title {
+  margin: 6px 0 10px;
+  font-size: 22px;
+  line-height: 1.25;
+  font-weight: 700;
+  color: #111827;
+}
+
+.oferta-card__desc {
+  margin: 0;
+  font-size: 14.5px;
+  line-height: 1.55;
+  color: #475569;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Chip/etiqueta de estado */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .02em;
+  border: 1.5px solid #cbd5e1;
+  background: #f8fafc;
+  color: #334155;
+}
+.pill.is-abierta {
+  border-color: #22c55e;
+  color: #166534;
+  background: #ecfdf5;
+}
+.pill.is-cerrada {
+  border-color: #FF5252;
+  color: #92400e;
+  background: #fffbeb;
+}
+.pill.is-finalizada {
+  border-color: #ef4444;
+  color: #991b1b;
+  background: #fef2f2;
+}
