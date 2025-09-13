@@ -1,7 +1,20 @@
 <h1>Ofertas de empleo</h1>
 <p>Gestiona y visualiza todas las ofertas de empleo de tu empresa</p>
 
-<p>buscar</p>
+<div class="buscador">
+  <div class="input-search-wrapper">
+    <input
+      type="text"
+      placeholder="Buscar..."
+      class="input-search"
+      [(ngModel)]="textoOferta"
+      (keyup.enter)="buscarPorNombre(textoOferta)" />
+    <button id="icon-button" (click)="buscarPorNombre(textoOferta)">
+      <span class="material-symbols-outlined search-icon">search</span>
+    </button>
+  </div>
+</div>
+
 <p>estado</p>
 
 <div class="botones">
@@ -12,7 +25,7 @@
 </div>
 
 <div class="ofertas-grid">
-  @for (oferta of ofertasObtenidas; track oferta.id) {
+  @for (oferta of ofertas; track oferta.id) {  <!-- usa la lista filtrada -->
     <article class="oferta-card" [ngClass]="estadoClase(oferta)" (click)="agregarEtapa()">
       <div class="oferta-card__head">
         <h3 class="oferta-card__title">{{ oferta.titulo }}</h3>
@@ -24,5 +37,3 @@
     </article>
   }
 </div>
-
-
