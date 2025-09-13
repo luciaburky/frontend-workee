@@ -145,7 +145,6 @@ export class SesionService {
       this.rolService.buscarRolPorCorreoUsuario(correo).subscribe({
         next: (rol) => {
           this.rolUsuarioSubject.next(rol); 
-          console.log("Rol del usuario cargado:", rol);
           this.setLoading(false);
           this.spinnerSubject.next(false);
 
@@ -166,7 +165,6 @@ export class SesionService {
     if (this.redirectUrl) {
       this.redirectUrl = ''; 
       this.router.navigateByUrl(url);
-      //this.router.navigate([url]).then(() => this.setLoading(false));
       return;
     }
     
@@ -178,7 +176,6 @@ export class SesionService {
       return;
     }
 
-    // Aquí es donde ocurre la magia de la redirección
     switch (rolActual.codigoRol) {
       case 'CANDIDATO':
         this.router.navigate(['/candidato/perfil']);
@@ -195,10 +192,6 @@ export class SesionService {
       default:
         console.warn('Rol no reconocido, redirigiendo a la página por defecto.');
         this.router.navigate(['/']);
-        /*this.router.navigate([url]).then(() => {
-          // Desactivar el estado de carga una vez que la navegación se ha completado.
-          this.setLoading(false);
-        });*/
     }
   }
 

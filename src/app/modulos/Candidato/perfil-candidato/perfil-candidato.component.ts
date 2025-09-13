@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
 import Swal from 'sweetalert2';
 import { PaisService } from '../../../admin/ABMPais/pais.service';
 import { ProvinciaService } from '../../../admin/ABMProvincia/provincia.service';
@@ -111,6 +111,7 @@ export class PerfilCandidatoComponent implements OnInit {
     private modalService: ModalService,
     private route: ActivatedRoute,
     private usuarioService: UsuarioService,
+    private cdr: ChangeDetectorRef
   ) {
     this.candidatoForm = new FormGroup({
       nombreCandidato: new FormControl('', [Validators.required]),
@@ -209,33 +210,39 @@ export class PerfilCandidatoComponent implements OnInit {
   }
 
   seleccionarHabilidades() {
-    this.modalRef = this.modalService.open(SeleccionHabilidadesComponent, {
-      centered: true,
-      scrollable: true,
-      size: 'lg'
-    });
+  this.modalRef = this.modalService.open(SeleccionHabilidadesComponent, {
+    centered: true,
+    scrollable: true,
+    size: 'lg'
+  });
 
-    this.modalRef.componentInstance.habilidadesSeleccionadas = [...this.habilidades];
+  this.modalRef.componentInstance.habilidadesSeleccionadas = [...this.habilidades];
 
-    // PARA RECIBIR LAS HABILIDADES ACA Y ENVIARLAS EN LA REQUEST
-    this.modalRef.result.then(
-      (result) => {
-        if (result) {
-          this.habilidadesSeleccionadasID = result;
+  this.modalRef.result.then((result: number[] | undefined) => {
+    if (result && result.length > 0) {
+      this.habilidadesSeleccionadasID = result;
 
-          const habilidadesFinales: CandidatoHabilidad[] = result.map((id: number | undefined) => {
-            const habilidadEncontrada = this.todasHabilidades.find(h => h.id === id);
-            return {
-              habilidad: habilidadEncontrada
-            } as CandidatoHabilidad;
-          }).filter((ch: { habilidad: undefined; }) => ch.habilidad !== undefined);
+      const habilidadesFinales: CandidatoHabilidad[] = result
+        .map(id => {
+          const hab = this.todasHabilidades.find(h => h.id === id);
+          return hab ? { habilidad: hab, fechaHoraBaja: null } as CandidatoHabilidad : null;
+        })
+        .filter((x): x is CandidatoHabilidad => !!x);
 
-          this.habilidades = habilidadesFinales;
-        }
-      }
-    )
-    console.log("estoy desde el perfil del candidato, las habilidades son: ", this.habilidadesSeleccionadasID)
-  }
+      this.habilidades = habilidadesFinales;
+      this.habilidadesFinales = undefined;
+
+      this.cdr.detectChanges();
+
+      console.log('IDs seleccionadas (perfil):', this.habilidadesSeleccionadasID);
+      console.log('Habilidades objeto (perfil):', this.habilidades);
+    } else {
+      console.log('Modal cerrado sin cambios o resultado vacío');
+    }
+  }).catch((reason) => {
+    console.log('Modal dismissed:', reason);
+  });
+}
 
   volver() {
     if (this.modoEdicion) {
@@ -321,6 +328,7 @@ export class PerfilCandidatoComponent implements OnInit {
                               enlaceCV ?? '',
         ).subscribe({
           next: () => {
+            this.candidato.habilidades = this.habilidades || [];
 
             this.candidato.estadoBusqueda = formValue.estadoBusquedaCandidato;
             this.candidatoOriginal = JSON.parse(JSON.stringify(this.candidato));
