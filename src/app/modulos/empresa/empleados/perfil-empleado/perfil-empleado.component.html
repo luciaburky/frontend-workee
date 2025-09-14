@@ -115,6 +115,42 @@
     </div>
   </div>
 </form>
+@if (!esEmpleado) {
+  <h5 class="mt-8">Ofertas asociadas</h5>
+  <div class="ofertas-grid">
+    @if (!etapasEmpleado || etapasEmpleado.length === 0) {
+      <p>El empleado no está asociado a ninguna etapa de oferta.</p>
+    } @else {
+      @for (oferta of etapasEmpleado; track oferta.ofertaId) {
+        <article
+          class="oferta-card"
+          [ngClass]="estadoClase(oferta)"
+          (click)="irADetalle(oferta.ofertaId!)"
+          style="cursor: pointer"
+        >
+          <div class="oferta-card__head">
+            <h3 class="oferta-card__title">{{ oferta.titulo }}</h3>
+            <span class="pill" [ngClass]="estadoClase(oferta)">{{ estadoTexto(oferta) }}</span>
+          </div>
+          <p class="oferta-card__desc">
+            {{ oferta.descripcion }}
+          </p>
+          @if (oferta.nombresEtapas?.length === 1) {
+            <p class="oferta-card__desc">
+              <b>Etapa:</b> {{ oferta.nombresEtapas![0] }}
+            </p>
+          } @else {
+            <p class="oferta-card__desc">
+              <b>Etapa:</b> {{ oferta.nombresEtapas?.join(', ') }}
+            </p>
+          }
+          
+        </article>
+      }
+    }
+  </div>
+}
+
 <div class="modo-edicion">
 @if (modoEdicion) {
   @if (!esEmpleado) {

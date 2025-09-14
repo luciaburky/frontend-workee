@@ -107,6 +107,7 @@ form .al-lado {
   gap: 1rem;
   /* margin-bottom: 2rem; */
   align-items: start;
+  margin-bottom: 30px;
 }
 
 .abajo.full-width {
@@ -243,3 +244,73 @@ input.form-control {
 .icono-editar span {
   font-size: 24px;
 }
+
+.ofertas-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(360px,1fr));
+  gap:24px;
+  align-items:stretch;
+}
+
+/* ====== Tarjeta ====== */
+.oferta-card{
+  position:relative;
+  background:#fff;
+  border:1px solid #e7eef6;
+  border-radius:14px;
+  padding:20px 22px;
+  transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+  cursor:pointer; min-height:160px; overflow:hidden;
+}
+
+/* Franja superior por estado */
+.oferta-card::before{
+  content:""; position:absolute; inset:0 0 auto 0; height:6px;
+  background:#cbd5e1; border-radius:14px 14px 0 0;
+}
+.oferta-card.is-abierta::before    { background:var(--green); }
+.oferta-card.is-cerrada::before    { background:var(--amber); }
+.oferta-card.is-finalizada::before { background:var(--red); }
+
+
+.oferta-card:hover{
+  transform:translateY(-2px);
+  box-shadow:0 12px 28px rgba(16,24,40,.12);
+  border-color:#d8e5f2;
+}
+
+/* Head */
+.oferta-card__head{
+  display:flex; align-items:flex-start; justify-content:space-between; gap:12px;
+}
+.oferta-card__title{
+  margin:6px 0 10px;
+  font-size:22px; line-height:1.25; font-weight:700; color:#111827;
+}
+.oferta-card__desc{
+  margin:0; font-size:14.5px; line-height:1.55; color:var(--slate-600);
+  display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden;
+}
+
+/* Chip de estado (pill) */
+.pill{
+  display:inline-flex; align-items:center; gap:6px;
+  padding:4px 10px; border-radius:999px;
+  font-size:12px; font-weight:800; letter-spacing:.02em;
+  text-transform:uppercase;
+  border:1.5px solid #cbd5e1; background:var(--slate-50); color:#334155;
+}
+.pill.is-abierta{
+  border-color:var(--green); color:var(--green-700); background:#ecfdf5;
+}
+.pill.is-cerrada{
+  border-color:var(--amber); color:#92400e; background:#fffbeb; /* corregido a ámbar */
+}
+.pill.is-finalizada{
+  border-color:var(--red); color:#991b1b; background:#fef2f2;
+}
+
+/* ====== Utilidades varias que ya tenías ====== */
+.sin-resultados{ text-align:center; display:flex; flex-direction:column; align-items:center; }
+.sin-resultados-img{ width:200px; max-width:100%; }
+.sin-resultados-txt{ font-size:18px; font-weight:600; color:#2b2b2b; margin-top:10px; }

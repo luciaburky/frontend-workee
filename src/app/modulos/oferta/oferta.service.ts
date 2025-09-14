@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ofertaEtapaDTO } from '../gestion de ofertas/crear oferta/ofertaEtapaDTO';
 import { Oferta } from './oferta';
+import { EmpleadoEtapaDTO } from '../empresa/empleados/perfil-empleado/empleado-etapa-dto';
 
 
 @Injectable({
@@ -48,5 +49,9 @@ export class OfertaService {
 
   cambiarEstadoOferta(idOferta: number, estado: string): Observable<Oferta[]> {
     return this.http.post<Oferta[]>(`${this.url}/${idOferta}/cambiar-estado/${estado}`,null);
+  }
+
+  getEtapasPorEmpleado(id: number): Observable<EmpleadoEtapaDTO[]> {
+    return this.http.get<EmpleadoEtapaDTO[]>(`${this.url}/empleado/${id}/etapas`);
   }
 }
