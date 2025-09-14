@@ -1,7 +1,7 @@
 import { Component, inject, Inject, Input, OnInit } from '@angular/core';
 import { EmpleadoService } from '../empleado.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormsModule } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Empleado } from '../empleado';
 import Swal from 'sweetalert2';
 import { UsuarioService } from '../../../seguridad/usuarios/usuario.service';
@@ -19,7 +19,7 @@ import { EmpleadoEtapaDTO } from './empleado-etapa-dto';
 
 @Component({
   selector: 'app-perfil-empleado',
-  imports: [FormsModule, SpinnerComponent, CommonModule],
+  imports: [FormsModule, SpinnerComponent, CommonModule, ReactiveFormsModule],
   templateUrl: './perfil-empleado.component.html',
   styleUrl: './perfil-empleado.component.css'
 })
@@ -36,6 +36,8 @@ export class PerfilEmpleadoComponent implements OnInit {
       urlFotoUsuario: '',
     }
   };
+
+  empleadoForm: FormGroup;
 
   puestoOriginal: string = ''; // en esta variable se guarda el puesto original del empleado recibido desde la BD, sin ningun cambio
   idEmpleado!: number;
@@ -63,6 +65,7 @@ export class PerfilEmpleadoComponent implements OnInit {
 
   cargandoFoto: boolean = false;
   etapasEmpleado?: EmpleadoEtapaDTO[] = [];
+  submitForm: boolean = false;
 
   constructor(
     private empleadoService: EmpleadoService,
@@ -73,57 +76,69 @@ export class PerfilEmpleadoComponent implements OnInit {
     private rolService: RolService,
     private sesionService: SesionService,
     private empresaService: EmpresaService,
-    private ofertaService: OfertaService) {}
+    private ofertaService: OfertaService) {
+      this.empleadoForm = new FormGroup({
+        nombreEmpleado: new FormControl('', [Validators.required]),
+        apellidoEmpleado: new FormControl('', [Validators.required]),
+        puestoEmpleado: new FormControl('', [Validators.required]),
+      })
+    }
   
   ngOnInit(): void {
-    // ESTO SE TIENE QUE HACER PARA CUANDO EL ADMINISTRADOR ENTRA AL PERFIL DE UN EMPLEADO
-    const rol = this.sesionService.getRolActual()?.codigoRol
-      if (rol === 'EMPLEADO_EMPRESA') {
-        this.esEmpleado = true;
-        // Si es empleado, se obtiene su info desde el servicio de usuario
-        this.usuarioService.getUsuario().subscribe({
-          next: (data) => {
-            this.empleado = data;
-            console.log(this.empleado)
-          }
-        })
-      } else {
-        this.esEmpleado = false;
-        // Si no es empleado, se obtiene el id del empleado desde la ruta
-        const id = Number(this.route.snapshot.paramMap.get('idEmpleado'));
-        this.empresaService.getidEmpresabyCorreo()?.subscribe({
-          next: (idEmpresa) => {
-            if (idEmpresa !== undefined && idEmpresa !== null) {
-              this.idEmpresaObtenida = idEmpresa;
-              console.log('id empresa obtenido desde el perfil : ', idEmpresa)
-            } else {
-              console.error('El id de empresa obtenido es undefined o null');
-            }
-          },
-          error: (err) => {
-            console.error('Error al obtener id de empresa por correo', err);
-          }
-      });
-        this.empleadoService.findById(id).subscribe({
-          next: (data) => {
-            this.empleado = { ...data };
-            console.log(data)
-            this.puestoOriginal = data.puestoEmpleadoEmpresa ?? '';
-            this.ofertaService.getEtapasPorEmpleado(this.empleado.id!).subscribe({
-              next: (data) => {
-                this.etapasEmpleado = data;
-                console.log("esto obtengo del getetapas por empleado en este empleado ",data);
-              },
-              error: (err) => {
-                console.error('Error al obtener id de empresa por correo', err);
-              }})
+    this.sesionService.rolUsuario$.subscribe(rol => {
+      if (rol) {
+        console.log("rol recibido: ", rol);
+
+        if (rol.codigoRol === 'EMPLEADO_EMPRESA') {
+          this.esEmpleado = true;
+
+          this.usuarioService.getUsuario().subscribe({
+            next: (data) => {
+              this.empleado = data;
+              this.empleadoForm.patchValue({
+                nombreEmpleado: this.empleado.nombreEmpleadoEmpresa,
+                apellidoEmpleado: this.empleado.apellidoEmpleadoEmpresa,
+                puestoEmpleado: this.empleado.puestoEmpleadoEmpresa,
+              });
             },
-          error: (error) => {
-            console.error('Error al obtener el empleado', error);
-          }
-        });
+            error: (err) => console.error('Error al obtener el empleado desde usuarioService', err)
+          });
+
+        } else {
+          this.esEmpleado = false;
+          const id = Number(this.route.snapshot.paramMap.get('idEmpleado'));
+
+          this.empresaService.getidEmpresabyCorreo()?.subscribe({
+            next: (idEmpresa) => {
+              if (idEmpresa !== undefined && idEmpresa !== null) {
+                this.idEmpresaObtenida = idEmpresa;
+                console.log('id empresa obtenido desde el perfil : ', idEmpresa);
+              }
+            },
+            error: (err) => console.error('Error al obtener id de empresa por correo', err)
+          });
+
+          this.empleadoService.findById(id).subscribe({
+            next: (data) => {
+              this.empleado = { ...data };
+              this.empleadoForm.patchValue({
+                nombreEmpleado: this.empleado.nombreEmpleadoEmpresa,
+                apellidoEmpleado: this.empleado.apellidoEmpleadoEmpresa,
+                puestoEmpleado: this.empleado.puestoEmpleadoEmpresa,
+              });
+              this.puestoOriginal = data.puestoEmpleadoEmpresa ?? '';
+              this.ofertaService.getEtapasPorEmpleado(this.empleado.id!).subscribe({
+                next: (data) => this.etapasEmpleado = data,
+                error: (err) => console.error('Error al obtener etapas del empleado', err)
+              });
+            },
+            error: (error) => console.error('Error al obtener el empleado', error)
+          });
+        }
       }
+    });
   }
+
 
   modificarEmpleado() {
     this.modoEdicion = true;
@@ -150,8 +165,14 @@ export class PerfilEmpleadoComponent implements OnInit {
         }
       }).then((result) => {
         if (result.isConfirmed) {
-          this.empleado.puestoEmpleadoEmpresa = this.puestoOriginal;
+          this.fotoTemporal = '';
+          // this.empleado.puestoEmpleadoEmpresa = this.puestoOriginal;
           this.modoEdicion = false;
+          this.empleadoForm.patchValue({
+            nombreEmpleado: this.empleado.nombreEmpleadoEmpresa,
+            apellidoEmpleado: this.empleado.apellidoEmpleadoEmpresa,
+            puestoEmpleado: this.empleado.puestoEmpleadoEmpresa,
+          })
       }});
     } else {
       this.router.navigate([`empleados`]);
@@ -175,9 +196,10 @@ export class PerfilEmpleadoComponent implements OnInit {
     }).then(async (result) => {
       if (result.isConfirmed) {
         const nuevoPuesto = this.empleado.puestoEmpleadoEmpresa;
+        const formValue = this.empleadoForm.value;
         if (!this.esEmpleado) {
           // El administrador es quien esta modificando el perfil del empleado
-          this.empleadoService.modificarEmpleadoComoEmpresa(nuevoPuesto ?? '', this.empleado.id!, this.idEmpresaObtenida).subscribe({
+          this.empleadoService.modificarEmpleadoComoEmpresa(formValue.puestoEmpleado, this.empleado.id!, this.idEmpresaObtenida).subscribe({
             next: () => {
               this.puestoOriginal = nuevoPuesto ?? '';
               this.modoEdicion = false;
@@ -203,8 +225,8 @@ export class PerfilEmpleadoComponent implements OnInit {
           }
           console.log("desde el perfil, esto voy a mandar: ", this.empleado.id!)
           this.empleadoService.modificarEmpleadoComoEmpleado(
-          this.empleado.nombreEmpleadoEmpresa ?? '',
-          this.empleado.apellidoEmpleadoEmpresa ?? '',
+          formValue.nombreEmpleado,
+          formValue.apellidoEmpleado,
           this.empleado.id!,
           this.empleado.empresa?.id ?? 0,
           fotoURL
@@ -339,6 +361,11 @@ export class PerfilEmpleadoComponent implements OnInit {
 
   irADetalle(id: number) {
     this.router.navigate(['/visualizar-oferta', id]);
+  }
+
+  isCampoInvalido(nombreCampo: string): boolean {
+    const control = this.empleadoForm.get(nombreCampo);
+    return !!(control && control.invalid && (control.touched || this.submitForm));
   }
 
 }

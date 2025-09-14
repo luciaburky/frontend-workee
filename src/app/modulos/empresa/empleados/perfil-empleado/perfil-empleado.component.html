@@ -30,7 +30,7 @@
       </button>
     }
   </div>
-  <form>
+  <form [formGroup]="empleadoForm">
   <div class="form-grid-logo">
     <div class="foto-seccion">
         <div class="foto-container">
@@ -42,7 +42,7 @@
             alt="foto" 
             class="foto" 
           />
-          @if (modoEdicion) {
+          @if (modoEdicion && esEmpleado) {
             <label for="fileInput" class="icono-editar" title="Editar foto">
               <span class="material-symbols-outlined icono-foto">photo_camera</span>
             </label>
@@ -63,8 +63,14 @@
           type="text"
           class="form-control"
           name="nombreEmpleado"
-          [(ngModel)]="empleado.nombreEmpleadoEmpresa"
+          formControlName="nombreEmpleado"
+          maxlength="50"
+          [ngClass]="{ 'is-invalid': isCampoInvalido('nombreEmpleado') }"
           [readonly]="!esEmpleado || !modoEdicion">
+          <!-- [(ngModel)]="empleado.nombreEmpleadoEmpresa" -->
+          @if (isCampoInvalido('nombreEmpresa')) {
+            <div class="invalid-feedback">El campo “Nombre” no puede estar vacío</div>
+          }
       </div>
       <div class="form-group">
         <label for="apellidoEmpleado" class="p-0 my-0 mb-2 mt-3">Apellido</label>
@@ -72,19 +78,31 @@
           type="text"
           class="form-control"
           name="apellidoEmpleado"
-          [(ngModel)]="empleado.apellidoEmpleadoEmpresa"
+          maxlength="50"
+          formControlName="apellidoEmpleado"
+          [ngClass]="{ 'is-invalid': isCampoInvalido('apellidoEmpleado') }"
           [readonly]="!esEmpleado || !modoEdicion">
+          <!-- [(ngModel)]="empleado.apellidoEmpleadoEmpresa" -->
+          @if (isCampoInvalido('apellidoEmpleado')) {
+            <div class="invalid-feedback">El campo "Apellido" no puede estar vacío</div>
+          }
+        </div>
       </div>
-    </div>
-    <div class="abajo m-0 full-width">
-      <div class="form-group">
-        <label for="puestoEmpleado" class="p-0 my-0 mb-2">Puesto</label>
-        <input 
+      <div class="abajo m-0 full-width">
+        <div class="form-group">
+          <label for="puestoEmpleado" class="p-0 my-0 mb-2">Puesto</label>
+          <input 
           type="text"
           class="form-control"
           name="puestoEmpleado"
-          [(ngModel)]="empleado.puestoEmpleadoEmpresa"
+          maxlength="80"
+          formControlName="puestoEmpleado"
+          [ngClass]="{ 'is-invalid': isCampoInvalido('puestoEmpleado') }"
           [readonly]="esEmpleado || !modoEdicion">
+          <!-- [(ngModel)]="empleado.puestoEmpleadoEmpresa" -->
+          @if (isCampoInvalido('puestoEmpleado')) {
+            <div class="invalid-feedback">El campo "Puesto" no puede estar vacío</div>
+          }
       </div>
       <div class="form-group">
         <label for="correoEmpleado" class="p-0 my-0 mb-2">Correo electrónico</label>
