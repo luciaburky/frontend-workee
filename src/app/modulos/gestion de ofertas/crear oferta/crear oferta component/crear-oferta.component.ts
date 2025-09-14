@@ -130,8 +130,13 @@ export class CrearOfertaComponent implements OnInit {
               console.log('id empresa obtenido: ', idEmpresa)
               this.etapaService.obtenerEtapasDisponiblesParaEmpresa(idEmpresa).subscribe({
                 next: (etapas) => {
-                  this.etapasDisponibles = etapas;
+                  const etapasNoUsables = ['PENDIENTE', 'RECHAZADO', 'SELECCIONADO', 'ABANDONADO'];
+                  this.etapasDisponibles = etapas.filter(etapa => {
+                    return etapa.codigoEtapa && !etapasNoUsables.includes(etapa.codigoEtapa);
+                  })
+                  //this.etapasDisponibles = etapas;
                   console.log('etapas disponibles: ', this.etapasDisponibles)
+
                 },
                 error: (err) => {
                   console.error('Error al obtener etapas disponibles', err);
@@ -160,7 +165,10 @@ export class CrearOfertaComponent implements OnInit {
 async enviarDatos() {
   this.submitForm = true;
   if (this.crearofertaForm.invalid) {
-    Swal.fire({ icon: 'warning', title: 'Formulario incompleto', text: 'Por favor, complete todos los campos obligatorios.' });
+    Swal.fire({ 
+      icon: 'warning', 
+      title: 'Formulario incompleto', 
+      text: 'Por favor, complete todos los campos obligatorios.' });
     return;
   }
 
@@ -213,6 +221,7 @@ async enviarDatos() {
           timer: 3000,
           showConfirmButton: false,
         });
+        this.router.navigate(['/visualizar-oferta']);
         // Limpieza opcional
         this.archivosPorEtapa = {};
         this.previewPorEtapa = {};

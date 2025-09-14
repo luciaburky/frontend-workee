@@ -8,5 +8,6 @@ export class Etapa {
     descripcionEtapa?: string;
     esPredeterminada?: boolean;
     empresa?: Empresa | null;
+    codigoEtapa?: string;
 
 }
