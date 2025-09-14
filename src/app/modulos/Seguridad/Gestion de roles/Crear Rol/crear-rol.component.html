@@ -9,11 +9,17 @@
             <label>Categoria</label>
             <select class="form-select" 
                     formControlName="categoriaRol"
+                    [ngClass]="{ 'is-invalid': isCategoriaInvalida() }"
                     (change)="buscarpermisosSegunCategoria()">
               @for (categoria of categorias; track categoria.id) {
                 <option [ngValue]="categoria.id">{{ categoria.nombreCategoriaRol }}</option>
               }
             </select>
+            @if (isCategoriaInvalida()) {
+              <div class="invalid-feedback">
+                Debe seleccionar una categoría
+              </div>
+            }
         </div>
         <div class="mb-3">
             <label for="nombreEstado" class="col-form-label">Nombre</label>
@@ -33,27 +39,34 @@
         </div>
         <div class="mb-3">
           <label>Permisos</label>
-          <div class="permisos-container">
+          <div class="permisos-container"
+              formControlName="permisosRol" 
+              [ngClass]="{ 'is-invalid': isPermisosInvalidos() }">
             <div *ngFor="let permiso of todosPermisos">
               <input 
                 class="form-check-input"
                 type="checkbox"
                 [id]="'permiso' + permiso.id"
                 [value]="permiso.id"
-                (change)="onPermisoChange($event, permiso.id!)">   <!-- ✅ -->
+                (change)="onPermisoChange($event, permiso.id!)">
               <label class="form-check-label" [for]="'permiso' + permiso.id">
                 {{ permiso.nombrePermiso }}
               </label>
             </div>
           </div>
+          @if (isPermisosInvalidos()) {
+            <div class="invalid-feedback">
+              Debe seleccionar al menos un permiso
+            </div>
+          }
         </div>
      </form>
     <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="dismissModal()">
-          Volver
-        </button>
-        <button type="button" class="btn-guardar" (click)="enviarDatos()">
-          Guardar
-        </button>
+      <button type="button" class="btn-volver" data-bs-dismiss="modal" (click)="dismissModal()">
+        Volver
+      </button>
+      <button type="button" class="btn-guardar" (click)="enviarDatos()">
+        Guardar
+      </button>
     </div>
 </div>

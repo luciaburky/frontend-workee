@@ -72,6 +72,16 @@ export class CrearRolComponent {
     return !!(control?.hasError('required') && (control?.touched || this.submitForm));
   }
 
+  isCategoriaInvalida(): boolean {
+    const control = this.RolForm.get('categoriaRol');
+    return !!(control?.hasError('required') && (control?.touched || this.submitForm));
+  }
+
+  isPermisosInvalidos(): boolean {
+    const control = this.RolForm.get('permisosRol');
+    return !!(control?.hasError('required') && (control?.touched || this.submitForm));
+  }
+
   enviarDatos(){
     console.log('Datos del formulario:', this.RolForm.value);
     if (this.RolForm.invalid) {
