@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Rol } from './../rol';
+import { RolRequestDTO } from '../Gestion de roles/Modificar Rol/rol-request-DTO';
 
 @Injectable({
   providedIn: 'root'
@@ -45,10 +46,8 @@ export class RolService {
 
   }
 
-  
-
-  modificarRol(idRol: number): Observable<Rol> {
-    return this.http.get<Rol>(`${this.url}/${idRol}`);
+  modificarRolConDto(idRol: number, dto: RolRequestDTO): Observable<Rol> {
+    return this.http.put<Rol>(`${this.url}/${idRol}`, dto);
   }
 
   findById(idRol: number): Observable<Rol> {

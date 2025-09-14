@@ -56,11 +56,11 @@ export class GestionderolesComponent {
   }
 
   modificarRol(id: number): void {
-    // this.rolService.setId(id);
     this.modalRef = this.modalService.open(ModificarRolComponent, { centered: true });
+    this.modalRef.componentInstance.idRol = id; 
   }
 
-  // --- ACCIONES DE ESTADO (firmas corregidas para evitar el error 2554) ---
+
   habilitarRol(idRol: number): void {
     Swal.fire({
           text: "¿Desea habilitar el rol?",
