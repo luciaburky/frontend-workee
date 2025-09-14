@@ -1,4 +1,4 @@
-/* ====== Base ====== */
+/* Por lo q vi, estas son las variables q usa para las ofertas*/
 :host{
   --green:#22c55e;
   --green-700:#16a34a;
@@ -11,7 +11,7 @@
   --slate-800:#1f2937;
 
   display:block;
-  background:#eaf3fb;
+  
   padding:24px;
   color:#0f172a;
   font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,"Helvetica Neue",Arial,"Noto Sans";
@@ -131,7 +131,10 @@
 }
 .oferta-card__title{
   margin:6px 0 10px;
-  font-size:22px; line-height:1.25; font-weight:700; color:#111827;
+  font-size:1.3rem; 
+  line-height:1.25; 
+  font-weight:500; 
+  color:#111827;
 }
 .oferta-card__desc{
   margin:0; font-size:14.5px; line-height:1.55; color:var(--slate-600);
@@ -227,3 +230,51 @@
 
 /* Botón a la derecha */
 .btn.btn-primary.guardar{ margin-left:auto; }
+
+
+
+
+/*LO QUE AGREGUE AHORA (LO DE ARRIBA SUPONGO Q LO HICISTE CON EL CHAT xd)*/
+
+.tarjeta-ofertas{
+  background-color: white;
+  padding: 1.2rem;
+  border-radius: 16px;
+}
+
+.oferta-header {
+  background-color: white;
+  margin: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+}
+
+.oferta-header h1 {
+  font-size: 1.8rem;
+  margin: 0;
+  color: #333;
+}
+.oferta-header p{
+  font-size: 0.95rem;
+  color: #777;
+}
+
+.fecha-actualizacion {
+  padding-top: 12px;
+  font-size: 0.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.fecha-actualizacion p {
+  margin: 0;              
+  line-height: 1.3;       
+}
+
+.fecha-actualizacion p:first-child {
+  font-weight: 600;       
+  margin-bottom: 2px;     
+}

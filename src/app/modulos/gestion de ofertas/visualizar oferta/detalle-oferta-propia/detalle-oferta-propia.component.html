@@ -9,21 +9,27 @@
       <div class="nombre-boton">
         <h1 class="m-0">{{ oferta?.titulo }}</h1>
         <div class="datos-boton">
-          <div class="estado-oferta" [ngClass]="estadoActual?.codigo">
-            {{ estadoActual?.nombreEstadoOferta }}
+          <div class="estado-container">
+            <h5 class="estado-label">Estado de la oferta</h5>
+            <div class="custom-select-wrapper" [ngClass]="estadoActual?.codigo">
+              <div class="selected-option" (click)="toggleDropdown()">
+                <span>{{ estadoActual?.nombreEstadoOferta }}</span>
+                <span class="material-symbols-outlined dropdown-arrow" [ngClass]="{'rotated': isDropdownOpen}">expand_more</span>
+              </div>
+
+              <div class="options-container" [class.show]="isDropdownOpen">
+                @for (estado of estadosDisponibles; track $index) {
+                  <div 
+                    class="option"
+                    [class.selected]="estado.codigo === estadoActual?.codigo"
+                    (click)="selectEstado(estado)"
+                  >
+                    {{ estado.nombreEstadoOferta }}
+                  </div>
+                }
+              </div>
+            </div>
           </div>
-          <select
-            class="estado-select"
-            (change)="cambiarEstadoOferta($event)"
-          >
-            <option
-              *ngFor="let estado of estadosDisponibles"
-              [value]="estado.codigo"
-              [selected]="estado.codigo === estadoActual?.codigo"
-            >
-              {{ estado.nombreEstadoOferta }}
-            </option>
-          </select>
         </div>
       </div>
 

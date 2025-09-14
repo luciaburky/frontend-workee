@@ -1,90 +1,100 @@
-<h1>Ofertas de empleo</h1>
-<p>Gestiona y visualiza todas las ofertas de empleo de tu empresa</p>
-
-<div class="seccion-filtros">
-  <div class="filtros">
-    
-        <div class="buscador">
-    <div class="input-search-wrapper">
-      <input
-        type="text"
-        placeholder="Buscar..."
-        class="input-search"
-        [(ngModel)]="textoOferta"
-        (keyup.enter)="buscarPorNombre(textoOferta)" />
-      <button id="icon-button" (click)="buscarPorNombre(textoOferta)">
-        <span class="material-symbols-outlined search-icon">search</span>
-      </button>
-    </div>
+<div class="tarjeta-ofertas">
+  <div class="oferta-header">
+    <h1>Ofertas de empleo</h1>
+    <p>Gestiona y visualiza todas las ofertas de empleo de tu empresa</p>
   </div>
-    <!-- Filtro 1: Estado -->
-    <p-multiselect
-      [options]="filtrosEstadoOferta"
-      placeholder="Estado"
-      optionLabel="name"
-      optionValue="code"
-      [maxSelectedLabels]="0"
-      [selectedItemsLabel]="'Estado ({0})'"
-      class="filtro"
-      [panelStyle]="{ 'background': '#fff' }"
-      [(ngModel)]="filtrosSeleccionadosEstadoOferta"
-      (onChange)="onEstadosChange()">
-    </p-multiselect>
-
-
-    <!-- Filtro 2 (pegá acá tu segundo filtro cuando lo tengas) -->
-    <!--
-    <p-multiselect
-      [options]="filtrosX"
-      placeholder="Otro filtro"
-      optionLabel="name"
-      optionValue="code"
-      class="filtro"
-      [(ngModel)]="filtrosSeleccionadosX">
-    </p-multiselect>
-    -->
-  </div>
-
-  <!-- Botón a la derecha en la misma línea -->
-  <button type="button" class="btn btn-primary guardar" [routerLink]="['/crear-oferta']">
-    <span class="material-symbols-outlined">add</span>
-    Crear oferta
-  </button>
-</div>
-  <div class="botones">
-      <button type="button"
-              class="btn btn-primary guardar">
-        <span type="button" class="material-symbols-outlined">add</span>
-        Crear oferta
-      </button>
+  
+  <div class="seccion-filtros">
+    <div class="filtros">
+      
+    <div class="buscador">
+        <div class="input-search-wrapper">
+          <input
+            type="text"
+            placeholder="Buscar..."
+            class="input-search"
+            [(ngModel)]="textoOferta"
+            (keyup.enter)="buscarPorNombre(textoOferta)" />
+          <button id="icon-button" (click)="buscarPorNombre(textoOferta)">
+            <span class="material-symbols-outlined search-icon">search</span>
+          </button>
+        </div>
     </div>
-
-<div class="ofertas-grid">
-  @for (oferta of ofertas; track oferta.id) {
-    <article
-      class="oferta-card"
-      [ngClass]="estadoClase(oferta)"
-      (click)="irADetalle(oferta.id)"        
-      style="cursor: pointer"
-    >
-      <div class="oferta-card__head">
-        <h3 class="oferta-card__title">{{ oferta.titulo }}</h3>
-        <span class="pill" [ngClass]="estadoClase(oferta)">{{ estadoTexto(oferta) }}</span>
+      <!-- Filtro 1: Estado -->
+      <p-multiselect
+        [options]="filtrosEstadoOferta"
+        placeholder="Estado"
+        optionLabel="name"
+        optionValue="code"
+        [maxSelectedLabels]="0"
+        [selectedItemsLabel]="'Estado ({0})'"
+        class="filtro"
+        [panelStyle]="{ 'background': '#fff' }"
+        [(ngModel)]="filtrosSeleccionadosEstadoOferta"
+        (onChange)="onEstadosChange()">
+      </p-multiselect>
+  
+  
+      <!-- Filtro 2 (pegá acá tu segundo filtro cuando lo tengas) -->
+      <!--
+      <p-multiselect
+        [options]="filtrosX"
+        placeholder="Otro filtro"
+        optionLabel="name"
+        optionValue="code"
+        class="filtro"
+        [(ngModel)]="filtrosSeleccionadosX">
+      </p-multiselect>
+      -->
+    </div>
+  
+    <!-- Botón a la derecha en la misma línea -->
+    <button type="button" class="btn btn-primary guardar" [routerLink]="['/crear-oferta']">
+      <span class="material-symbols-outlined">add</span>
+      Crear oferta
+    </button>
+  </div>
+    <div class="botones">
+        <button type="button"
+                class="btn btn-primary guardar">
+          <span type="button" class="material-symbols-outlined">add</span>
+          Crear oferta
+        </button>
       </div>
-      <p class="oferta-card__desc">
-        {{ oferta.descripcion }}
-      </p>
-    </article>
-  }
-</div>
+  
+  <div class="ofertas-grid">
+    @for (oferta of ofertas; track oferta.id) {
+      <article
+        class="oferta-card"
+        [ngClass]="estadoClase(oferta)"
+        (click)="irADetalle(oferta.id)"        
+        style="cursor: pointer"
+      >
+        <div class="oferta-card__head">
+          <h3 class="oferta-card__title">{{ oferta.titulo }}</h3>
+          <span class="pill" [ngClass]="estadoClase(oferta)">{{ estadoTexto(oferta) }}</span>
+        </div>
+        <p class="oferta-card__desc">
+          {{ oferta.descripcion }}
+        </p>
+        <div class="text-muted mt-2 fecha-actualizacion" *ngIf="getFechaUltimaActualizacion(oferta) != null">
+          <p>Última actualización:</p>
+          <p>
+            {{ getFechaUltimaActualizacion(oferta) | date:'dd/MM/yyyy HH:mm' }}
+          </p>
+        </div>
+      </article>
+    }
+  </div>
+  
+  
+  <!-- === Bloque sin resultados === -->
+  <div class="sin-resultados" *ngIf="ofertas.length === 0">
+    <img src="assets\img\sin-resultados.png" alt="Sin resultados" class="sin-resultados-img">
+    <p class="sin-resultados-txt">
+      No encontramos ofertas que coincidan con tu búsqueda... <br>
+      Probá quitando filtros o ampliando tu búsqueda
+    </p>
+  </div>
 
-
-<!-- === Bloque sin resultados === -->
-<div class="sin-resultados" *ngIf="ofertas.length === 0">
-  <img src="assets\img\sin-resultados.png" alt="Sin resultados" class="sin-resultados-img">
-  <p class="sin-resultados-txt">
-    No encontramos ofertas que coincidan con tu búsqueda... <br>
-    Probá quitando filtros o ampliando tu búsqueda
-  </p>
-</div>
-
+</div>  

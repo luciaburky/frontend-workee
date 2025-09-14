@@ -6,6 +6,10 @@ import { EstadoOfertaService } from './../../../../admin/ABMEstadoOferta/estado-
 import { EstadoOferta } from './../../../../admin/ABMEstadoOferta/estado-oferta';
 import { CommonModule, DatePipe } from '@angular/common';
 import Swal from 'sweetalert2';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { MatOptionModule } from '@angular/material/core';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-detalle-oferta-propia',
@@ -64,10 +68,10 @@ export class DetalleOfertaPropiaComponent implements OnInit {
     });
   }
 
-  cambiarEstadoOferta(event: Event) {
-    const selectElement = event.target as HTMLSelectElement;
-    const nuevoEstado = selectElement.value;
-    console.log("nuevo estado desde el metodo cambiarEstado:",nuevoEstado)
+  cambiarEstadoOferta(codigoNuevoEstado: string/*event: Event*/) {
+    //const selectElement = event.target as HTMLSelectElement;
+    //const nuevoEstado = selectElement.value;
+    //console.log("nuevo estado desde el metodo cambiarEstado:",nuevoEstado)
     
     Swal.fire({
       title: "¿Desea cambiar el estado de la oferta?",
@@ -86,9 +90,9 @@ export class DetalleOfertaPropiaComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         // console.log("Elimino CV");
-        this.ofertaService.cambiarEstadoOferta(this.id!, nuevoEstado).subscribe({
+        this.ofertaService.cambiarEstadoOferta(this.id!, codigoNuevoEstado).subscribe({
           next: () => {
-            this.estadoActual = this.estadosDisponibles.find(e => e.codigo === nuevoEstado);
+            this.estadoActual = this.estadosDisponibles.find(e => e.codigo === codigoNuevoEstado);
             Swal.fire({
               toast: true,
               position: "top-end",
@@ -120,4 +124,18 @@ export class DetalleOfertaPropiaComponent implements OnInit {
   volverAListado() {
     this.router.navigate([`visualizar-ofertas`]);
   }
+
+  isDropdownOpen: boolean = false;
+  toggleDropdown() {
+    this.isDropdownOpen = !this.isDropdownOpen;
+  }
+
+  selectEstado(estado: EstadoOferta) {
+    //this.estadoActual = estado;
+    // Aquí podrías llamar a tu función existente para cambiar el estado, por ejemplo:
+    // this.cambiarEstadoOferta({ target: { value: estado.codigo } });
+    this.cambiarEstadoOferta(estado.codigo);
+    this.isDropdownOpen = false; // Cierra el menú después de seleccionar
+  }
+
 }

@@ -171,9 +171,12 @@ export class VisualizarOfertasPropiasComponent implements OnInit {
               next: (ofertas) => {
                 // mapeo + campo derivado opcional
                 this.ofertasObtenidas = ofertas.map(i => ({
+                  
                   ...i,
                   estadoNombre: this.getEstadoActual(i)?.nombreEstadoOferta ?? '—',
                 }) as any);
+                
+                
 
                 // construir opciones únicas de estado (en base al estado vigente de cada oferta)
                 this.cargarOpcionesEstados();
@@ -287,5 +290,10 @@ export class VisualizarOfertasPropiasComponent implements OnInit {
 
   irADetalle(id: number): void {
     this.router.navigate(['/visualizar-oferta', id]);
+  }
+
+  getFechaUltimaActualizacion(oferta: Oferta){
+    const estadoVigente = oferta.estadosOferta.find(eo => eo.fechaHoraBaja == null);
+    return estadoVigente?.fechaHoraAlta ?? null;
   }
 }
