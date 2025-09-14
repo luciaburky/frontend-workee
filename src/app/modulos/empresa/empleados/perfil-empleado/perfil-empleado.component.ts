@@ -14,6 +14,8 @@ import { ref, StorageReference, Storage, uploadBytes, getDownloadURL, uploadByte
 import { EmpresaService } from '../../empresa/empresa.service';
 import { SpinnerComponent } from "../../../../compartidos/spinner/spinner/spinner.component";
 import { CommonModule } from '@angular/common';
+import { OfertaService } from '../../../oferta/oferta.service';
+import { EmpleadoEtapaDTO } from './empleado-etapa-dto';
 
 @Component({
   selector: 'app-perfil-empleado',
@@ -60,6 +62,7 @@ export class PerfilEmpleadoComponent implements OnInit {
   private storage = inject(Storage);
 
   cargandoFoto: boolean = false;
+  etapasEmpleado?: EmpleadoEtapaDTO[] = [];
 
   constructor(
     private empleadoService: EmpleadoService,
@@ -69,7 +72,8 @@ export class PerfilEmpleadoComponent implements OnInit {
     private modalService: ModalService,
     private rolService: RolService,
     private sesionService: SesionService,
-    private empresaService: EmpresaService) {}
+    private empresaService: EmpresaService,
+    private ofertaService: OfertaService) {}
   
   ngOnInit(): void {
     // ESTO SE TIENE QUE HACER PARA CUANDO EL ADMINISTRADOR ENTRA AL PERFIL DE UN EMPLEADO
@@ -105,7 +109,15 @@ export class PerfilEmpleadoComponent implements OnInit {
             this.empleado = { ...data };
             console.log(data)
             this.puestoOriginal = data.puestoEmpleadoEmpresa ?? '';
-          },
+            this.ofertaService.getEtapasPorEmpleado(this.empleado.id!).subscribe({
+              next: (data) => {
+                this.etapasEmpleado = data;
+                console.log("esto obtengo del getetapas por empleado en este empleado ",data);
+              },
+              error: (err) => {
+                console.error('Error al obtener id de empresa por correo', err);
+              }})
+            },
           error: (error) => {
             console.error('Error al obtener el empleado', error);
           }
@@ -309,6 +321,24 @@ export class PerfilEmpleadoComponent implements OnInit {
     });
 
     this.modalRef.componentInstance.usuarioId = this.empleado.usuario!.id;
+  }
+
+  estadoClase(oferta: EmpleadoEtapaDTO): string {
+    const cod = (oferta?.estadoOferta ?? '').toUpperCase();
+    switch (cod) {
+      case 'ABIERTA':     return 'is-abierta';
+      case 'CERRADA':     return 'is-cerrada';
+      case 'FINALIZADA':  return 'is-finalizada';
+      default:            return 'is-neutro';
+    }
+  }
+
+  estadoTexto(oferta: EmpleadoEtapaDTO): string {
+    return oferta?.estadoOferta ?? 'Sin estado';
+  }
+
+  irADetalle(id: number) {
+    this.router.navigate(['/visualizar-oferta', id]);
   }
 
 }
