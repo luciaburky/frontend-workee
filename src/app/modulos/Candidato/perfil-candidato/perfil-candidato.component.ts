@@ -32,6 +32,10 @@ import { SpinnerComponent } from "../../../compartidos/spinner/spinner/spinner.c
   styleUrls: ['./perfil-candidato.component.css'],
 })
 export class PerfilCandidatoComponent implements OnInit {
+  //Cuando se demora en cargar cosas del perfil
+  cargandoPerfil: boolean = false;
+
+
   candidatoForm: FormGroup;
   submitForm: boolean = false;
   modoEdicion: boolean = false;
@@ -140,6 +144,7 @@ export class PerfilCandidatoComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.cargandoPerfil = true;
     this.provinciaService.findAllActivas().subscribe({
       next: (data) => {
         this.provincias = data;
@@ -170,16 +175,19 @@ export class PerfilCandidatoComponent implements OnInit {
         })
       },
       error: (error) => {
+        this.cargandoPerfil = false;
         console.error('Error al obtener provincias', error);
       }
     })
     
+
     this.paisService.findAllActivos().subscribe({
       next: (data) => {
         this.paises = data;
         // console.log(this.paises)
       },
       error: (error) => {
+        this.cargandoPerfil = false;
         console.error('Error al obtener paises', error);
       }
     })
@@ -190,6 +198,7 @@ export class PerfilCandidatoComponent implements OnInit {
         //console.log(this.generos)
       },
       error: (error) => {
+        this.cargandoPerfil = false;
         console.error('Error al obtener generos', error);
       }
     })
@@ -200,6 +209,7 @@ export class PerfilCandidatoComponent implements OnInit {
         //console.log(this.generos)
       },
       error: (error) => {
+        this.cargandoPerfil = false;
         console.error('Error al obtener estados', error);
       }
     })
@@ -207,8 +217,8 @@ export class PerfilCandidatoComponent implements OnInit {
     this.habilidadService.findAllActivas().subscribe(habilidades => {
       this.todasHabilidades = habilidades;
     });
-
     // console.log("habilidades desde linea 205: ", this.habilidades)
+    this.cargandoPerfil = false;
   }
 
   modificarCandidato() {

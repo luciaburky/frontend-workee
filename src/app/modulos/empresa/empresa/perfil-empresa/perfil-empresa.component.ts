@@ -24,6 +24,9 @@ import { SpinnerComponent } from "../../../../compartidos/spinner/spinner/spinne
   styleUrls: ['./perfil-empresa.component.css']
 })
 export class PerfilEmpresaComponent implements OnInit {
+  //para spinner si todavia no carga
+  cargandoPerfil: boolean = false;
+
   empresa: Empresa = {};
   idEmpresa = 0;
   empresaOriginal: Empresa = {
@@ -80,6 +83,7 @@ export class PerfilEmpresaComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.cargandoPerfil = true;
     this.usuarioService.getUsuario().subscribe({
       next: (data) => {
         this.empresa = data;
@@ -100,10 +104,11 @@ export class PerfilEmpresaComponent implements OnInit {
         });
       },
       error: (error) => {
+        this.cargandoPerfil = false;
         console.error('Error al obtener empresa', error);
       }
     })
-    
+    this.cargandoPerfil = false;
     this.rubroService.findAllActivos().subscribe({
       next: (data) => {
         this.rubros = data;

@@ -24,6 +24,9 @@ import { EmpleadoEtapaDTO } from './empleado-etapa-dto';
   styleUrl: './perfil-empleado.component.css'
 })
 export class PerfilEmpleadoComponent implements OnInit {
+  //para spinner de carga del perfil
+  cargandoPerfil: boolean = false;
+
   empleado: Empleado = {
     id: 0,
     nombreEmpleadoEmpresa: '',
@@ -85,6 +88,7 @@ export class PerfilEmpleadoComponent implements OnInit {
     }
   
   ngOnInit(): void {
+    this.cargandoPerfil = true;
     this.sesionService.rolUsuario$.subscribe(rol => {
       if (rol) {
         console.log("rol recibido: ", rol);
@@ -101,7 +105,9 @@ export class PerfilEmpleadoComponent implements OnInit {
                 puestoEmpleado: this.empleado.puestoEmpleadoEmpresa,
               });
             },
-            error: (err) => console.error('Error al obtener el empleado desde usuarioService', err)
+            error: (err) => {
+              this.cargandoPerfil = false;
+              console.error('Error al obtener el empleado desde usuarioService', err)}
           });
 
         } else {
@@ -115,7 +121,9 @@ export class PerfilEmpleadoComponent implements OnInit {
                 console.log('id empresa obtenido desde el perfil : ', idEmpresa);
               }
             },
-            error: (err) => console.error('Error al obtener id de empresa por correo', err)
+            error: (err) => {
+              this.cargandoPerfil = false;
+              console.error('Error al obtener id de empresa por correo', err)}
           });
 
           this.empleadoService.findById(id).subscribe({
@@ -129,14 +137,19 @@ export class PerfilEmpleadoComponent implements OnInit {
               this.puestoOriginal = data.puestoEmpleadoEmpresa ?? '';
               this.ofertaService.getEtapasPorEmpleado(this.empleado.id!).subscribe({
                 next: (data) => this.etapasEmpleado = data,
-                error: (err) => console.error('Error al obtener etapas del empleado', err)
+                error: (err) => {
+                  this.cargandoPerfil = false;
+                  console.error('Error al obtener etapas del empleado', err)}
               });
             },
-            error: (error) => console.error('Error al obtener el empleado', error)
+            error: (error) => {
+              this.cargandoPerfil = false;
+              console.error('Error al obtener el empleado', error)}
           });
         }
       }
     });
+    this.cargandoPerfil = false;
   }
 
 
