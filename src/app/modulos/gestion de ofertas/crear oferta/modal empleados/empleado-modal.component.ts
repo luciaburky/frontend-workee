@@ -4,6 +4,8 @@ import { CommonModule } from '@angular/common';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { EmpleadoService } from '../../../empresa/empleados/empleado.service';
 import { Empleado } from '../../../empresa/empleados/empleado';
+import Swal from 'sweetalert2';
+import { ModalService } from '../../../../compartidos/modal/modal.service';
 
 @Component({
   selector: 'app-empleado-modal',
@@ -30,7 +32,8 @@ export class EmpleadoModalComponent implements OnInit {
 
   constructor(
     private empleadoService: EmpleadoService,
-    public activeModal: NgbActiveModal
+    public activeModal: NgbActiveModal,
+    private modalService: ModalService
   ) {}
 
   ngOnInit(): void {
@@ -84,6 +87,10 @@ export class EmpleadoModalComponent implements OnInit {
   visualizarEmpleado(idEmpleado: number) {
     // this.empleadoService.setId(idEmpleado);
     this.router.navigate([`empleados/perfil`,idEmpleado]);
+  }
+
+  dismissModal() {
+    this.modalService.dismissActiveModal();
   }
 
 
