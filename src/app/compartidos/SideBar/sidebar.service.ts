@@ -40,7 +40,7 @@ export class SidebarService {
     //{ titulo: "Notificaciones", ruta: "/notificaciones", icono: "notifications", codigoPermiso: "" }, //TODO: Falta
     { titulo: "Ofertas", icono: "card_giftcard",
       children: [
-        { titulo: "Ofertas", ruta: "/crear-oferta", icono: "", codigoPermiso: "GESTION_OFERTAS"}, //TODO: Cambiar, nada mas q como aun no esta el listado, para probar puse esto
+        { titulo: "Ofertas", ruta: "/visualizar-oferta", icono: "", codigoPermiso: "GESTION_OFERTAS"}, //TODO: Cambiar, nada mas q como aun no esta el listado, para probar puse esto
         { titulo: "Etapas", ruta: "/ofertas/etapas", icono: "", codigoPermiso: "GESTION_ETAPA_PERSONALIZADA"}
       ]
      },
