@@ -239,7 +239,12 @@
 .tarjeta-ofertas{
   background-color: white;
   padding: 1.2rem;
-  border-radius: 16px;
+  /* border-radius: 16px; */
+  padding: 3rem;
+  border-radius: 10px;
+  max-width: 1700px;
+  margin: 3rem auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .oferta-header {

@@ -354,6 +354,12 @@ form .form-grid:last-of-type {
   border-color: #28a745;
 }
 
+.badge.otro {
+  background-color: #e8eee7;
+  color: #67726a;
+  border-color: #67726a;
+}
+
 .titulo-habilidades {
   display: flex;
   align-items: center;
