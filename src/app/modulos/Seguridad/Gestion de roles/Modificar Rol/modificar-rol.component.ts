@@ -159,7 +159,7 @@ export class ModificarRolComponent {
         });
       },
       error: (error) => {
-        if (error?.error?.message === 'Ya existe un rol con ese nombre') {
+        if (error?.error?.message === 'Ya existe un rol con el nombre ingresado') {
           Swal.fire({
             toast: true,
             icon: 'warning',
