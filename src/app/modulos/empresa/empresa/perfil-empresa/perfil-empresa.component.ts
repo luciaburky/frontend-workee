@@ -160,8 +160,8 @@ export class PerfilEmpresaComponent implements OnInit {
 
   eliminarCuenta() {
     Swal.fire({
-      title: '¿Desea eliminar al empleado?',
-      text: 'Esta acción no se puede deshacer, el empleado será eliminado permanentemente',
+      title: '¿Desea eliminar su cuenta?',
+      text: 'Esta acción no se puede deshacer, su cuenta  será eliminada permanentemente',
       icon: "error",
       iconColor: "#FF5252",
       showCancelButton: true,
@@ -174,40 +174,40 @@ export class PerfilEmpresaComponent implements OnInit {
         title: 'titulo-chico',
     }})
   .then((result) => {
-        if (result.isConfirmed) {
-          this.empresaService.eliminarEmpresa(this.idEmpresa).
-          subscribe({
-            next: () => {
-              this.modoEdicion = false;
-              this.volver();
-              // TODO: QUE PONEMOS ACA?
-              Swal.fire({
-                toast: true,
-                position: "top-end",
-                icon: "success",
-                title: "La empresa ha sido eliminada exitosamente.",
-                timer: 3000,
-                showConfirmButton: false,
-              })
-              this.router.navigate([`login`])    
-            },
-            error: (error) => {
-              console.error('Error al modificar empleado', error)
-              if(error.error.message === "Empleado asociado a una etapa de oferta") {
-                // TODO: CAMBIAR MESSAGE DE ERROR SEGUN EL ERROR QUE SE AGREGUE EN EL BACK
-                Swal.fire({
-                  toast: true,
-                  position: "top-end",
-                  icon: "warning",
-                  title: "¡El empleado está asociado a una etapa actualmente!",
-                  text: "No se puede eliminar un empleado que está asignado a una etapa en una oferta no finalizada",
-                  timer: 3000,
-                  showConfirmButton: false,
-                })
-                }
-            }
+    if (result.isConfirmed) {
+      this.empresaService.eliminarEmpresa(this.idEmpresa).
+      subscribe({
+        next: () => {
+          this.modoEdicion = false;
+          // this.volver();
+          // // TODO: QUE PONEMOS ACA?
+          Swal.fire({
+            toast: true,
+            position: "top-end",
+            icon: "success",
+            title: "La empresa ha sido eliminada exitosamente.",
+            timer: 3000,
+            showConfirmButton: false,
           })
-      }});
+          this.router.navigate([`login`])    
+        },
+        error: (error) => {
+          console.error('Error al eliminar la cuenta', error)
+          if(error.error.message === "Empleado asociado a una etapa de oferta") {
+            // TODO: CAMBIAR MESSAGE DE ERROR SEGUN EL ERROR QUE SE AGREGUE EN EL BACK
+            Swal.fire({
+              toast: true,
+              position: "top-end",
+              icon: "warning",
+              title: "¡El empleado está asociado a una etapa actualmente!",
+              text: "No se puede eliminar un empleado que está asignado a una etapa en una oferta no finalizada",
+              timer: 3000,
+              showConfirmButton: false,
+            })
+            }
+        }
+      })
+    }});
   }
 
   async enviarDatos() {
