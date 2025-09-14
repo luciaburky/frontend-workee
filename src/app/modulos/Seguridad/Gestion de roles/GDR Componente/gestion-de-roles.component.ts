@@ -108,19 +108,17 @@ export class GestionderolesComponent {
             this.rolService.deshabilitar(idRol).subscribe({
               next: (response) => {
                 this.recargar();
-                const Toast = Swal.mixin({
-                toast: true,
-                position: "top-end",
-                showConfirmButton: false,
-                timer: 3000,
-              });
-              Toast.fire({
-                icon: "success",
-                title: "Rol deshabilitado correctamente",
-              });
+                Swal.fire({
+                  toast: true,
+                  icon: 'success',
+                  title: 'Rol deshabilitado correctamente',
+                  position: 'top-end',
+                  timer: 3000,
+                  showConfirmButton: false
+                });
               },
               error: (error) => {
-                if(error.error.message === "El rol se encuentra en uso, no puede deshabilitarla") {
+                if(error.error.message === "No se puede deshabilitar el rol porque se encuentra en uso.") {
                   const Toast = Swal.mixin({
                     toast: true,
                     position: "top-end",
@@ -129,7 +127,7 @@ export class GestionderolesComponent {
                   });
                   Toast.fire({
                     icon: "warning",
-                    title: "El rol se encuentra en uso, no puede deshabilitarla",
+                    title: "El rol se encuentra en uso, no puede deshabilitarlo",
                   });
                 }
               }
