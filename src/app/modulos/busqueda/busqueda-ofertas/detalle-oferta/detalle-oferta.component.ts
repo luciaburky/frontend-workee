@@ -42,7 +42,7 @@ export class DetalleOfertaComponent implements OnInit {
   }
 
   volverAListado() {
-    this.router.navigate([`buscar-candidatos`]);
+    this.router.navigate([`buscar-ofertas`]);
   }
 
 }

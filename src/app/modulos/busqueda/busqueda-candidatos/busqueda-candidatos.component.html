@@ -70,7 +70,7 @@
             <button 
             [disabled]="!filtrosSeleccionadosHabilidad.length && !filtrosSeleccionadosEstado.length && !filtrosSeleccionadosPais.length"
             class="boton"
-            (click)="filtrarEmpresas()">
+            (click)="filtrarCandidatos()">
                 Aplicar filtros
             </button>
         </div>
@@ -99,6 +99,7 @@
                 <div class="tarjeta-candidato" (click)="irADetalle(candidato.id!)" role="button">
                     <div class="foto-container">
                         <img [src]="candidato.usuario?.urlFotoUsuario" 
+                            class="foto"
                             alt="Foto de {{ candidato.nombreCandidato }} {{ candidato.apellidoCandidato }}" />
                     </div>
                     <div class="contenido">
