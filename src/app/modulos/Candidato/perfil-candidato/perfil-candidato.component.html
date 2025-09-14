@@ -21,25 +21,28 @@
     <div class="form-grid-foto">
       <div class="foto-seccion">
         <div class="foto-container">
-          <div class="spinner-overlay" *ngIf="cargandoFoto">
-            <app-spinner type="inline"></app-spinner>
-          </div>
-          <img 
-            [src]="fotoTemporal || candidato.usuario?.urlFotoUsuario || 'assets/img/foto-perfil.png'" 
-            alt="foto" 
-            class="foto" 
-          />
-          @if (modoEdicion) {
-            <label for="fileInput" class="icono-editar" title="Editar foto">
-              <span class="material-symbols-outlined icono-foto">photo_camera</span>
-            </label>
-            <input 
-              type="file"
-              id="fileInput"
-              accept="image/jpg, image/jpeg, image/png"
-              hidden
-              (change)="onFileSelectedFoto($event)" 
-            /> 
+          @if(cargandoFoto){
+            <div class="spinner-overlay">
+              <app-spinner type="inline"></app-spinner>
+            </div>
+          } @else {
+            <img 
+              [src]="fotoTemporal || candidato.usuario?.urlFotoUsuario || 'assets/img/foto-perfil.png'" 
+              alt="foto" 
+              class="foto" 
+            />
+            @if (modoEdicion) {
+              <label for="fileInput" class="icono-editar" title="Editar foto">
+                <span class="material-symbols-outlined icono-foto">photo_camera</span>
+              </label>
+              <input 
+                type="file"
+                id="fileInput"
+                accept="image/jpg, image/jpeg, image/png"
+                hidden
+                (change)="onFileSelectedFoto($event)" 
+              /> 
+            }
           }
         </div>
       </div>

@@ -457,9 +457,9 @@ export class PerfilCandidatoComponent implements OnInit {
       const fileRef = ref(this.storage, filePath);
       await uploadBytes(fileRef, file);
       const downloadURL = await getDownloadURL(fileRef);
-      
-      this.cargandoFoto = false;
 
+      this.cargandoFoto = false;
+      
       return downloadURL;
     } catch (error) {
       this.cargandoFoto = false;
