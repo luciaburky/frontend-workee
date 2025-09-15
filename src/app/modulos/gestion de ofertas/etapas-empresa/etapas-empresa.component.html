@@ -8,13 +8,13 @@
     <div class="busqueda-acciones">
         <div class="input-search-wrapper">
             <input 
-                type="text" 
-                placeholder="Buscar..." 
+            type="text" 
+            placeholder="Buscar..." 
                 class="input-search"
                 [(ngModel)]="filtro"
                 (input)="buscarEtapas()" />
-            <button id="icon-button" (click)="buscarEtapas()">
-                <span class="material-symbols-outlined search-icon">search</span>
+                <button id="icon-button" (click)="buscarEtapas()">
+                    <span class="material-symbols-outlined search-icon">search</span>
             </button>
         </div>
         <button type="button" class="boton-nuevo" (click)="crearEtapa()">
@@ -22,8 +22,57 @@
             Nueva Etapa
         </button>
     </div>
+    
     <div class="listado-contenido row row-cols-1 row-cols-md-2 g-4">
-        @if (etapaList.length === 0) {
+        <div *ngIf="isLoading">
+            <app-spinner type="inline" message="Cargando etapas..."></app-spinner>
+        </div>
+        <ng-container *ngIf="!isLoading && etapaList.length > 0; else noEtapas">
+        <table class="table align-middle table-hover">
+            <thead>
+            <tr>
+                <th scope="col">ETAPA</th>
+                <th scope="col">DESCRIPCIÓN</th>
+                <th scope="col">ACCIONES</th>
+            </tr>
+            </thead>
+            <tbody>
+            @for (etapa of obtenerEtapasPaginadas(); track $index) {
+                @if (!etapa.esPredeterminada) {
+                <tr>
+                    <td>{{ etapa.nombreEtapa }}</td>
+                    <td [title]="etapa.descripcionEtapa">{{ etapa.descripcionEtapa }}</td>
+                    <td>
+                    <button id="icon-button" class="icon-button-celeste" (click)="modificarEtapa(etapa.id!)" title="Modificar">
+                        <span class="material-symbols-outlined">edit</span>
+                    </button>
+                    @if (!etapa.fechaHoraBaja) {
+                        <button id="icon-button" class="icon-button-rojo" (click)="eliminarEtapa(etapa.id!)" title="Eliminar">
+                        <span class="material-symbols-outlined">disabled_by_default</span>
+                        </button>
+                    }
+                    </td>
+                </tr>
+                } @else {
+                <tr>
+                    <td>{{ etapa.nombreEtapa }}</td>
+                    <td [title]="etapa.descripcionEtapa">{{ etapa.descripcionEtapa }}</td>
+                    <td></td>
+                </tr>
+                }
+            }
+            </tbody>
+        </table>
+        </ng-container>
+        <ng-template #noEtapas>
+        <div *ngIf="!isLoading && etapaList.length === 0" class="alert alert-warning">
+            ¡No hay etapas cargadas en el sistema!
+        </div>
+        </ng-template>
+
+
+
+        <!-- @if (etapaList.length === 0) {
                 <div class="alert alert-warning">
                     ¡No hay etapas cargadas en el sistema!
                 </div>
@@ -77,7 +126,7 @@
                     }
                 </tbody>
             </table>
-        }
+        } -->
     </div>
     <!-- tuve que usar ngIf porque no me funcionaba solo con @if -->
         <nav *ngIf="totalPaginas > 1">

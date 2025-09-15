@@ -13,10 +13,11 @@ import { ModificarEtapaComponent } from '../../../admin/ABMEtapa/modificar-etapa
 import { SesionService } from '../../../interceptors/sesion.service';
 import { UsuarioService } from '../../seguridad/usuarios/usuario.service';
 import { Empleado } from '../../empresa/empleados/empleado';
+import { SpinnerComponent } from '../../../compartidos/spinner/spinner/spinner.component';
 
 @Component({
   selector: 'app-etapas-empresa',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, SpinnerComponent],
   templateUrl: './etapas-empresa.component.html',
   styleUrl: './etapas-empresa.component.css'
 })
@@ -33,6 +34,8 @@ export class EtapasEmpresaComponent implements OnInit{
   modalRef?: NgbModalRef;
 
   empleado?: Empleado;
+
+  isLoading = true;
 
   constructor(
     private empresaService: EmpresaService,
@@ -58,7 +61,10 @@ export class EtapasEmpresaComponent implements OnInit{
             // console.log("el id que consegui es ", this.idEmpresaObtenida)
             this.cargarEtapas(this.idEmpresaObtenida)
           },
-          error: (err) => console.error('Error al obtener id de empresa por correo', err)
+          error: (err) => {
+            console.error('Error al obtener id de empresa por correo', err);
+            this.isLoading = false;
+          }
         });
 
       } else if (rol.codigoRol === 'EMPLEADO_EMPRESA') {
@@ -71,16 +77,20 @@ export class EtapasEmpresaComponent implements OnInit{
               // console.log("el id que consegui es ", this.idEmpresaObtenida)
               this.cargarEtapas(this.idEmpresaObtenida);
             } else {
-              console.error('No se pudo obtener el Id de la empresa a la que pertenece el empleado')
+              console.error('No se pudo obtener el Id de la empresa a la que pertenece el empleado');
+              this.isLoading = false;
             }
           },
-          error: (err) => console.error("Error al obtener el usuario logueado", err)
+          error: (err) => {
+            console.error("Error al obtener el usuario logueado", err);
+            this.isLoading = false;
+          }
         });
       } else {
         console.warn('Rol no contemplado en VisualizarOfertasPropias:', rol.nombreRol);
+        this.isLoading = false;
       }
     })
-
 
     this.recargar();
     this.recargarService.recargar$.subscribe(() => {
@@ -89,23 +99,33 @@ export class EtapasEmpresaComponent implements OnInit{
   }
 
   cargarEtapas(idEmpresa: number) {
+    this.isLoading = true;
     this.etapaService.obtenerEtapasDisponiblesParaEmpresa(idEmpresa).subscribe({
       next: (etapas) => {
         this.etapaList = etapas;
         this.etapaListOriginal = etapas;
+        this.isLoading = false;
       },
       error: (error) => {
         console.error('Error al obtener las etapas:', error);
+        this.isLoading = false;
       }
     });
   }
-
+  
   recargar(): void {
     if (!this.idEmpresaObtenida) return;
-    this.etapaService.obtenerEtapasDisponiblesParaEmpresa(this.idEmpresaObtenida).subscribe(
-      etapas => {
+    this.isLoading = true;
+    this.etapaService.obtenerEtapasDisponiblesParaEmpresa(this.idEmpresaObtenida).subscribe({    
+      next: etapas => {
         this.etapaList = etapas;
         this.etapaListOriginal = etapas;
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('Error al recargar etapas', err);
+        this.isLoading = false;
+      }
     });
   }
 
