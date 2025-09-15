@@ -23,6 +23,7 @@ import { ofertaEtapaDTO } from '../ofertaEtapaDTO';
 import { Storage, ref, uploadBytes, getDownloadURL, StorageReference } from '@angular/fire/storage';
 import { EmpleadoModalComponent } from '../modal empleados/empleado-modal.component';
 import { EmpleadoService } from '../../../empresa/empleados/empleado.service';
+import { UsuarioService } from '../../../seguridad/usuarios/usuario.service';
 
  function noWhitespaceValidator(ctrl: AbstractControl): ValidationErrors | null {
     const v = (ctrl.value ?? '').toString();
@@ -69,7 +70,7 @@ export class CrearOfertaComponent implements OnInit {
     ArchivoEtapaTemporal: any = null;
     today: Date = new Date();
     
-
+  empleado?: Empleado;
 
   idEmpresaObtenida!: number;
   constructor(
@@ -84,6 +85,8 @@ export class CrearOfertaComponent implements OnInit {
     private changeDetectorRef: ChangeDetectorRef,
     private storage: Storage,
     private empleadoService: EmpleadoService,
+    private sesionService: SesionService,
+    private usuarioService: UsuarioService,
 
   ){
   this.crearofertaForm = new FormGroup({
@@ -121,36 +124,84 @@ export class CrearOfertaComponent implements OnInit {
 
     this.habilidades = [];
 
-    if (this.empresaService) {
-      console.log('entra a empresa service')
-      this.empresaService.getidEmpresabyCorreo()?.subscribe({
+    this.sesionService.rolUsuario$.subscribe(rol => {
+      // console.log("hola ", rol)
+      if (!rol) {
+        console.error("No se pudo obtener el rol del usuario");
+        return;
+      }
+      if (rol.codigoRol === 'ADMIN_EMPRESA') {
+        this.empresaService.getidEmpresabyCorreo()?.subscribe({
           next: (idEmpresa) => {
-            if (idEmpresa !== undefined && idEmpresa !== null) {
-              this.idEmpresaObtenida = idEmpresa;
-              console.log('id empresa obtenido: ', idEmpresa)
-              this.etapaService.obtenerEtapasDisponiblesParaEmpresa(idEmpresa).subscribe({
-                next: (etapas) => {
-                  const etapasNoUsables = ['PENDIENTE', 'RECHAZADO', 'SELECCIONADO', 'ABANDONADO'];
-                  this.etapasDisponibles = etapas.filter(etapa => {
-                    return etapa.codigoEtapa && !etapasNoUsables.includes(etapa.codigoEtapa);
-                  })
-                  //this.etapasDisponibles = etapas;
-                  console.log('etapas disponibles: ', this.etapasDisponibles)
-
-                },
-                error: (err) => {
-                  console.error('Error al obtener etapas disponibles', err);
-                }
-              });
-            } else {
-              console.error('El id de empresa obtenido es undefined o null');
-            }
+            this.idEmpresaObtenida = idEmpresa;
+            // console.log("el id que consegui es ", this.idEmpresaObtenida)
+            this.cargarEtapas(this.idEmpresaObtenida)
           },
           error: (err) => {
             console.error('Error al obtener id de empresa por correo', err);
+            // this.isLoading = false;
           }
-      });
-    }
+        });
+
+      } else if (rol.codigoRol === 'EMPLEADO_EMPRESA') {
+        this.usuarioService.getUsuario().subscribe({
+          next: (usuario) => {
+            this.empleado = usuario;
+            const idEmpresa = this.empleado.empresa?.id;
+            if (idEmpresa) {
+              this.idEmpresaObtenida = idEmpresa;
+              // console.log("el id que consegui es ", this.idEmpresaObtenida)
+              this.cargarEtapas(this.idEmpresaObtenida);
+            } else {
+              console.error('No se pudo obtener el Id de la empresa a la que pertenece el empleado');
+              // this.isLoading = false;
+            }
+          },
+          error: (err) => {
+            console.error("Error al obtener el usuario logueado", err);
+            // this.isLoading = false;
+          }
+        });
+      } else {
+        console.warn('Rol no contemplado en VisualizarOfertasPropias:', rol.nombreRol);
+        // this.isLoading = false;
+      }
+    })
+
+    // if (this.empresaService) {
+    //   console.log('entra a empresa service')
+    //   this.empresaService.getidEmpresabyCorreo()?.subscribe({
+    //       next: (idEmpresa) => {
+    //         if (idEmpresa !== undefined && idEmpresa !== null) {
+    //           this.idEmpresaObtenida = idEmpresa;
+    //           console.log('id empresa obtenido: ', idEmpresa);
+              
+    //         } else {
+    //           console.error('El id de empresa obtenido es undefined o null');
+    //         }
+    //       },
+    //       error: (err) => {
+    //         console.error('Error al obtener id de empresa por correo', err);
+    //       }
+    //   });
+    // }
+  }
+
+  cargarEtapas(idEmpresa: number) {
+    this.etapaService.obtenerEtapasDisponiblesParaEmpresa(idEmpresa).subscribe({
+      next: (etapas) => {
+        const etapasNoUsables = ['PENDIENTE', 'RECHAZADO', 'SELECCIONADO', 'ABANDONADO'];
+        this.etapasDisponibles = etapas.filter(etapa => {
+          return etapa.codigoEtapa && !etapasNoUsables.includes(etapa.codigoEtapa);
+        })
+        //this.etapasDisponibles = etapas;
+        console.log('etapas disponibles: ', this.etapasDisponibles)
+
+      },
+      error: (err) => {
+        console.error('Error al obtener etapas disponibles', err);
+      }
+    });
   }
 
   isCampoInvalido(nombre: string): boolean {
