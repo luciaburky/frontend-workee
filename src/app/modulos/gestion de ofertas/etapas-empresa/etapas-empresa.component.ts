@@ -10,6 +10,9 @@ import { ModalService } from '../../../compartidos/modal/modal.service';
 import { CrearEtapaComponent } from '../../../admin/ABMEtapa/crear-etapa/crear-etapa.component';
 import { RecargarService } from '../../../admin/recargar.service';
 import { ModificarEtapaComponent } from '../../../admin/ABMEtapa/modificar-etapa/modificar-etapa.component';
+import { SesionService } from '../../../interceptors/sesion.service';
+import { UsuarioService } from '../../seguridad/usuarios/usuario.service';
+import { Empleado } from '../../empresa/empleados/empleado';
 
 @Component({
   selector: 'app-etapas-empresa',
@@ -29,31 +32,55 @@ export class EtapasEmpresaComponent implements OnInit{
 
   modalRef?: NgbModalRef;
 
+  empleado?: Empleado;
+
   constructor(
     private empresaService: EmpresaService,
     private etapaService: EtapaService,
     private modalService: ModalService,
     private recargarService: RecargarService,
+    private sesionService: SesionService,
+    private usuarioService: UsuarioService,
   ) { }
   
   ngOnInit(): void {
-    this.empresaService.getidEmpresabyCorreo()?.subscribe({
-      next: (idEmpresa) => {
-        this.idEmpresaObtenida = idEmpresa;
-        this.etapaService.obtenerEtapasDisponiblesParaEmpresa(this.idEmpresaObtenida).subscribe({
-          next: (etapas) => {
-            this.etapaList = etapas;
-            this.etapaListOriginal = etapas;
+
+    this.sesionService.rolUsuario$.subscribe(rol => {
+      // console.log("hola ", rol)
+      if (!rol) {
+        console.error("No se pudo obtener el rol del usuario");
+        return;
+      }
+      if (rol.codigoRol === 'ADMIN_EMPRESA') {
+        this.empresaService.getidEmpresabyCorreo()?.subscribe({
+          next: (idEmpresa) => {
+            this.idEmpresaObtenida = idEmpresa;
+            // console.log("el id que consegui es ", this.idEmpresaObtenida)
+            this.cargarEtapas(this.idEmpresaObtenida)
           },
-          error: (error) => {
-            console.error('Error al obtener las etapas:', error);
-          }
+          error: (err) => console.error('Error al obtener id de empresa por correo', err)
         });
-      },
-      error: (error) => {
-        console.error('Error al obtener el id de la empresa:', error);
+
+      } else if (rol.codigoRol === 'EMPLEADO_EMPRESA') {
+        this.usuarioService.getUsuario().subscribe({
+          next: (usuario) => {
+            this.empleado = usuario;
+            const idEmpresa = this.empleado.empresa?.id;
+            if (idEmpresa) {
+              this.idEmpresaObtenida = idEmpresa;
+              // console.log("el id que consegui es ", this.idEmpresaObtenida)
+              this.cargarEtapas(this.idEmpresaObtenida);
+            } else {
+              console.error('No se pudo obtener el Id de la empresa a la que pertenece el empleado')
+            }
+          },
+          error: (err) => console.error("Error al obtener el usuario logueado", err)
+        });
+      } else {
+        console.warn('Rol no contemplado en VisualizarOfertasPropias:', rol.nombreRol);
       }
     })
+
 
     this.recargar();
     this.recargarService.recargar$.subscribe(() => {
@@ -61,7 +88,20 @@ export class EtapasEmpresaComponent implements OnInit{
     })
   }
 
+  cargarEtapas(idEmpresa: number) {
+    this.etapaService.obtenerEtapasDisponiblesParaEmpresa(idEmpresa).subscribe({
+      next: (etapas) => {
+        this.etapaList = etapas;
+        this.etapaListOriginal = etapas;
+      },
+      error: (error) => {
+        console.error('Error al obtener las etapas:', error);
+      }
+    });
+  }
+
   recargar(): void {
+    if (!this.idEmpresaObtenida) return;
     this.etapaService.obtenerEtapasDisponiblesParaEmpresa(this.idEmpresaObtenida).subscribe(
       etapas => {
         this.etapaList = etapas;
@@ -75,13 +115,13 @@ export class EtapasEmpresaComponent implements OnInit{
     });
 
     this.modalRef.componentInstance.idEmpresa = this.idEmpresaObtenida;
-    console.log("id empresa que se pasara al modal: ", this.idEmpresaObtenida);
+    // console.log("id empresa que se pasara al modal: ", this.idEmpresaObtenida);
   }
 
   // Modificacion de Etapa
   modificarEtapa(idEtapa: number) {
     this.etapaService.setId(idEtapa);
-    console.log("id etapa: ", idEtapa)
+    // console.log("id etapa: ", idEtapa)
     this.modalRef = this.modalService.open(ModificarEtapaComponent, {
       centered: true,
     });
