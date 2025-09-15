@@ -49,7 +49,7 @@ export class RecuperarContraseniaComponent {
 
     this.authService.recuperarcontrasenia(token!, contraseniaNueva, repetirContrasenia).subscribe({
       next: (res) => {
-        console.log(res.mensaje);
+        console.log(res);
         Swal.fire({
           icon: 'success',
           title: 'Su contraseña se ha restablecido correctamente.',
