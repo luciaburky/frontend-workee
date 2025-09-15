@@ -45,6 +45,11 @@ export class DetalleEmpresaComponent implements OnInit {
     return url;
   }
 
+  isOfertaAbierta(oferta: Oferta): boolean {
+    const estadoVigente = oferta.estadosOferta.find(eo => eo.fechaHoraBaja == null);
+    return estadoVigente?.estadoOferta.codigo === "ABIERTA";
+  }
+
   irADetalleOferta(idOferta: number) {
     this.router.navigate([`buscar-ofertas/detalle`,idOferta]);
   }
