@@ -48,7 +48,7 @@ export class SidebarComponent implements OnInit {
 
         Swal.fire({
           toast: true,
-          position: "top-end",
+          position: "top",
           icon: "success",
           title: "Sesión cerrada correctamente",
           showConfirmButton: false,
