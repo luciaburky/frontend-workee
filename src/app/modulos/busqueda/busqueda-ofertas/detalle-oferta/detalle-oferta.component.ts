@@ -5,10 +5,11 @@ import { DatePipe } from '@angular/common';
 import { SesionService } from '../../../../interceptors/sesion.service';
 import { Rol } from '../../../seguridad/rol';
 import { OfertaService } from '../../../oferta/oferta.service';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-detalle-oferta',
-  imports: [DatePipe],
+  imports: [DatePipe, RouterLink],
   templateUrl: './detalle-oferta.component.html',
   styleUrl: './detalle-oferta.component.css'
 })
@@ -17,6 +18,8 @@ export class DetalleOfertaComponent implements OnInit {
   oferta!: Oferta;
   esCandidato: boolean = false;
   rolUsuario: Rol = {};
+
+  origen: any | null;
 
   constructor(
     private router: Router,
@@ -39,10 +42,17 @@ export class DetalleOfertaComponent implements OnInit {
     if (this.rolUsuario.codigoRol === 'CANDIDATO') {
       this.esCandidato = true;
     }
+
+    const origen = this.route.snapshot.queryParamMap.get('from');
+    this.origen = origen; // guardar para usar en volverAListado()
   }
 
-  volverAListado() {
-    this.router.navigate([`buscar-ofertas`]);
+  volver() {
+    if (this.origen === 'empresa') {
+      this.router.navigate([`buscar-empresas/detalle`, this.oferta.empresa.id]);
+    } else {
+      this.router.navigate([`buscar-ofertas`]);
+    }
   }
 
 }

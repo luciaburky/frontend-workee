@@ -51,7 +51,8 @@ export class DetalleEmpresaComponent implements OnInit {
   }
 
   irADetalleOferta(idOferta: number) {
-    this.router.navigate([`buscar-ofertas/detalle`,idOferta]);
+    // con "queryparams" se guarda un string que nos dice desde donde se accedio al detalle de la oferta
+    this.router.navigate([`buscar-ofertas/detalle`,idOferta], { queryParams: { from: 'empresa' } });
   }
 
   volverAListado() {
