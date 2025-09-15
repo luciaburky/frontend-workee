@@ -27,7 +27,7 @@ export class SidebarComponent implements OnInit {
 
   ngOnInit(): void {
     // Cargamos el rol apenas entra
-    this.sesionService.cargarRolUsuario();
+    this.sesionService.cargarRolUsuarioSinRedireccion();
     this.cargarPermisos();
   }
 
@@ -90,10 +90,72 @@ export class SidebarComponent implements OnInit {
             this.permisosUsuario = permisos;
             console.log(this.permisosUsuario)
 
-            // Filtramos el menú en base a los permisos
-            this.menuItems = this.sideBarService.menu.filter(item =>
-              this.puedeMostrar(item)
-            );
+            const menuCompleto = this.sideBarService.getMenu();
+            const menuFiltrado = [];
+
+            for (const item of menuCompleto) {
+              // Clona el item para no modificar el original
+              const itemFiltrado = { ...item };
+              
+              //Caso especial del panel de control
+              if(item.titulo === "Panel de control"){
+                const permisosParametros = [
+                  "GESTIONAR_ROLES",
+                  "GESTIONAR_USUARIOS",
+                  "GESTIONAR_ESTADO_BUSQUEDA",
+                  "GESTIONAR_ESTADO_OFERTA",
+                  "GESTIONAR_ESTADO_USUARIO",
+                  "GESTIONAR_ETAPA_PARAMETRO",
+                  "GESTIONAR_GENERO",
+                  "GESTIONAR_HABILIDAD",
+                  "GESTIONAR_MODALIDAD_OFERTA",
+                  "GESTIONAR_PAIS",
+                  "GESTIONAR_PROVINCIA",
+                  "GESTIONAR_RUBRO",
+                  "GESTIONAR_CONTRATO_OFERTA",
+                  "GESTIONAR_TIPO_EVENTO",
+                  "GESTIONAR_TIPO_HABILIDAD"
+                ];
+
+                const tienePermisoRoles = this.permisosUsuario.some(p => p.codigoPermiso === "GESTIONAR_ROLES");
+                const tienePermisoParametros = this.permisosUsuario.some(p => 
+                    p.codigoPermiso && permisosParametros.includes(p.codigoPermiso) && p.codigoPermiso !== "GESTIONAR_ROLES"
+                );
+                const hijosFiltrados = itemFiltrado.children?.filter(child => {
+                    if (child.titulo === "Roles") {
+                        return tienePermisoRoles;
+                    }
+                    if (child.titulo === "Parámetros") {
+                        return tienePermisoParametros;
+                    }
+                    // Para cualquier otro hijo, se mantiene la lógica de un solo permiso
+                    return child.codigoPermiso && this.permisosUsuario.some(p => p.codigoPermiso === child.codigoPermiso);
+                });
+                if (hijosFiltrados && hijosFiltrados.length > 0) {
+                    itemFiltrado.children = hijosFiltrados;
+                    menuFiltrado.push(itemFiltrado);
+                }
+                
+                continue;
+              }
+
+              // Si el item tiene hijos, los filtramos
+              if (itemFiltrado.children && itemFiltrado.children.length > 0) {
+                itemFiltrado.children = itemFiltrado.children.filter(child =>
+                  this.permisosUsuario.some(p => p.codigoPermiso === child.codigoPermiso)
+                );
+                // Si después del filtro, el item padre aún tiene hijos, lo agregamos
+                if (itemFiltrado.children.length > 0) {
+                  menuFiltrado.push(itemFiltrado);
+                }
+              } 
+              // Si el item no tiene hijos, lo agregamos solo si el usuario tiene el permiso
+              else if (this.permisosUsuario.some(p => p.codigoPermiso === itemFiltrado.codigoPermiso)) {
+                menuFiltrado.push(itemFiltrado);
+              }
+            }
+
+            this.menuItems = menuFiltrado;
           },
           error: (err) => {
             console.error("Error al obtener permisos:", err);

@@ -1,17 +1,32 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, inject, Inject, Input, OnInit } from '@angular/core';
 import { EmpleadoService } from '../empleado.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormsModule } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Empleado } from '../empleado';
 import Swal from 'sweetalert2';
+import { UsuarioService } from '../../../seguridad/usuarios/usuario.service';
+import { ModalService } from '../../../../compartidos/modal/modal.service';
+import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { CambioContraseniaComponent } from '../../../../compartidos/cambio-contrasenia/cambio-contrasenia.component';
+import { SesionService } from '../../../../interceptors/sesion.service';
+import { RolService } from '../../../seguridad/usuarios/rol.service';
+import { ref, StorageReference, Storage, uploadBytes, getDownloadURL, uploadBytesResumable } from '@angular/fire/storage';
+import { EmpresaService } from '../../empresa/empresa.service';
+import { SpinnerComponent } from "../../../../compartidos/spinner/spinner/spinner.component";
+import { CommonModule } from '@angular/common';
+import { OfertaService } from '../../../oferta/oferta.service';
+import { EmpleadoEtapaDTO } from './empleado-etapa-dto';
 
 @Component({
   selector: 'app-perfil-empleado',
-  imports: [FormsModule],
+  imports: [FormsModule, SpinnerComponent, CommonModule, ReactiveFormsModule],
   templateUrl: './perfil-empleado.component.html',
   styleUrl: './perfil-empleado.component.css'
 })
 export class PerfilEmpleadoComponent implements OnInit {
+  //para spinner de carga del perfil
+  cargandoPerfil: boolean = false;
+
   empleado: Empleado = {
     id: 0,
     nombreEmpleadoEmpresa: '',
@@ -25,38 +40,118 @@ export class PerfilEmpleadoComponent implements OnInit {
     }
   };
 
+  empleadoForm: FormGroup;
+
   puestoOriginal: string = ''; // en esta variable se guarda el puesto original del empleado recibido desde la BD, sin ningun cambio
   idEmpleado!: number;
   modoEdicion = false;
   
   // CON ESTA VARIABLE, la idea es que cuando se trate del usuario empleado, aparezcan los campos que el mismo puede editar (no el admin)
   // si el empleado ha ingresado en su perfil, esta variable esta en true
-  @Input() esEmpleado: boolean = true;
+  // @Input() esEmpleado: boolean = true;
+  esEmpleado!: boolean;
   verContrasenia: boolean = false;
   mostrarCampoRepetir: boolean = false;
   repetirContrasenia: string = '';
 
+  idEmpresaObtenida!: number;
+
+  modalRef?: NgbModalRef;
+  
+  //PARA FOTO DE PERFIL
+  urlFoto = '';
+  file!: File;
+  imgRef!: StorageReference;
+  previewUrl!: string;
+  fotoTemporal: string = '';
+  private storage = inject(Storage);
+
+  cargandoFoto: boolean = false;
+  etapasEmpleado?: EmpleadoEtapaDTO[] = [];
+  submitForm: boolean = false;
+
   constructor(
     private empleadoService: EmpleadoService,
     private route: ActivatedRoute,
-    private router: Router
-  ) {}
-  
+    private router: Router,
+    private usuarioService: UsuarioService,
+    private modalService: ModalService,
+    private rolService: RolService,
+    private sesionService: SesionService,
+    private empresaService: EmpresaService,
+    private ofertaService: OfertaService) {
+      this.empleadoForm = new FormGroup({
+        nombreEmpleado: new FormControl('', [Validators.required]),
+        apellidoEmpleado: new FormControl('', [Validators.required]),
+        puestoEmpleado: new FormControl('', [Validators.required]),
+      })
+    }
   
   ngOnInit(): void {
-    this.idEmpleado = Number(this.route.snapshot.paramMap.get('idEmpleado'));
-    this.empleadoService.findById(this.idEmpleado).subscribe({
-      next: (data) => {
-        this.empleado = { ...data };
-        console.log(data)
-        this.puestoOriginal = data.puestoEmpleadoEmpresa ?? '';
-      },
-      error: (error) => {
-        console.error('Error al obtener el empleado', error);
+    this.cargandoPerfil = true;
+    this.sesionService.rolUsuario$.subscribe(rol => {
+      if (rol) {
+        console.log("rol recibido: ", rol);
+
+        if (rol.codigoRol === 'EMPLEADO_EMPRESA') {
+          this.esEmpleado = true;
+
+          this.usuarioService.getUsuario().subscribe({
+            next: (data) => {
+              this.empleado = data;
+              this.empleadoForm.patchValue({
+                nombreEmpleado: this.empleado.nombreEmpleadoEmpresa,
+                apellidoEmpleado: this.empleado.apellidoEmpleadoEmpresa,
+                puestoEmpleado: this.empleado.puestoEmpleadoEmpresa,
+              });
+            },
+            error: (err) => {
+              this.cargandoPerfil = false;
+              console.error('Error al obtener el empleado desde usuarioService', err)}
+          });
+
+        } else {
+          this.esEmpleado = false;
+          const id = Number(this.route.snapshot.paramMap.get('idEmpleado'));
+
+          this.empresaService.getidEmpresabyCorreo()?.subscribe({
+            next: (idEmpresa) => {
+              if (idEmpresa !== undefined && idEmpresa !== null) {
+                this.idEmpresaObtenida = idEmpresa;
+                console.log('id empresa obtenido desde el perfil : ', idEmpresa);
+              }
+            },
+            error: (err) => {
+              this.cargandoPerfil = false;
+              console.error('Error al obtener id de empresa por correo', err)}
+          });
+
+          this.empleadoService.findById(id).subscribe({
+            next: (data) => {
+              this.empleado = { ...data };
+              this.empleadoForm.patchValue({
+                nombreEmpleado: this.empleado.nombreEmpleadoEmpresa,
+                apellidoEmpleado: this.empleado.apellidoEmpleadoEmpresa,
+                puestoEmpleado: this.empleado.puestoEmpleadoEmpresa,
+              });
+              this.puestoOriginal = data.puestoEmpleadoEmpresa ?? '';
+              this.ofertaService.getEtapasPorEmpleado(this.empleado.id!).subscribe({
+                next: (data) => this.etapasEmpleado = data,
+                error: (err) => {
+                  this.cargandoPerfil = false;
+                  console.error('Error al obtener etapas del empleado', err)}
+              });
+            },
+            error: (error) => {
+              this.cargandoPerfil = false;
+              console.error('Error al obtener el empleado', error)}
+          });
+        }
       }
     });
-
+    this.cargandoPerfil = false;
   }
+
 
   modificarEmpleado() {
     this.modoEdicion = true;
@@ -83,15 +178,21 @@ export class PerfilEmpleadoComponent implements OnInit {
         }
       }).then((result) => {
         if (result.isConfirmed) {
-          this.empleado.puestoEmpleadoEmpresa = this.puestoOriginal;
+          this.fotoTemporal = '';
+          // this.empleado.puestoEmpleadoEmpresa = this.puestoOriginal;
           this.modoEdicion = false;
+          this.empleadoForm.patchValue({
+            nombreEmpleado: this.empleado.nombreEmpleadoEmpresa,
+            apellidoEmpleado: this.empleado.apellidoEmpleadoEmpresa,
+            puestoEmpleado: this.empleado.puestoEmpleadoEmpresa,
+          })
       }});
     } else {
       this.router.navigate([`empleados`]);
     }
   }
 
-  enviarDatos() {
+  async enviarDatos() {
     Swal.fire({
       title: '¿Desea confirmar los cambios realizados?',
       icon: "question",
@@ -105,12 +206,13 @@ export class PerfilEmpleadoComponent implements OnInit {
       customClass: {
         title: 'titulo-chico',
       }
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
         const nuevoPuesto = this.empleado.puestoEmpleadoEmpresa;
+        const formValue = this.empleadoForm.value;
         if (!this.esEmpleado) {
           // El administrador es quien esta modificando el perfil del empleado
-          this.empleadoService.modificarEmpleadoComoEmpresa(nuevoPuesto ?? '', this.idEmpleado).subscribe({
+          this.empleadoService.modificarEmpleadoComoEmpresa(formValue.puestoEmpleado, this.empleado.id!, this.idEmpresaObtenida).subscribe({
             next: () => {
               this.puestoOriginal = nuevoPuesto ?? '';
               this.modoEdicion = false;
@@ -128,41 +230,22 @@ export class PerfilEmpleadoComponent implements OnInit {
             }
           })
         } else {
-          // El empleado es quien esta modificando su perfil
-          const contrasenia = this.empleado.usuario?.contraseniaUsuario ?? '';
-          const repetirContrasenia = this.repetirContrasenia ?? '';
-          if (contrasenia) {
-            if (contrasenia.length < 8) {
-              Swal.fire({
-                toast: true,
-                icon: 'warning',
-                title: 'La contraseña debe tener al menos 8 caracteres',
-                position: 'top-end',
-                timer: 3000,
-                showConfirmButton: false
-              });
-              return;
-            }
+
+          let fotoURL = this.empleado.usuario?.urlFotoUsuario ?? '';
+          if (this.file) {
+            const subida = await this.subirFoto(this.file);
+            if (subida) fotoURL = subida;
           }
-          if (contrasenia !== repetirContrasenia) {
-            Swal.fire({
-              toast: true,
-              icon: 'warning',
-              title: 'Las contraseñas no coinciden',
-              position: 'top-end',
-              timer: 3000,
-              showConfirmButton: false
-            });
-            return;
-          }
+          console.log("desde el perfil, esto voy a mandar: ", this.empleado.id!)
           this.empleadoService.modificarEmpleadoComoEmpleado(
-          this.empleado.nombreEmpleadoEmpresa ?? '',
-          this.empleado.apellidoEmpleadoEmpresa ?? '',
-          contrasenia,
-          repetirContrasenia,
-          this.idEmpleado
+          formValue.nombreEmpleado,
+          formValue.apellidoEmpleado,
+          this.empleado.id!,
+          this.empleado.empresa?.id ?? 0,
+          fotoURL
         ).subscribe({
           next: () => {
+            console.log("pude mandar bien la request")
             this.puestoOriginal = nuevoPuesto ?? '';
             this.modoEdicion = false;
             this.repetirContrasenia = '';
@@ -175,6 +258,7 @@ export class PerfilEmpleadoComponent implements OnInit {
               timer: 3000,
               showConfirmButton: false,
             });
+            
           },
           error: (error) => console.error('Error al modificar empleado', error)
           });
@@ -215,22 +299,86 @@ export class PerfilEmpleadoComponent implements OnInit {
           },
           error: (error) => {
             console.error('Error al eliminar empleado', error);
-            if(error.error.message === "Empleado asociado a una etapa de oferta") {
-              // TODO: CAMBIAR MESSAGE DE ERROR SEGUN EL ERROR QUE SE AGREGUE EN EL BACK
+            if(error.error.message === "No se puede dar de baja: el empleado participa en ofertas no finalizadas.") {
               Swal.fire({
                 toast: true,
                 position: "top-end",
                 icon: "warning",
-                title: "¡El empleado está asociado a una etapa actualmente!",
+                title: "¡El empleado está asociado a una oferta actualmente!",
                 text: "No se puede eliminar un empleado que está asignado a una etapa en una oferta no finalizada",
                 timer: 3000,
                 showConfirmButton: false,
               })
-              }
-            
+            }
           }
         })
     }});
+  }
+
+  onFileSelectedFoto(event: any) {
+    const file: File = event.target.files[0];
+    if (file) {
+      this.file = file;
+      const reader = new FileReader();
+      reader.onload = e => this.fotoTemporal = e.target?.result as string;
+      reader.readAsDataURL(file);
+    }
+  }
+
+  async subirFoto(file: File): Promise<string | null> {
+    if (!file) return null;
+    try {
+      this.cargandoFoto = true;
+      const filePath = `foto/${file.name}`;
+      const fileRef = ref(this.storage, filePath);
+      await uploadBytes(fileRef, file);
+      const downloadURL = await getDownloadURL(fileRef);
+
+      this.cargandoFoto = false;
+      return downloadURL;
+    } catch (error) {
+      this.cargandoFoto = false;
+      console.error("Error al subir la foto:", error);
+      return null;
+    }
+  }
+
+  verificarFormatoFoto(nombreArchivo: string): boolean {
+    const extensionesPermitidas = /\.(jpg|jpeg|png)$/i;
+    return extensionesPermitidas.test(nombreArchivo);
+  }
+
+  abrirModalContrasenia() {
+    this.modalRef = this.modalService.open(CambioContraseniaComponent, {
+      centered: true,
+      scrollable: true,
+      size: 'md'
+    });
+
+    this.modalRef.componentInstance.usuarioId = this.empleado.usuario!.id;
+  }
+
+  estadoClase(oferta: EmpleadoEtapaDTO): string {
+    const cod = (oferta?.estadoOferta ?? '').toUpperCase();
+    switch (cod) {
+      case 'ABIERTA':     return 'is-abierta';
+      case 'CERRADA':     return 'is-cerrada';
+      case 'FINALIZADA':  return 'is-finalizada';
+      default:            return 'is-neutro';
+    }
+  }
+
+  estadoTexto(oferta: EmpleadoEtapaDTO): string {
+    return oferta?.estadoOferta ?? 'Sin estado';
+  }
+
+  irADetalle(id: number) {
+    this.router.navigate(['/visualizar-oferta', id]);
+  }
+
+  isCampoInvalido(nombreCampo: string): boolean {
+    const control = this.empleadoForm.get(nombreCampo);
+    return !!(control && control.invalid && (control.touched || this.submitForm));
   }
 
 }

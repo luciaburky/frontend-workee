@@ -137,7 +137,7 @@ export class BusquedaCandidatosComponent implements OnInit {
     });
   }
 
-  filtrarEmpresas() {
+  filtrarCandidatos() {
     this.isLoading = true;
     const idsHabilidades = this.filtrosSeleccionadosHabilidad?.length ? this.filtrosSeleccionadosHabilidad : null;
     const idsPaises = this.filtrosSeleccionadosPais?.length ? this.filtrosSeleccionadosPais : null;
@@ -156,6 +156,7 @@ export class BusquedaCandidatosComponent implements OnInit {
       sessionStorage.setItem('filtrosPais', JSON.stringify(this.filtrosSeleccionadosPais));
       sessionStorage.setItem('filtrosProvincia', JSON.stringify(this.filtrosSeleccionadosProvincia));
       this.isLoading = false;
+      console.log("este es el listado de candidatos que recibo del backend: ", data)
     })
   }
 

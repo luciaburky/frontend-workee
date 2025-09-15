@@ -46,19 +46,18 @@ export class BusquedaService {
   }
   
   filtrarCandidatos(
-                  nombreEmpresa: string | null,
+                  nombreCandidato: string | null,
                   idsProvincias: number[] | null,
                   idsPaises: number[] | null,
                   idsHabilidades: number[] | null,
                   idsEstadosDeBusqueda: number[] | null,
-                  // tieneOfertasAbiertas: boolean | null
-                ): Observable<Empresa[]> {
+                ): Observable<Candidato[]> {
     const body = {
-      "nombreCandidato": nombreEmpresa,
+      "nombreCandidato": nombreCandidato,
       "idsProvincias": idsProvincias,
       "idsPaises": idsPaises,
       "idsHabilidades": idsHabilidades,
-      "idsEstadosBusqueda": idsEstadosDeBusqueda,
+      "idsEstadosDeBusqueda": idsEstadosDeBusqueda,
     }
     console.log("estoy desde el service, este es el body: ", body);
     return this.http.post<Candidato[]>(`${this.url}/candidatosFiltrados`, body);
@@ -86,12 +85,4 @@ export class BusquedaService {
     return this.http.post<Oferta[]>(`${this.url}/ofertasFiltradas`, body);
   }
 
-
-  oferta(id: number): Observable<Oferta> {
-    return this.http.get<Oferta>(`http://localhost:9090/ofertas/${id}`);
-  }
-
-  ofertasPorEmpresa(id: number): Observable<Oferta[]> {
-    return this.http.get<Oferta[]>(`http://localhost:9090/ofertas/empresa/${id}`);
-  }
 }

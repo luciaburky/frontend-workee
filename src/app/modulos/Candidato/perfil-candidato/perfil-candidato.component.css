@@ -96,14 +96,15 @@ form .al-lado {
 }
 
 .form-group {
-  /* display: flex; */
+  display: flex;
+  align-items: flex-start;
   flex-direction: column;
   width: 100%;
 }
 
 .form-grid-foto {
   display: grid;
-  grid-template-columns: 1fr 3fr; /* 1/4 for avatar, 3/4 for name/surname */
+  grid-template-columns: 1fr 3fr;
   gap: 2rem;
   margin-bottom: 2rem;
   align-items: center;
@@ -351,6 +352,12 @@ form .form-grid:last-of-type {
   background-color: #D3FBCF;
   color: #28a745;
   border-color: #28a745;
+}
+
+.badge.otro {
+  background-color: #e8eee7;
+  color: #67726a;
+  border-color: #67726a;
 }
 
 .titulo-habilidades {

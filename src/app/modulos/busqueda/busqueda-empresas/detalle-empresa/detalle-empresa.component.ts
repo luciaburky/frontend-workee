@@ -5,6 +5,7 @@ import { Empresa } from '../../../empresa/empresa/empresa';
 import { BusquedaService } from '../../busqueda.service';
 import { Oferta } from '../../../oferta/oferta';
 import { DatePipe } from '@angular/common';
+import { OfertaService } from '../../../oferta/oferta.service';
 
 @Component({
   selector: 'app-detalle-empresa',
@@ -16,11 +17,15 @@ export class DetalleEmpresaComponent implements OnInit {
   empresa: Empresa = {};
   ofertas: Oferta[] = []; // arreglo usado para guardar las ofertas que tiene la empresa
   
+  origen: any | undefined;
+
+  idOfertaOrigen?: number | null;
+
   constructor(
     private empresaService: EmpresaService,
     private route: ActivatedRoute,
     private router: Router,
-    private busquedaService: BusquedaService,
+    private ofertaService: OfertaService,
   ) {}
   
   ngOnInit(): void {
@@ -30,10 +35,15 @@ export class DetalleEmpresaComponent implements OnInit {
     })
 
     // para buscar ofertas de la empresa
-    this.busquedaService.ofertasPorEmpresa(id).subscribe(data => {
+    this.ofertaService.getOfertasPorEmpresa(id).subscribe(data => {
       this.ofertas = data;
       console.log("estas son las ofertas que tiene la empresa", this.ofertas)
     })
+
+    this.route.queryParams.subscribe(params => {
+      this.origen = params['from'];
+      this.idOfertaOrigen = params['idOferta'] ? Number(params['idOferta']) : null;
+    });
   }
 
   getSitioWebConProtocolo(url: string): string {
@@ -44,12 +54,22 @@ export class DetalleEmpresaComponent implements OnInit {
     return url;
   }
 
-  irADetalleOferta(idOferta: number) {
-    this.router.navigate([`buscar-ofertas/detalle`,idOferta]);
+  isOfertaAbierta(oferta: Oferta): boolean {
+    const estadoVigente = oferta.estadosOferta.find(eo => eo.fechaHoraBaja == null);
+    return estadoVigente?.estadoOferta.codigo === "ABIERTA";
   }
 
-  volverAListado() {
-    this.router.navigate([`buscar-empresas`]);
+  irADetalleOferta(idOferta: number) {
+    // con "queryparams" se guarda un string que nos dice desde donde se accedio al detalle de la oferta
+    this.router.navigate([`buscar-ofertas/detalle`,idOferta], { queryParams: { from: 'empresa' } });
+  }
+
+  volver() {
+    if (this.origen === 'oferta' && this.idOfertaOrigen) {
+      this.router.navigate([`/buscar-ofertas/detalle`, this.idOfertaOrigen]);
+    } else {
+      this.router.navigate([`buscar-empresas`]);
+    }
   }
 
 }

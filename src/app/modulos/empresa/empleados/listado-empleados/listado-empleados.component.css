@@ -32,6 +32,8 @@
     padding: 6px;
     margin-top: 6px;
     justify-content: center;
+    display: flex;
+    justify-content: flex-start;
 }
 
 .card {

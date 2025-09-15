@@ -1,11 +1,18 @@
-<div class="container">
-    <div class="titulo-wrapper">
-        <h2 class="titulo-listado">Modalidades</h2>
+<div class="listado-wrapper">
+    <button type="button" class="boton" (click)="volverAListado()">
+        <span class="material-symbols-outlined">arrow_back</span>
+        Volver
+    </button>
+    <div class="listado-header">
+        <div>
+            <h1>Modalidades de trabajo</h1>
+            <p>Gestiona los parámetros de Workee</p>
+        </div>
     </div>
     <div class="busqueda-acciones">
         <button type="button" class="boton-nuevo" (click)="crearModalidad()">
             <span class="material-symbols-outlined">add</span>
-            Nueva Modalidad
+            Nueva Modalidad de trabajo
         </button>
     </div>
     @if (modalidadList.length === 0) {
@@ -13,10 +20,10 @@
                 ¡No hay modalidades cargadas en el sistema!
             </div>
     } @else {
-        <table class="table align-middle">
+        <table class="table align-middle table-hover">
         <thead>
             <tr>
-                <th scope="col">MODALIDAD</th>
+                <th scope="col">MODALIDAD DE TRABAJO</th>
                 <th scope="col">ESTADO</th>
                 <th scope="col">ACCIONES</th>
             </tr>

@@ -61,10 +61,10 @@ export class BusquedaOfertasComponent implements OnInit {
     
     const listaGuardadaOfertas = sessionStorage.getItem('ofertaList');
     const textoGuardadoOferta = sessionStorage.getItem('textoOferta');
-    const filtrosUbicacionGuardados = sessionStorage.getItem('filtrosUbicacion');
-    const filtrosModalidadGuardados = sessionStorage.getItem('filtrosModalidad');
-    const filtrosTipoContratoGuardados = sessionStorage.getItem('filtrosTipoContrato');
-    const filtrosFechaGuardados = sessionStorage.getItem('filtrosFecha');
+    const filtrosUbicacionGuardados = sessionStorage.getItem('filtrosUbicacionOferta');
+    const filtrosModalidadGuardados = sessionStorage.getItem('filtrosModalidadOferta');
+    const filtrosTipoContratoGuardados = sessionStorage.getItem('filtrosTipoContratoOferta');
+    const filtrosFechaGuardados = sessionStorage.getItem('filtrosFechaOferta');
     
     if (listaGuardadaOfertas) {
       this.ofertaList = JSON.parse(listaGuardadaOfertas);
@@ -124,20 +124,27 @@ export class BusquedaOfertasComponent implements OnInit {
   }
 
   buscarPorNombre(textoOferta: string): void {
-      this.isLoading = true;
+    this.isLoading = true;
     this.busquedaRealizada = true;
     this.busquedaService.buscarOfertasPorNombre(textoOferta).subscribe(data => {
       this.ofertaList = data;
       sessionStorage.setItem('textoOferta',JSON.stringify(this.textoOferta));
       sessionStorage.setItem('ofertaList', JSON.stringify(this.ofertaList));
-      sessionStorage.setItem('filtrosTipoContrato', JSON.stringify(this.filtrosSeleccionadosTipoContrato));
-      sessionStorage.setItem('filtrosModalidad', JSON.stringify(this.filtrosSeleccionadosModalidad));
-      sessionStorage.setItem('filtrosFecha', JSON.stringify(this.filtrosSeleccionadosFecha));
+      sessionStorage.setItem('filtrosUbicacionOferta', JSON.stringify(this.filtrosSeleccionadosUbicacion));
+      sessionStorage.setItem('filtrosTipoContratoOferta', JSON.stringify(this.filtrosSeleccionadosTipoContrato));
+      sessionStorage.setItem('filtrosModalidadOferta', JSON.stringify(this.filtrosSeleccionadosModalidad));
+      // sessionStorage.setItem('filtrosFechaOferta', JSON.stringify(this.filtrosSeleccionadosFecha));
+      sessionStorage.setItem(
+        'filtrosOferta',
+        this.filtrosSeleccionadosFecha !== undefined
+          ? JSON.stringify(this.filtrosSeleccionadosFecha)
+          : 'null'
+      );
       this.isLoading = false;
     });
   }
   
-  filtrarEmpresas() {
+  filtrarOfertas() {
     this.isLoading = true;
     const idsProvincias = this.filtrosSeleccionadosUbicacion?.length ? this.filtrosSeleccionadosUbicacion : null;
     const idsTipoContrato = this.filtrosSeleccionadosTipoContrato?.length ? this.filtrosSeleccionadosTipoContrato : null;
@@ -151,9 +158,16 @@ export class BusquedaOfertasComponent implements OnInit {
       this.ofertaList = data;
       sessionStorage.setItem('texto',JSON.stringify(this.textoOferta));
       sessionStorage.setItem('ofertaList', JSON.stringify(this.ofertaList));
-      sessionStorage.setItem('filtrosTipoContrato', JSON.stringify(this.filtrosSeleccionadosTipoContrato));
-      sessionStorage.setItem('filtrosModalidad', JSON.stringify(this.filtrosSeleccionadosModalidad));
-      sessionStorage.setItem('filtrosFecha', JSON.stringify(this.filtrosSeleccionadosFecha));
+      sessionStorage.setItem('filtrosUbicacionOferta', JSON.stringify(this.filtrosSeleccionadosUbicacion));
+      sessionStorage.setItem('filtrosTipoContratoOferta', JSON.stringify(this.filtrosSeleccionadosTipoContrato));
+      sessionStorage.setItem('filtrosModalidadOferta', JSON.stringify(this.filtrosSeleccionadosModalidad));
+      // sessionStorage.setItem('filtrosFechaOferta', JSON.stringify(this.filtrosSeleccionadosFecha));
+      sessionStorage.setItem(
+        'filtrosOferta',
+        this.filtrosSeleccionadosFecha !== undefined
+          ? JSON.stringify(this.filtrosSeleccionadosFecha)
+          : 'null'
+      );
       this.isLoading = false;
     })
   }

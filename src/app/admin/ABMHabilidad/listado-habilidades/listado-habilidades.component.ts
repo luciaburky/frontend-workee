@@ -9,6 +9,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { ModalService } from '../../../compartidos/modal/modal.service';
 import { RecargarService } from '../../recargar.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-listado-habilidades',
@@ -27,7 +28,8 @@ export class ListadoHabilidadesComponent {
   constructor(
     private habilidadService: HabilidadService,
     private modalService: ModalService,
-    private recargarService: RecargarService
+    private recargarService: RecargarService,
+    private router: Router
   ) {  }
 
   ngOnInit(): void {
@@ -41,6 +43,11 @@ export class ListadoHabilidadesComponent {
       this.recargar();
     })
   }
+
+  volverAListado() {
+    this.router.navigate([`parametros`]);
+  }
+
 
   // Creacion de Habilidad
   crearHabilidad() {

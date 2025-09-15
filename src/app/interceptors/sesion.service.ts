@@ -18,6 +18,9 @@ export class SesionService {
   private rolUsuarioSubject = new BehaviorSubject<Rol | null>(null);
   rolUsuario$ = this.rolUsuarioSubject.asObservable();
 
+  private spinnerSubject = new BehaviorSubject<boolean | null>(null);
+  spinner$ = this.spinnerSubject.asObservable();
+
   private endpointURL = 'http://localhost:9090/auth';
 
   private loadingSubject = new BehaviorSubject<boolean>(true);
@@ -96,8 +99,21 @@ export class SesionService {
         next: (rol) => {
           this.rolUsuarioSubject.next(rol); 
           console.log("Rol del usuario cargado:", rol);
-          this.redirectBasedOnRol();
-          this.setLoading(false);
+
+
+          //TODO: Revisar esto que agregue:
+          const currentUrl = this.router.url;
+          const rutasPublicas = ['/login', '/registro', '/inicio'];
+          if (currentUrl === '/' || rutasPublicas.includes(currentUrl)) {
+            this.redirectBasedOnRol();
+            this.setLoading(false);
+          } else {
+            
+            this.setLoading(false);
+          }
+          //Esto estaba antes:
+          //this.redirectBasedOnRol();
+          //this.setLoading(false);
         },
         error: (err) => {
           console.error("Error al obtener rol del usuario:", err);
@@ -113,6 +129,35 @@ export class SesionService {
     return this.rolUsuarioSubject.value;
   }
 
+  cargarRolUsuarioSinRedireccion(){
+    this.setLoading(true);
+    this.spinnerSubject.next(true);
+
+      const correo = this.getCorreoUsuario();
+      if (!correo) {
+        this.setLoading(false);
+      this.spinnerSubject.next(false);
+
+        console.error("No se pudo obtener el correo del token.");
+        return;
+      }
+
+      this.rolService.buscarRolPorCorreoUsuario(correo).subscribe({
+        next: (rol) => {
+          this.rolUsuarioSubject.next(rol); 
+          this.setLoading(false);
+          this.spinnerSubject.next(false);
+
+        },
+        error: (err) => {
+          console.error("Error al obtener rol del usuario:", err);
+          this.rolUsuarioSubject.next(null);
+          this.setLoading(false);
+          this.spinnerSubject.next(false);
+        }
+      });
+  }
+
 
   // Nuevo método para redirigir según el rol
   redirectBasedOnRol(): void {
@@ -120,7 +165,6 @@ export class SesionService {
     if (this.redirectUrl) {
       this.redirectUrl = ''; 
       this.router.navigateByUrl(url);
-      //this.router.navigate([url]).then(() => this.setLoading(false));
       return;
     }
     
@@ -132,7 +176,6 @@ export class SesionService {
       return;
     }
 
-    // Aquí es donde ocurre la magia de la redirección
     switch (rolActual.codigoRol) {
       case 'CANDIDATO':
         this.router.navigate(['/candidato/perfil']);
@@ -149,10 +192,6 @@ export class SesionService {
       default:
         console.warn('Rol no reconocido, redirigiendo a la página por defecto.');
         this.router.navigate(['/']);
-        /*this.router.navigate([url]).then(() => {
-          // Desactivar el estado de carga una vez que la navegación se ha completado.
-          this.setLoading(false);
-        });*/
     }
   }
 

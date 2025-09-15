@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { EmpleadoService } from '../empleado.service';
 import Swal from 'sweetalert2';
 import { CommonModule } from '@angular/common';
+import { EmpresaService } from '../../empresa/empresa.service';
 
 @Component({
   selector: 'app-crear-empleado',
@@ -19,9 +20,12 @@ export class CrearEmpleadoComponent implements OnInit {
   backendContraseniasNoCoinciden = false;
   backendContraseniaCorta = false;
 
+  idEmpresaObtenida: number = 0;
+
   constructor(
     private router: Router,
     private empleadoService: EmpleadoService,
+    private empresaService: EmpresaService,
   ) {
     this.empleadoForm = new FormGroup({
       nombreEmpleado: new FormControl('', [Validators.required]),
@@ -33,7 +37,24 @@ export class CrearEmpleadoComponent implements OnInit {
     })
   }
   
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    if (this.empresaService) {
+      console.log('entra a empresa service')
+      this.empresaService.getidEmpresabyCorreo()?.subscribe({
+          next: (idEmpresa) => {
+            if (idEmpresa !== undefined && idEmpresa !== null) {
+              this.idEmpresaObtenida = idEmpresa;
+              console.log('id empresa obtenido: ', idEmpresa)
+            } else {
+              console.error('El id de empresa obtenido es undefined o null');
+            }
+          },
+          error: (err) => {
+            console.error('Error al obtener id de empresa por correo', err);
+          }
+      });
+    }
+  }
 
   isCampoInvalido(nombreCampo: string): boolean {
     const control = this.empleadoForm.get(nombreCampo);
@@ -42,11 +63,6 @@ export class CrearEmpleadoComponent implements OnInit {
 
   enviarDatos() {
     this.backendEmailInvalido = false;
-    
-    // if (this.empleadoForm.invalid) {
-    //   this.empleadoForm.markAllAsTouched();
-    //   return;
-    // }
     
     const nombreEmpleado = this.empleadoForm.get('nombreEmpleado')?.value;
     const apellidoEmpleado = this.empleadoForm.get('apellidoEmpleado')?.value;
@@ -61,7 +77,8 @@ export class CrearEmpleadoComponent implements OnInit {
       puestoEmpleado,
       correoEmpleado,
       contraseniaEmpleado,
-      repetirContraseniaEmpleado).subscribe({
+      repetirContraseniaEmpleado,
+      this.idEmpresaObtenida).subscribe({
         next: () => {
           this.submitForm = true;
           this.volverAListado();
@@ -86,7 +103,6 @@ export class CrearEmpleadoComponent implements OnInit {
               showConfirmButton: false,
             })
           }
-          // console.log(error.error.message);
           if (error.status === 400 && error.error.message === "Debe ser un correo válido") {
             this.backendEmailInvalido = true;
             this.empleadoForm.get('correoEmpleado')?.setErrors({ backend: true });
@@ -101,22 +117,6 @@ export class CrearEmpleadoComponent implements OnInit {
         }
       })
   }
-
-  // erroresDeBackend(mensaje: string) {
-  //   const errores = mensaje.split(', ');
-  //   console.log(errores)
-  //   errores.forEach(error => {
-  //     if (error.includes('correo')) {
-  //       this.empleadoForm.get('correoEmpleado')?.setErrors({ backend: error });
-  //       console.log("setee el error bien")
-  //     } else if (error.includes('repetir')) {
-  //       this.empleadoForm.get('repetirContraseniaEmpleado')?.setErrors({ backend: error });
-  //     } else if (error.includes('contraseña')) {
-  //       this.empleadoForm.get('contraseniaEmpleado')?.setErrors({ backend: error });
-  //     }
-  //     console.log(this.empleadoForm.get('correoEmpleado')?.getError('backend'));
-  //   });
-  // }
 
   volverAListado(): void {
     this.router.navigate([`empleados`])

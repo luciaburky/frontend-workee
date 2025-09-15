@@ -9,6 +9,7 @@ import { ModalService } from '../../../compartidos/modal/modal.service';
 import { CrearTipoContratoComponent } from '../crear-tipo-contrato/crear-tipo-contrato.component';
 import { ModificarTipoContratoComponent } from '../modificar-tipo-contrato/modificar-tipo-contrato.component';
 import Swal from 'sweetalert2';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-listado-tipos-contrato',
@@ -26,6 +27,8 @@ export class ListadoTiposContratoComponent {
     private tipoContratoService: TipoContratoService,
     private modalService: ModalService,
     private recargarService: RecargarService,
+    private router: Router
+
   ) {}
 
   ngOnInit(): void {    
@@ -37,6 +40,10 @@ export class ListadoTiposContratoComponent {
     this.recargarService.recargar$.subscribe(() => {
       this.recargar();
     })
+  }
+
+  volverAListado() {
+    this.router.navigate([`parametros`]);
   }
 
   // Creacion de TipoContrato

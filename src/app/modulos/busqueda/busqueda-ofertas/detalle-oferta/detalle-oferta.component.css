@@ -148,3 +148,12 @@
 .seccion-habilidades {
     margin-bottom: 16px;
 }
+
+.link-empresa {
+  color: #000000;
+  text-decoration: none;
+  cursor: pointer;
+}
+.link-empresa:hover {
+  text-decoration: underline;
+}

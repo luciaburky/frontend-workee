@@ -9,6 +9,7 @@ import { RecargarService } from '../../recargar.service';
 import { ModalidadService } from '../modalidad.service';
 import { CrearModalidadComponent } from '../crear-modalidad/crear-modalidad.component';
 import { ModificarModalidadComponent } from '../modificar-modalidad/modificar-modalidad.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-listado-modalidad',
@@ -26,6 +27,8 @@ export class ListadoModalidadesComponent {
     private modalidadService: ModalidadService,
     private modalService: ModalService,
     private recargarService: RecargarService,
+    private router: Router
+
   ) {}
 
   ngOnInit(): void {    
@@ -38,6 +41,10 @@ export class ListadoModalidadesComponent {
     this.recargarService.recargar$.subscribe(() => {
       this.recargar();
     })
+  }
+
+  volverAListado() {
+    this.router.navigate([`parametros`]);
   }
 
   // Creacion de Modalidad

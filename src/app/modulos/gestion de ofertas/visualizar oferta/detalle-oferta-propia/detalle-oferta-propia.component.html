@@ -1,0 +1,77 @@
+<div class="perfil-wrapper">
+  <button type="button" class="boton" [routerLink]="['/visualizar-oferta']">
+    <span class="material-symbols-outlined">arrow_back</span>
+    Volver
+  </button>
+
+  <div class="perfil-header">
+    <div class="info">
+      <div class="nombre-boton">
+        <h1 class="m-0">{{ oferta?.titulo }}</h1>
+        <div class="datos-boton">
+          <div class="estado-container">
+            <h5 class="estado-label">Estado de la oferta</h5>
+            <div class="custom-select-wrapper" [ngClass]="estadoActual?.codigo">
+              <div class="selected-option" (click)="toggleDropdown()">
+                <span>{{ estadoActual?.nombreEstadoOferta }}</span>
+                <span class="material-symbols-outlined dropdown-arrow" [ngClass]="{'rotated': isDropdownOpen}">expand_more</span>
+              </div>
+
+              <div class="options-container" [class.show]="isDropdownOpen">
+                @for (estado of estadosDisponibles; track $index) {
+                  <div 
+                    class="option"
+                    [class.selected]="estado.codigo === estadoActual?.codigo"
+                    (click)="selectEstado(estado)"
+                  >
+                    {{ estado.nombreEstadoOferta }}
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="publicacion-oferta">
+        <span class="material-symbols-outlined">schedule</span>
+        <p>Publicado: {{ oferta?.fechaHoraAlta | date: 'dd/MM/yyyy' }}</p>
+      </div>
+
+      <div class="datos-general">
+        <div class="datos">
+          <span class="material-symbols-outlined">location_on</span>
+          <p>
+            {{ oferta?.empresa!.provincia!.nombreProvincia }},
+            {{ oferta?.empresa!.provincia!.pais?.nombrePais }}
+          </p>
+        </div>
+        <div class="datos">
+          <span class="material-symbols-outlined">work</span>
+          <p>{{ oferta?.modalidadOferta!.nombreModalidadOferta }}</p>
+        </div>
+        <div class="datos">
+          <span class="material-symbols-outlined">schedule</span>
+          <p>{{ oferta?.tipoContratoOferta!.nombreTipoContratoOferta }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="seccion-abajo">
+    <h5 class="pb-10">Descripción</h5>
+    <p class="descripcion">{{ oferta?.descripcion }}</p>
+
+    <div class="seccion-habilidades">
+      <h5 class="pb-10">Habilidades requeridas</h5>
+      <div class="habilidades">
+        @for (hab of oferta?.habilidades; track $index) {
+          <span class="tag"> {{ hab.habilidad.nombreHabilidad }} </span>
+        }
+      </div>
+    </div>
+
+    <h5 class="pb-10">Responsabilidades</h5>
+    <p class="descripcion">{{ oferta?.responsabilidades }}</p>
+  </div>
+</div>

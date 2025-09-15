@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { EtapaService } from '../etapa.service';
 import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
@@ -14,6 +14,9 @@ import { RecargarService } from '../../recargar.service';
   styleUrl: './crear-etapa.component.css'
 })
 export class CrearEtapaComponent {
+  // Esta variable se va a usar solo si quien quiere crear una etapa es una empresa
+  @Input() idEmpresa!: number
+  
   etapaForm: FormGroup;
   modalRef?: NgbModalRef;
   submitForm: boolean = false;
@@ -29,7 +32,9 @@ export class CrearEtapaComponent {
     });
   }
 
-  ngOnInit() { }
+  ngOnInit() {
+    console.log("id empresa que llega al modal: ", this.idEmpresa);
+  }
 
   dismissModal() {
     this.modalService.dismissActiveModal();
@@ -48,7 +53,11 @@ export class CrearEtapaComponent {
     const nombreEtapa = this.etapaForm.get('etapa')?.value;
     const descripcionEtapa = this.etapaForm.get('descripcion')?.value;
 
-    this.etapaService.crearEtapa(nombreEtapa,descripcionEtapa).subscribe({
+    const request$ = this.idEmpresa
+      ? this.etapaService.crearEtapaEmpresa(this.idEmpresa, nombreEtapa, descripcionEtapa)
+      : this.etapaService.crearEtapa(nombreEtapa, descripcionEtapa);
+
+    request$.subscribe({
       next: () => {
         this.recargarService.emitirRecarga();
         this.submitForm = true;

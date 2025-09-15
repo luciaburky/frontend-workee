@@ -44,6 +44,10 @@ import { DetalleEmpresaPendienteComponent } from './modulos/seguridad/habilitaci
 import { BusquedaOfertasComponent } from './modulos/busqueda/busqueda-ofertas/busqueda-ofertas.component';
 import { DetalleOfertaComponent } from './modulos/busqueda/busqueda-ofertas/detalle-oferta/detalle-oferta.component';
 
+import { CrearOfertaComponent } from './modulos/gestion de ofertas/crear oferta/crear oferta component/crear-oferta.component';
+import { VisualizarOfertasPropiasComponent } from './modulos/gestion de ofertas/visualizar oferta/visualizar-ofertas-propias.component';
+import { EtapasEmpresaComponent } from './modulos/gestion de ofertas/etapas-empresa/etapas-empresa.component';
+import { DetalleOfertaPropiaComponent } from './modulos/gestion de ofertas/visualizar oferta/detalle-oferta-propia/detalle-oferta-propia.component';
 
 export const routes: Routes = [
     // { path: 'buscar-ofertas', component: BuscarComponent },
@@ -73,29 +77,23 @@ export const routes: Routes = [
     { path: 'empleados', component: ListadoEmpleadosComponent, canActivate: [authGuard] },
     { path: 'empleados/crear', component: CrearEmpleadoComponent, canActivate: [authGuard] },
     { path: 'empleados/perfil', component: PerfilEmpleadoComponent, canActivate: [authGuard] },
+    { path: 'empleados/perfil/:idEmpleado', component: PerfilEmpleadoComponent, canActivate: [authGuard] },
     { path: 'inicio', component: PaginaInicioComponent, canActivate: [publicGuard] }, 
 
     { path: 'login', component: LoginPageComponent, canActivate: [publicGuard] },
     { path: 'candidato/perfil', component: PerfilCandidatoComponent, canActivate: [authGuard] },
-
-
-
-
+    {path: 'visualizar-oferta', component: VisualizarOfertasPropiasComponent},
+    {path: 'visualizar-oferta/:id', component: DetalleOfertaPropiaComponent},
     { path: 'registro', component: RegistroComponent, canActivate: [publicGuard]},
     { path: 'registro-empresa', component: RegistroEmpresaComponent, canActivate: [publicGuard] },
     { path: 'registro-candidato', component: RegistroCandidatoComponent, canActivate: [publicGuard] },
+    { path: 'crear-oferta', component: CrearOfertaComponent},
     { path: 'cuentaVerificada', component: ConfirmacionComponent},
-
-
 
     { path: 'usuarios', component: ListadoUsuariosComponent, canActivate: [authGuard] },
     { path: 'usuarios/detalle/:idUsuario', component: DetalleUsuarioComponent, canActivate: [authGuard] },
     { path: 'habilitaciones', component: HabilitacionEmpresasComponent, canActivate: [authGuard] },
     { path: 'habilitaciones/detalle-empresa/:id', component: DetalleEmpresaPendienteComponent, canActivate: [authGuard] },
-
-
-
-
 
     { path: 'buscar-candidatos', component: BusquedaCandidatosComponent, canActivate: [authGuard] },
     { path: 'buscar-candidatos/detalle/:idCandidato', component: DetalleCandidatoComponent, canActivate: [authGuard] },
@@ -104,16 +102,9 @@ export const routes: Routes = [
     { path: 'nuevaContrasenia', component: RecuperarContraseniaComponent, canActivate: [authGuard]},
     { path: 'gestion-de-roles', component: GestionderolesComponent, canActivate: [authGuard]},
 
-    { path: 'buscar-candidatos', component: BusquedaCandidatosComponent },
-    { path: 'buscar-candidatos/detalle/:idCandidato', component: DetalleCandidatoComponent },
-    { path: 'buscar-empresas', component: BusquedaEmpresasComponent },
-    { path: 'buscar-empresas/detalle/:idEmpresa', component: DetalleEmpresaComponent },
     { path: 'buscar-ofertas', component: BusquedaOfertasComponent },
     { path: 'buscar-ofertas/detalle/:idOferta', component: DetalleOfertaComponent },
-    // { path: 'buscar-empresas/detalle/:idEmpresa', component: DetalleEmpresaComponent },
-    { path: 'nuevaContrasenia', component: RecuperarContraseniaComponent},
-    { path: 'gestion-de-roles', component: GestionderolesComponent},
-
+    { path: 'ofertas/etapas', component: EtapasEmpresaComponent },
 
 
 

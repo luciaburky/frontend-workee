@@ -50,10 +50,9 @@ export class ListadoUsuariosComponent implements OnInit {
       if (usuario.correoUsuario) {
         this.rolService.buscarRolPorCorreoUsuario(usuario.correoUsuario).subscribe(rol => {
           // Si el rol no es ADMIN_SISTEMA, lo agrego a la lista
-          if (rol.codigoRol !== 'ADMIN_SISTEMA') {
+          if (usuario.correoUsuario !== correoActualUsuario) {
             if (!usuario.urlFotoUsuario) {
               usuario.urlFotoUsuario = this.fotoPerfilDefecto;
-              console.log(usuario.urlFotoUsuario);
             }
             usuariosFiltrados.push(usuario);
           }
@@ -97,11 +96,17 @@ export class ListadoUsuariosComponent implements OnInit {
   }
   
   filtrarUsuarios() {
-    const idsRoles = this.filtrosSeleccionadosRoles?.length ? this.filtrosSeleccionadosRoles : null;
+    if (!this.filtrosSeleccionadosRoles || this.filtrosSeleccionadosRoles.length === 0) {
+      this.usuarioList = [...this.usuarioListOriginal];
+      return;
+    }
+
+    const idsRoles = this.filtrosSeleccionadosRoles;
+    const correoActualUsuario = this.sessionService.getCorreoUsuario();
 
     this.usuarioService.filtrarUsuarios(idsRoles).subscribe(data => {
-      this.usuarioList = data;
-    })
+      this.usuarioList = data.filter(u => u.correoUsuario !== correoActualUsuario);
+    });
   }
 
   descargarPDF() {
@@ -185,6 +190,40 @@ export class ListadoUsuariosComponent implements OnInit {
     if (this.paginaActual > 1) {
       this.paginaActual--;
     }
+  }
+
+  
+  get paginasMostradas(): (number | string)[] {
+    const total = this.totalPaginas;
+    const actual = this.paginaActual;
+    const paginas: (number | string)[] = [];
+
+    if (total <= 7) {
+      for (let i = 1; i <= total; i++) {
+        paginas.push(i);
+      }
+    } else {
+      paginas.push(1);
+
+      if (actual > 3) {
+        paginas.push('...');
+      }
+
+      const start = Math.max(2, actual - 1);
+      const end = Math.min(total - 1, actual + 1);
+
+      for (let i = start; i <= end; i++) {
+        paginas.push(i);
+      }
+
+      if (actual < total - 2) {
+        paginas.push('...');
+      }
+
+      paginas.push(total);
+    }
+
+    return paginas;
   }
 
   irAPagina(pagina: number): void {

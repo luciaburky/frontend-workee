@@ -1,5 +1,5 @@
 <div class="perfil-wrapper">
-    <button type="button" class="boton" (click)="volverAListado()">
+    <button type="button" class="boton" (click)="volver()">
         <span class="material-symbols-outlined">arrow_back</span>
         Volver
     </button>
@@ -16,7 +16,14 @@
                 </div>
             </div>
             <div class="datos-boton">
-                <h5 class="m-0">{{ oferta.empresa.nombreEmpresa }}</h5>
+                <h5 class="m-0">
+                    <a 
+                    [routerLink]="['/buscar-empresas/detalle', oferta.empresa.id]"
+                    [queryParams]="{ from: 'oferta', idOferta: oferta.id }"
+                    class="link-empresa">
+                        {{ oferta.empresa.nombreEmpresa }}
+                    </a>
+                </h5>
                 @if (esCandidato) {
                     <div class="position-relative d-inline-block">
                         <button 

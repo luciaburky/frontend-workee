@@ -1,6 +1,13 @@
-<div class="container">
-    <div class="titulo-wrapper">
-        <h2 class="titulo-listado">Habilidades</h2>
+<div class="listado-wrapper">
+    <button type="button" class="boton" (click)="volverAListado()">
+        <span class="material-symbols-outlined">arrow_back</span>
+        Volver
+    </button>
+    <div class="listado-header">
+        <div>
+            <h1>Habilidades</h1>
+            <p>Gestiona los parámetros de Workee</p>
+        </div>
     </div>
     <div class="busqueda-acciones">
         <div class="input-search-wrapper">
@@ -31,10 +38,11 @@
                 </p>
             </div>
         } @else {
-            <table class="table align-middle">
+            <table class="table align-middle table-hover">
             <thead>
                 <tr>
                     <th scope="col">HABILIDAD</th>
+                    <th scope="col">TIPO DE HABILIDAD</th>
                     <th scope="col">ESTADO</th>
                     <th scope="col">ACCIONES</th>
                 </tr>
@@ -43,6 +51,7 @@
                         @for (habilidad of obtenerHabilidadesPaginados(); track $index) {
                             <tr>
                                 <td> {{habilidad.nombreHabilidad}} </td>
+                                <td> {{habilidad.tipoHabilidad?.nombreTipoHabilidad}} </td>
                                 <td> 
                                     <span class="estado-badge"
                                     [ngClass]=" { 'habilitado': !habilidad.fechaHoraBaja, 'deshabilitado': habilidad.fechaHoraBaja }">

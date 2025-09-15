@@ -50,9 +50,9 @@ export class BusquedaEmpresasComponent implements OnInit{
     
     const listaGuardadaEmpresa = sessionStorage.getItem('empresaList');
     const textoGuardadoEmpresa = sessionStorage.getItem('textoEmpresa');
-    const filtrosUbicacionGuardados = sessionStorage.getItem('filtrosUbicacion');
-    const filtrosRubroGuardados = sessionStorage.getItem('filtrosRubro');
-    const filtrosOfertaGuardados = sessionStorage.getItem('filtrosOferta');
+    const filtrosUbicacionGuardados = sessionStorage.getItem('filtrosUbicacionEmpresa');
+    const filtrosRubroGuardados = sessionStorage.getItem('filtrosRubroEmpresa');
+    const filtrosOfertaGuardados = sessionStorage.getItem('filtrosOfertaEmpresa');
     
     if (listaGuardadaEmpresa) {
       this.empresaList = JSON.parse(listaGuardadaEmpresa);
@@ -109,9 +109,15 @@ export class BusquedaEmpresasComponent implements OnInit{
       console.log("empresas que coinciden con el texto ", textoEmpresa, ": ", this.empresaList);
       sessionStorage.setItem('textoEmpresa',JSON.stringify(this.textoEmpresa));
       sessionStorage.setItem('empresaList', JSON.stringify(this.empresaList));
-      sessionStorage.setItem('filtrosUbicacion', JSON.stringify(this.filtrosSeleccionadosUbicacion));
-      sessionStorage.setItem('filtrosRubro', JSON.stringify(this.filtrosSeleccionadosRubros));
-      sessionStorage.setItem('filtrosOferta', JSON.stringify(this.filtrosSeleccionadosOfertas));
+      sessionStorage.setItem('filtrosUbicacionEmpresa', JSON.stringify(this.filtrosSeleccionadosUbicacion));
+      sessionStorage.setItem('filtrosRubroEmpresa', JSON.stringify(this.filtrosSeleccionadosRubros));
+      // sessionStorage.setItem('filtrosOfertaEmpresa', JSON.stringify(this.filtrosSeleccionadosOfertas));
+      sessionStorage.setItem(
+        'filtrosOferta',
+        this.filtrosSeleccionadosOfertas !== undefined
+          ? JSON.stringify(this.filtrosSeleccionadosOfertas)
+          : 'null'
+      );
       this.isLoading = false;
     });
 
@@ -122,15 +128,23 @@ export class BusquedaEmpresasComponent implements OnInit{
     const idsProvincias = this.filtrosSeleccionadosUbicacion?.length ? this.filtrosSeleccionadosUbicacion : null;
     const idsRubros = this.filtrosSeleccionadosRubros?.length ? this.filtrosSeleccionadosRubros : null;
     const tieneOfertasAbiertas = this.filtrosSeleccionadosOfertas ?? null;
-
+    console.log("provincias: ", idsProvincias)
+    console.log("rubros: ", idsRubros)
+    console.log("ofertas: ", tieneOfertasAbiertas)
     this.busquedaRealizada = true;
     this.busquedaService.filtrarEmpresas(this.textoEmpresa, idsRubros, idsProvincias, tieneOfertasAbiertas).subscribe(data => {
       this.empresaList = data;
       sessionStorage.setItem('textoEmpresa',JSON.stringify(this.textoEmpresa));
       sessionStorage.setItem('empresaList', JSON.stringify(this.empresaList));
-      sessionStorage.setItem('filtrosUbicacion', JSON.stringify(this.filtrosSeleccionadosUbicacion));
-      sessionStorage.setItem('filtrosRubro', JSON.stringify(this.filtrosSeleccionadosRubros));
-      sessionStorage.setItem('filtrosOferta', JSON.stringify(this.filtrosSeleccionadosOfertas));
+      sessionStorage.setItem('filtrosUbicacionEmpresa', JSON.stringify(this.filtrosSeleccionadosUbicacion));
+      sessionStorage.setItem('filtrosRubroEmpresa', JSON.stringify(this.filtrosSeleccionadosRubros));
+      // sessionStorage.setItem('filtrosOfertaEmpresa', JSON.stringify(this.filtrosSeleccionadosOfertas));
+      sessionStorage.setItem(
+        'filtrosOferta',
+        this.filtrosSeleccionadosOfertas !== undefined
+          ? JSON.stringify(this.filtrosSeleccionadosOfertas)
+          : 'null'
+      );
       this.isLoading = false;
     })
   }

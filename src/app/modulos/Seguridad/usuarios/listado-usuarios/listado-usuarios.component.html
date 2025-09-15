@@ -35,8 +35,8 @@
                 [(ngModel)]="filtrosSeleccionadosRoles">
             </p-multiselect>
 
+            <!-- [disabled]="!filtrosSeleccionadosRoles.length" -->
             <button 
-                [disabled]="!filtrosSeleccionadosRoles.length"
                 class="boton"
                 (click)="filtrarUsuarios()">
                     Aplicar filtro
@@ -64,9 +64,15 @@
                 @for (usuario of obtenerUsuariosPaginados(); track $index) {
                         <tr (click)="irADetalle(usuario.idUsuario!)" style="cursor: pointer;">
                             <td class="celda-foto-correo">
-                                <!-- <img src="{{ usuario.urlFotoUsuario }}" alt="{{ usuario.nombreEntidad }}"> -->
-                                <img class="foto-usuario" [src]="usuario?.urlFotoUsuario ||'assets/img/foto-perfil.png'"  alt="{{ usuario.nombreEntidad }}">   
-                                {{ usuario.nombreEntidad }}
+                            <img class="foto-usuario" 
+                                [src]="usuario?.urlFotoUsuario || 'assets/img/foto-perfil.png'"  
+                                alt="{{ usuario.nombreEntidad || usuario.correoUsuario }}">   
+                                @if(usuario.nombreEntidad) {
+                                    <span class="nombre-usuario">{{ usuario.nombreEntidad }}</span>
+                                } @else {
+                                    <span class="nombre-usuario">Administrador del sistema</span>
+                                }
+                                <!-- {{ usuario.nombreEntidad || usuario.correoUsuario }} -->
                             </td>
                             <td> 
                                 {{ usuario.correoUsuario }}
@@ -81,24 +87,32 @@
         }
     </div>
     
-    @if (totalPaginas > 1) {
-        <nav class="paginador">
-            <ul class="pagination justify-content-center mb-0">
-                <li class="page-item" [class.disabled]="paginaActual === 1">
-                    <button class="page-link" (click)="retrocederPagina()">Anterior</button>
-                </li>
-                <li 
-                *ngFor="let pagina of paginas"
-                class="page-item" 
-                [class.active]="paginaActual === pagina">
-                    <button class="page-link" (click)="irAPagina(pagina)">
-                        {{ pagina }}
-                    </button>
-                </li>
-                <li class="page-item" [class.disabled]="paginaActual === totalPaginas">
-                    <button class="page-link" (click)="avanzarPagina()">Siguiente</button>
-                </li>
-            </ul>
-        </nav>
-    }
+    <nav *ngIf="totalPaginas > 1">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" [class.disabled]="paginaActual === 1">
+                <button class="page-link" (click)="retrocederPagina()">Anterior</button>
+            </li>
+
+            <li 
+            *ngFor="let pagina of paginasMostradas"
+            class="page-item"
+            [class.active]="paginaActual === pagina"
+            [class.disabled]="pagina === '...'">
+
+            <ng-container *ngIf="pagina !== '...'; else puntos">
+                <button class="page-link" (click)="irAPagina(+pagina)">
+                {{ pagina }}
+                </button>
+            </ng-container>
+
+            <ng-template #puntos>
+                <span class="page-link">...</span>
+            </ng-template>
+            </li>
+
+            <li class="page-item" [class.disabled]="paginaActual === totalPaginas">
+                <button class="page-link" (click)="avanzarPagina()">Siguiente</button>
+            </li>
+        </ul>
+    </nav>
 </div>

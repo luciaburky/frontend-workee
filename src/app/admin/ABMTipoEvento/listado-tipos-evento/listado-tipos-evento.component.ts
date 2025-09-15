@@ -9,6 +9,7 @@ import { RecargarService } from '../../recargar.service';
 import Swal from 'sweetalert2';
 import { CrearTipoEventoComponent } from '../crear-tipo-evento/crear-tipo-evento.component';
 import { ModificarTipoEventoComponent } from '../modificar-tipo-evento/modificar-tipo-evento.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-listado-tipos-evento',
@@ -26,6 +27,8 @@ export class ListadoTiposEventoComponent {
     private tipoEventoService: TipoEventoService,
     private modalService: ModalService,
     private recargarService: RecargarService,
+    private router: Router
+
   ) {}
 
   ngOnInit(): void {    
@@ -40,6 +43,9 @@ export class ListadoTiposEventoComponent {
     })
   }
 
+  volverAListado() {
+    this.router.navigate([`parametros`]);
+  }
   // Creacion de TipoEvento
   crearTipoEvento() {
     this.modalRef = this.modalService.open(CrearTipoEventoComponent, {
