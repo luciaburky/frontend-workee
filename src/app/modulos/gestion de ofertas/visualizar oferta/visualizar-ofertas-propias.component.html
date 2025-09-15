@@ -63,38 +63,84 @@
       </div>
   
   <div class="ofertas-grid">
-    @for (oferta of ofertas; track oferta.id) {
-      <article
-        class="oferta-card"
-        [ngClass]="estadoClase(oferta)"
-        (click)="irADetalle(oferta.id)"        
-        style="cursor: pointer"
-      >
-        <div class="oferta-card__head">
-          <h3 class="oferta-card__title">{{ oferta.titulo }}</h3>
-          <span class="pill" [ngClass]="estadoClase(oferta)">{{ estadoTexto(oferta) }}</span>
-        </div>
-        <p class="oferta-card__desc">
-          {{ oferta.descripcion }}
-        </p>
-        <div class="text-muted mt-2 fecha-actualizacion" *ngIf="getFechaUltimaActualizacion(oferta) != null">
-          <p>Última actualización:</p>
-          <p>
-            {{ getFechaUltimaActualizacion(oferta) | date:'dd/MM/yyyy HH:mm' }}
+    <div *ngIf="isLoading; else results">
+      <app-spinner type="inline" message="Cargando resultados..."></app-spinner>
+    </div>
+
+    <ng-template #results>
+      @if (ofertas.length === 0) {
+        <div class="sin-resultados">
+          <img src="assets/img/sin-resultados.png" alt="Sin resultados" class="sin-resultados-img">
+          <p class="sin-resultados-txt">
+            No encontramos ofertas que coincidan con tu búsqueda... <br>
+            Probá quitando filtros o ampliando tu búsqueda
           </p>
         </div>
-      </article>
-    }
+      } @else {
+        @for (oferta of ofertas; track oferta.id) {
+          <article
+            class="oferta-card"
+            [ngClass]="estadoClase(oferta)"
+            (click)="irADetalle(oferta.id)"        
+            style="cursor: pointer"
+          >
+            <div class="oferta-card__head">
+              <h3 class="oferta-card__title">{{ oferta.titulo }}</h3>
+              <span class="pill" [ngClass]="estadoClase(oferta)">
+                {{ estadoTexto(oferta) }}
+              </span>
+            </div>
+            <p class="oferta-card__desc">
+              {{ oferta.descripcion }}
+            </p>
+            <div class="text-muted mt-2 fecha-actualizacion" *ngIf="getFechaUltimaActualizacion(oferta) != null">
+              <p>Última actualización:</p>
+              <p>
+                {{ getFechaUltimaActualizacion(oferta) | date:'dd/MM/yyyy HH:mm' }}
+              </p>
+            </div>
+          </article>
+        }
+      }
+      </ng-template>
+    </div>
   </div>
-  
-  
-  <!-- === Bloque sin resultados === -->
-  <div class="sin-resultados" *ngIf="ofertas.length === 0">
-    <img src="assets\img\sin-resultados.png" alt="Sin resultados" class="sin-resultados-img">
-    <p class="sin-resultados-txt">
-      No encontramos ofertas que coincidan con tu búsqueda... <br>
-      Probá quitando filtros o ampliando tu búsqueda
-    </p>
-  </div>
+    
 
-</div>  
+    <!-- <div *ngIf="isLoading; else results">
+      <app-spinner type="inline" message="Cargando resultados..."></app-spinner>
+    </div>
+    <ng-template #results>
+      @if (ofertas.length === 0) {
+        <div class="sin-resultados">
+          <img src="assets\img\sin-resultados.png" alt="Sin resultados" class="sin-resultados-img">
+          <p class="sin-resultados-txt">
+            No encontramos ofertas que coincidan con tu búsqueda... <br>
+            Probá quitando filtros o ampliando tu búsqueda
+          </p>
+        </div>
+      } @else {
+        @for (oferta of ofertas; track oferta.id) {
+          <article
+            class="oferta-card"
+            [ngClass]="estadoClase(oferta)"
+            (click)="irADetalle(oferta.id)"        
+            style="cursor: pointer"
+          >
+            <div class="oferta-card__head">
+              <h3 class="oferta-card__title">{{ oferta.titulo }}</h3>
+              <span class="pill" [ngClass]="estadoClase(oferta)">{{ estadoTexto(oferta) }}</span>
+            </div>
+            <p class="oferta-card__desc">
+              {{ oferta.descripcion }}
+            </p>
+            <div class="text-muted mt-2 fecha-actualizacion" *ngIf="getFechaUltimaActualizacion(oferta) != null">
+              <p>Última actualización:</p>
+              <p>
+                {{ getFechaUltimaActualizacion(oferta) | date:'dd/MM/yyyy HH:mm' }}
+              </p>
+            </div>
+          </article>
+        }
+      }
+    </ng-template> -->
