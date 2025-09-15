@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Provincia } from '../provincia';
 import { ProvinciaService } from '../provincia.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CrearProvinciaComponent } from '../crear-provincia/crear-provincia.component';
 import Swal from 'sweetalert2';
 import { ModalService } from '../../../compartidos/modal/modal.service';
@@ -29,7 +29,9 @@ export class ListadoProvinciasComponent implements OnInit {
     private route: ActivatedRoute,
     private modalService: ModalService,
     private recargarService: RecargarService,
-    private cdRef: ChangeDetectorRef
+    private cdRef: ChangeDetectorRef,
+    private router: Router
+
   ) {}
 
   ngOnInit(): void {
@@ -42,6 +44,10 @@ export class ListadoProvinciasComponent implements OnInit {
     this.recargarService.recargar$.subscribe(() => {
       this.recargar();
     })
+  }
+
+  volverAListado() {
+    this.router.navigate([`parametros/paises`]);
   }
 
   // Creacion de Provincia

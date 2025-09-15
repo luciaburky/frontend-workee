@@ -10,6 +10,7 @@ import { EstadoOfertaService } from '../estado-oferta.service';
 import { CrearEstadoOfertaComponent } from '../crear-estado-oferta/crear-estado-oferta.component';
 import { ModificarEstadoOfertaComponent } from '../modificar-estado-oferta/modificar-estado-oferta.component';
 import { EstadoOferta } from '../estado-oferta';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-listado-estados-oferta',
@@ -27,6 +28,8 @@ export class ListadoEstadosOfertaComponent {
     private estadoService: EstadoOfertaService,
     private modalService: ModalService,
     private recargarService: RecargarService,
+    private router: Router
+
   ) {}
 
   ngOnInit(): void {    
@@ -38,6 +41,10 @@ export class ListadoEstadosOfertaComponent {
     this.recargarService.recargar$.subscribe(() => {
       this.recargar();
     })
+  }
+
+  volverAListado() {
+    this.router.navigate([`parametros`]);
   }
 
   // Creacion de EstadoOferta

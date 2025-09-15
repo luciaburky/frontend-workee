@@ -9,6 +9,7 @@ import { RecargarService } from '../../recargar.service';
 import { CrearEstadoUsuarioComponent } from '../crear-estado-usuario/crear-estado-usuario.component';
 import { ModificarEstadoUsuarioComponent } from '../modificar-estado-usuario/modificar-estado-usuario.component';
 import { EstadoUsuario } from '../estado-usuario';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-listado-estados-usuario',
@@ -26,6 +27,8 @@ export class ListadoEstadosUsuarioComponent {
     private estadoUsuarioService: EstadoUsuarioService,
     private modalService: ModalService,
     private recargarService: RecargarService,
+    private router: Router
+
   ) {}
 
   ngOnInit(): void {    
@@ -37,6 +40,10 @@ export class ListadoEstadosUsuarioComponent {
     this.recargarService.recargar$.subscribe(() => {
       this.recargar();
     })
+  }
+
+  volverAListado() {
+    this.router.navigate([`parametros`]);
   }
 
   // Creacion de EstadoUsuario

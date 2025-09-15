@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { GeneroService } from '../genero.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ModalService } from '../../../compartidos/modal/modal.service';
 import { Genero } from '../genero';
 import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
@@ -27,6 +27,7 @@ export class ListadoGenerosComponent {
     private generoService: GeneroService,
     private modalService: ModalService,
     private recargarService: RecargarService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {    
@@ -39,6 +40,10 @@ export class ListadoGenerosComponent {
     this.recargarService.recargar$.subscribe(() => {
       this.recargar();
     })
+  }
+
+  volverAListado() {
+    this.router.navigate([`parametros`]);
   }
 
   // Creacion de Genero

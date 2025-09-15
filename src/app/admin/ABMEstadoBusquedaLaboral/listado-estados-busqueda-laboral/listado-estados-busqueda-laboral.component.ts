@@ -9,6 +9,7 @@ import { RecargarService } from '../../recargar.service';
 import { CrearEstadoBusquedaLaboralComponent } from '../crear-estado-busqueda-laboral/crear-estado-busqueda-laboral.component';
 import { ModificarEstadoBusquedaLaboralComponent } from '../modificar-estado-busqueda-laboral/modificar-estado-busqueda-laboral.component';
 import Swal from 'sweetalert2';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-listado-estados-busqueda-laboral',
@@ -26,6 +27,8 @@ export class ListadoEstadosBusquedaLaboralComponent {
     private estadoService: EstadoBusquedaLaboralService,
     private modalService: ModalService,
     private recargarService: RecargarService,
+    private router: Router
+
   ) {}
 
   ngOnInit(): void {    
@@ -37,6 +40,10 @@ export class ListadoEstadosBusquedaLaboralComponent {
     this.recargarService.recargar$.subscribe(() => {
       this.recargar();
     })
+  }
+
+  volverAListado() {
+    this.router.navigate([`parametros`]);
   }
 
   // Creacion de EstadoBusquedaLaboral

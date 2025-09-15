@@ -9,6 +9,7 @@ import Swal from 'sweetalert2';
 import { RecargarService } from '../../recargar.service';
 import { CrearEtapaComponent } from '../crear-etapa/crear-etapa.component';
 import { ModificarEtapaComponent } from '../modificar-etapa/modificar-etapa.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-listado-etapas',
@@ -26,6 +27,7 @@ export class ListadoEtapasComponent {
     private etapaService: EtapaService,
     private modalService: ModalService,
     private recargarService: RecargarService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {    
@@ -39,6 +41,9 @@ export class ListadoEtapasComponent {
     })
   }
 
+  volverAListado() {
+    this.router.navigate([`parametros`]);
+  }
   // Creacion de Etapa
   crearEtapa() {
     this.modalRef = this.modalService.open(CrearEtapaComponent, {

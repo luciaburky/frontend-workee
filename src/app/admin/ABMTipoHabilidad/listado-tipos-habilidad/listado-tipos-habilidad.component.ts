@@ -9,6 +9,7 @@ import Swal from 'sweetalert2';
 import { ModalService } from '../../../compartidos/modal/modal.service';
 import { RecargarService } from '../../recargar.service';
 import { TipoHabilidadService } from '../tipo-habilidad.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-listado-tipos-habilidad',
@@ -26,6 +27,7 @@ export class ListadoTiposHabilidadComponent {
     private tipoHabilidadService: TipoHabilidadService,
     private modalService: ModalService,
     private recargarService: RecargarService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {    
@@ -38,6 +40,10 @@ export class ListadoTiposHabilidadComponent {
     this.recargarService.recargar$.subscribe(() => {
       this.recargar();
     })
+  }
+
+  volverAListado() {
+    this.router.navigate([`parametros`]);
   }
 
   // Creacion de TipoHabilidad

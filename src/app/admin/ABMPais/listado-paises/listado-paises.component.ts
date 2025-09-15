@@ -31,7 +31,8 @@ export class ListadoPaisesComponent implements OnInit{
     private paisService: PaisService,
     private router: Router,
     private modalService: ModalService,
-    private recargarService: RecargarService
+    private recargarService: RecargarService,
+    
   ) {  }
 
   ngOnInit(): void {
@@ -44,6 +45,10 @@ export class ListadoPaisesComponent implements OnInit{
     this.recargarService.recargar$.subscribe(() => {
       this.recargar();
     })
+  }
+
+  volverAListado() {
+    this.router.navigate([`parametros`]);
   }
 
   // Creacion de pais

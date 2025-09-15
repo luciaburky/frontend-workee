@@ -4,12 +4,12 @@ import { RubroService } from '../rubro.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { Router } from 'express';
 import Swal from 'sweetalert2';
 import { ModalService } from '../../../compartidos/modal/modal.service';
 import { RecargarService } from '../../recargar.service';
 import { CrearRubroComponent } from '../crear-rubro/crear-rubro.component';
 import { ModificarRubroComponent } from '../modificar-rubro/modificar-rubro.component';
+import { Router } from '@angular/router';
 
 @Component({
   standalone: true,
@@ -29,7 +29,8 @@ export class ListadoRubrosComponent {
   constructor(
     private rubroService: RubroService,
     private modalService: ModalService,
-    private recargarService: RecargarService
+    private recargarService: RecargarService,
+    private router: Router
   ) {  }
 
   ngOnInit(): void {
@@ -42,6 +43,10 @@ export class ListadoRubrosComponent {
     this.recargarService.recargar$.subscribe(() => {
       this.recargar();
     })
+  }
+
+  volverAListado() {
+    this.router.navigate([`parametros`]);
   }
 
   // Creacion de Rubro
