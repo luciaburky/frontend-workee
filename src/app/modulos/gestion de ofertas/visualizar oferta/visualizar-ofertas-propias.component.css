@@ -52,8 +52,9 @@
   display:flex;
   align-items:center;
   gap:12px;
-  padding:12px 0 20px;
-  margin:0 0 8px 0;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  margin:0 0 20px 0;
   border-bottom:1px solid #e5edf6;
   flex-wrap:wrap;                 /* permite bajar a 2da línea en celulares */
 }
@@ -243,7 +244,7 @@
 
 
 
-/*LO QUE AGREGUE AHORA (LO DE ARRIBA SUPONGO Q LO HICISTE CON EL CHAT xd)*/
+/* ====== Detalle de oferta ====== */
 
 .tarjeta-ofertas{
   background-color: white;
@@ -258,11 +259,13 @@
 
 .oferta-header {
   background-color: white;
-  margin: 1rem;
+  /* margin: 1rem; */
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  margin-bottom: 2rem;
+  /* margin-bottom: 2rem; */
+  border-bottom: 1px solid #eee;
+
 }
 
 .oferta-header h1 {
