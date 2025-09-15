@@ -17,6 +17,10 @@ export class DetalleEmpresaComponent implements OnInit {
   empresa: Empresa = {};
   ofertas: Oferta[] = []; // arreglo usado para guardar las ofertas que tiene la empresa
   
+  origen: any | undefined;
+
+  idOfertaOrigen?: number | null;
+
   constructor(
     private empresaService: EmpresaService,
     private route: ActivatedRoute,
@@ -35,6 +39,11 @@ export class DetalleEmpresaComponent implements OnInit {
       this.ofertas = data;
       console.log("estas son las ofertas que tiene la empresa", this.ofertas)
     })
+
+    this.route.queryParams.subscribe(params => {
+      this.origen = params['from'];
+      this.idOfertaOrigen = params['idOferta'] ? Number(params['idOferta']) : null;
+    });
   }
 
   getSitioWebConProtocolo(url: string): string {
@@ -55,8 +64,12 @@ export class DetalleEmpresaComponent implements OnInit {
     this.router.navigate([`buscar-ofertas/detalle`,idOferta], { queryParams: { from: 'empresa' } });
   }
 
-  volverAListado() {
-    this.router.navigate([`buscar-empresas`]);
+  volver() {
+    if (this.origen === 'oferta' && this.idOfertaOrigen) {
+      this.router.navigate([`/buscar-ofertas/detalle`, this.idOfertaOrigen]);
+    } else {
+      this.router.navigate([`buscar-empresas`]);
+    }
   }
 
 }

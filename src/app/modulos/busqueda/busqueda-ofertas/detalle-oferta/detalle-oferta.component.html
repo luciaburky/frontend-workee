@@ -17,7 +17,10 @@
             </div>
             <div class="datos-boton">
                 <h5 class="m-0">
-                    <a [routerLink]="['/buscar-empresas/detalle', oferta.empresa.id]" class="link-empresa">
+                    <a 
+                    [routerLink]="['/buscar-empresas/detalle', oferta.empresa.id]"
+                    [queryParams]="{ from: 'oferta', idOferta: oferta.id }"
+                    class="link-empresa">
                         {{ oferta.empresa.nombreEmpresa }}
                     </a>
                 </h5>
