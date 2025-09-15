@@ -1,6 +1,9 @@
-<div class="container">
-    <div class="titulo-wrapper">
-        <h2 class="titulo-listado">Provincias</h2>
+<div class="listado-wrapper">
+    <div class="listado-header">
+        <div>
+            <h1>Provincias</h1>
+            <p>Gestiona los parámetros de Workee</p>
+        </div>
     </div>
     <div class="busqueda-acciones">
         <button type="button" class="boton-nuevo" (click)="crearProvincia()">
@@ -13,7 +16,7 @@
                 ¡No hay provincias asociadas al país!
             </div>
     } @else {
-        <table class="table align-middle">
+        <table class="table align-middle table-hover">
         <thead>
             <tr>
                 <th scope="col">PROVINCIA</th>
