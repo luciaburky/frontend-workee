@@ -110,6 +110,9 @@ import { Oferta } from '../../oferta/oferta';
 import { EmpresaService } from '../../empresa/empresa/empresa.service';
 import { EstadoOferta } from '../../../admin/ABMEstadoOferta/estado-oferta';
 import { Router, RouterModule } from '@angular/router';
+import { UsuarioService } from '../../seguridad/usuarios/usuario.service';
+import { SesionService } from '../../../interceptors/sesion.service';
+import { Empleado } from '../../empresa/empleados/empleado';
 
 type OpcionEstado = { code: string; name: string };
 
@@ -140,10 +143,14 @@ export class VisualizarOfertasPropiasComponent implements OnInit {
   idEmpresaObtenida!: number;
   private isBrowser = false; // para SSR-safe sessionStorage
 
+  empleado?: Empleado;
+
   constructor(
     private ofertaService: OfertaService,
     private empresaService: EmpresaService,
     private router: Router,
+    private usuarioService: UsuarioService,
+    private sesionService: SesionService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {
     this.isBrowser = isPlatformBrowser(this.platformId);
@@ -159,42 +166,64 @@ export class VisualizarOfertasPropiasComponent implements OnInit {
       if (est) this.filtrosSeleccionadosEstadoOferta = JSON.parse(est);
     }
 
-    if (this.empresaService) {
-      console.log('entra a empresa service');
-      this.empresaService.getidEmpresabyCorreo()?.subscribe({
-        next: (idEmpresa) => {
-          if (idEmpresa !== undefined && idEmpresa !== null) {
-            this.idEmpresaObtenida = idEmpresa;
-            console.log('id empresa obtenido: ', idEmpresa);
+    // const rol = this.sesionService.getRolActual();
+    this.sesionService.rolUsuario$.subscribe(rol => {
+      // console.log("hola ", rol)
+      if (!rol) {
+        console.error("No se pudo obtener el rol del usuario");
+        return;
+      }
+  
+      if (rol.codigoRol === 'ADMIN_EMPRESA') {
+        this.empresaService.getidEmpresabyCorreo()?.subscribe({
+          next: (idEmpresa) => this.cargarOfertas(idEmpresa),
+          error: (err) => console.error('Error al obtener id de empresa por correo', err)
+        });
 
-            this.ofertaService.getOfertasPorEmpresa(idEmpresa).subscribe({
-              next: (ofertas) => {
-                // mapeo + campo derivado opcional
-                this.ofertasObtenidas = ofertas.map(i => ({
-                  
-                  ...i,
-                  estadoNombre: this.getEstadoActual(i)?.nombreEstadoOferta ?? '—',
-                }) as any);
-                
-                
+      } else if (rol.codigoRol === 'EMPLEADO_EMPRESA') {
+        console.log("soy empleado empresa");
+        this.usuarioService.getUsuario().subscribe({
+          next: (usuario) => {
+            this.empleado = usuario;
+            const idEmpresa = this.empleado?.empresa?.id;
+            if (idEmpresa) {
+              this.cargarOfertas(idEmpresa);
+            } else {
+              console.error('No se pudo obtener el id de la empresa del empleado');
+            }
+          },
+          error: (err) => console.error("Error al obtener el usuario logueado", err)
+        });
 
-                // construir opciones únicas de estado (en base al estado vigente de cada oferta)
-                this.cargarOpcionesEstados();
+      } else {
+        console.warn('Rol no contemplado en VisualizarOfertasPropias:', rol.nombreRol);
+      }
+    })
+  }
 
-                // aplicar filtros (texto + estados) si había algo guardado
-                this.aplicarFiltro();
-
-                console.log('Ofertas disponibles: ', this.ofertasObtenidas);
-              },
-              error: (err) => console.error('Error al obtener ofertas disponibles', err)
-            });
-          } else {
-            console.error('El id de empresa obtenido es undefined o null');
-          }
-        },
-        error: (err) => console.error('Error al obtener id de empresa por correo', err)
-      });
+  // Se carga el listado de ofertas desde aca, para no repetir codigo
+  private cargarOfertas(idEmpresa: number): void {
+    if (!idEmpresa) {
+      console.error('El id de empresa es inválido');
+      return;
     }
+
+    this.idEmpresaObtenida = idEmpresa;
+
+    this.ofertaService.getOfertasPorEmpresa(idEmpresa).subscribe({
+      next: (ofertas) => {
+        this.ofertasObtenidas = ofertas.map(i => ({
+          ...i,
+          estadoNombre: this.getEstadoActual(i)?.nombreEstadoOferta ?? '—',
+        }) as any);
+
+        this.cargarOpcionesEstados();
+        this.aplicarFiltro();
+
+        console.log('Ofertas disponibles: ', this.ofertasObtenidas);
+      },
+      error: (err) => console.error('Error al obtener ofertas disponibles', err)
+    });
   }
 
   /** Construye el combo de estados a partir del estado vigente de cada oferta */
