@@ -1,8 +1,11 @@
 .parametros-container {
-  margin: 16px;
-  padding: 24px;
+  /* margin: 16px; */
+  padding: 3rem;
   background-color: #FFFFFF; 
-  border-radius: 24px;
+  border-radius: 10px;
+  max-width: 1300px;
+  margin: 3rem auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 .parametros-header {
   display: flex;
