@@ -192,13 +192,18 @@
 
         <div class="form-group cv-wrapper">
 
-            <label for="fileCV" class="p-0 my-0 mb-2">Currículum Vitae</label>            
-            <div class="cv-drop-area" (click)="abrirSelectorCV()">
+            <label for="fileCV" class="p-0 my-0 mb-2">Currículum Vitae</label>
+
+            <!-- 🔧 Mostrar el drop SOLO si NO hay archivo -->
+            @if (!fileCV) {
+                <div class="cv-drop-area" (click)="abrirSelectorCV()">
                 <span class="material-symbols-outlined cloud-icon">cloud_upload</span>
                 <p class="cv-texto">Arrastra y suelta tu CV aquí o haz clic para buscar</p>
                 <small class="cv-subtexto">Formato aceptado: PDF (máximo 5MB).</small>
-            </div>
-        
+                </div>
+            }
+
+            <!-- ✅ Cuando hay archivo, se muestra tu tarjeta y el drop desaparece -->
             @if (fileCV) {
                 <div class="cv-box">
                 <span class="material-symbols-outlined icono-pdf">description</span>
@@ -214,13 +219,6 @@
                 </div>
             }
 
-            @if (candidatoForm.get('enlaceCV')?.hasError('formato')) {
-                <p class="text-error">El formato del archivo seleccionado no es válido. Debe ser .pdf</p>
-            }
-            @if (candidatoForm.get('enlaceCV')?.hasError('tamanioInvalido') && candidatoForm.get('enlaceCV')?.touched) {
-                <p class="text-error">El documento no debe superar los 5MB.</p>
-            }
-            
             <input
                 type="file"
                 id="fileCV"
@@ -229,7 +227,15 @@
                 formControlName="enlaceCV"
                 (change)="onCVSelected($event)"
             />
+
+            @if (candidatoForm.get('enlaceCV')?.hasError('formato')) {
+                <p class="text-error">El formato del archivo seleccionado no es válido. Debe ser .pdf</p>
+            }
+            @if (candidatoForm.get('enlaceCV')?.hasError('tamanioInvalido') && candidatoForm.get('enlaceCV')?.touched) {
+                <p class="text-error">El documento no debe superar los 5MB.</p>
+            }
         </div>
+
 
 
         <div class="form-group">
