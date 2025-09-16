@@ -113,6 +113,7 @@ export class PerfilEmpleadoComponent implements OnInit {
         } else {
           this.esEmpleado = false;
           const id = Number(this.route.snapshot.paramMap.get('idEmpleado'));
+          this.idEmpleado = id;
 
           this.empresaService.getidEmpresabyCorreo()?.subscribe({
             next: (idEmpresa) => {
