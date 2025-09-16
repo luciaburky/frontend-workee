@@ -24,7 +24,8 @@ export class EtapaService {
   }
   
   deshabilitar(idEtapa: number) {
-    return this.http.delete<void>(`${this.url}/deshabilitar/${idEtapa}`);
+    console.log("entro al eliminar del service")
+    return this.http.delete<void>(`${this.url}/${idEtapa}`);
   }
   
   habilitar(idEtapa: number) {
