@@ -177,6 +177,8 @@ export class ListadoPaisesComponent implements OnInit{
     this.paisList = this.paisListOriginal.filter(pais =>
       pais.nombrePais?.toLowerCase().includes(texto)
     );
+
+    this.paginaActual = 1;
   }
 
   // Para recargar la pagina
