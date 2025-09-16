@@ -300,7 +300,7 @@ export class PerfilEmpleadoComponent implements OnInit {
           },
           error: (error) => {
             console.error('Error al eliminar empleado', error);
-            if(error.error.message === "No se puede dar de baja: el empleado participa en ofertas no finalizadas.") {
+            if(error.error.message === "Un error inesperado ha ocurrido: No se puede dar de baja: el empleado participa en ofertas no finalizadas.") {
               Swal.fire({
                 toast: true,
                 position: "top-end",
