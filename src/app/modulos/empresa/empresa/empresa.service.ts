@@ -48,7 +48,7 @@ export class EmpresaService {
   }
 
   eliminarEmpresa(idEmpresa: number) {
-    return this.http.delete<void>(`${this.url}/${idEmpresa}`);
+    return this.http.delete(`${this.url}/${idEmpresa}`, { responseType: 'text' });
   }
 
   getidEmpresabyCorreo(){
