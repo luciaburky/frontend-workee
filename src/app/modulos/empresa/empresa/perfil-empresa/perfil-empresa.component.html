@@ -32,7 +32,7 @@
               </div>
             } @else {
               <img 
-                [src]="empresa.usuario?.urlFotoUsuario" 
+                [src]="fotoTemporal ||  empresa.usuario?.urlFotoUsuario" 
                 alt="foto" 
                 class="foto" 
               />

@@ -154,6 +154,8 @@ export class ListadoRubrosComponent {
     this.rubroList = this.rubroListOriginal.filter(rubro =>
       rubro.nombreRubro?.toLowerCase().includes(texto)
     );
+
+    this.paginaActual = 1;
   }
 
   // Para recargar la pagina

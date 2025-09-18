@@ -99,7 +99,7 @@ export const routes: Routes = [
     { path: 'buscar-candidatos/detalle/:idCandidato', component: DetalleCandidatoComponent, canActivate: [authGuard] },
     { path: 'buscar-empresas', component: BusquedaEmpresasComponent, canActivate: [authGuard] },
     { path: 'buscar-empresas/detalle/:idEmpresa', component: DetalleEmpresaComponent, canActivate: [authGuard] },
-    { path: 'nuevaContrasenia', component: RecuperarContraseniaComponent, canActivate: [authGuard]},
+    { path: 'nuevaContrasenia', component: RecuperarContraseniaComponent, canActivate: [publicGuard]},
     { path: 'gestion-de-roles', component: GestionderolesComponent, canActivate: [authGuard]},
 
     { path: 'buscar-ofertas', component: BusquedaOfertasComponent },

@@ -14,6 +14,7 @@ import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { ModalService } from '../../../../compartidos/modal/modal.service';
 import { ref, StorageReference, Storage, uploadBytes, getDownloadURL, uploadBytesResumable } from '@angular/fire/storage';
 import { SpinnerComponent } from "../../../../compartidos/spinner/spinner/spinner.component";
+import { SesionService } from '../../../../interceptors/sesion.service';
 
 
 @Component({
@@ -70,6 +71,7 @@ export class PerfilEmpresaComponent implements OnInit {
     private rubroService: RubroService,
     private usuarioService: UsuarioService,
     private modalService: ModalService,
+    private sesionService: SesionService
   ) {
     this.empresaForm = new FormGroup({
       nombreEmpresa: new FormControl('', [Validators.required]),
@@ -185,6 +187,7 @@ export class PerfilEmpresaComponent implements OnInit {
         next: () => {
           this.modoEdicion = false;
           // this.volver();
+          this.sesionService.logout()
           // // TODO: QUE PONEMOS ACA?
           Swal.fire({
             toast: true,

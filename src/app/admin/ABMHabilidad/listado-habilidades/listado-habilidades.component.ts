@@ -154,6 +154,8 @@ export class ListadoHabilidadesComponent {
     this.habilidadList = this.habilidadListOriginal.filter(habilidad =>
       habilidad.nombreHabilidad?.toLowerCase().includes(texto)
     );
+
+    this.paginaActual = 1;
   }
 
   // Para recargar la pagina

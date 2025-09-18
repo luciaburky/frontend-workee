@@ -32,7 +32,8 @@ export class ListadoEtapasComponent {
 
   ngOnInit(): void {    
     this.etapaService.findAll().subscribe(etapas => {
-      this.etapaList = etapas;
+      // console.log(etapas)
+      this.etapaList = etapas.filter(etapa => etapa.esPredeterminada === true);
     });
 
     this.recargar();
@@ -111,6 +112,7 @@ export class ListadoEtapasComponent {
         this.etapaService.deshabilitar(idEtapa).subscribe({
           next: () => {
             this.recargar();
+            // console.log("mando la req")
             const Toast = Swal.mixin({
             toast: true,
             position: "top-end",
@@ -143,7 +145,7 @@ export class ListadoEtapasComponent {
 
   recargar(): void {
     this.etapaService.findAll().subscribe(etapas => {
-      this.etapaList = etapas;
+      this.etapaList = etapas.filter(etapa => etapa.esPredeterminada === true);
     });
   }
 
