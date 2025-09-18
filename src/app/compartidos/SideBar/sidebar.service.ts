@@ -56,7 +56,7 @@ export class SidebarService {
     { titulo: "Habilitaciones", ruta: "/habilitaciones", icono: "domain", codigoPermiso: "HABILITACION_EMPRESA" },
     { titulo: "Usuarios", ruta: "/usuarios", icono: "groups_2", codigoPermiso: "GESTIONAR_USUARIOS" },
     //{ titulo: "Calendario", ruta: "/calendario", icono: "", codigoPermiso: "" }, //TODO: Falta
-    //{ titulo: "Postulaciones", ruta: "/postulaciones", icono: "", codigoPermiso: "POSTULAR_OFERTA" } //TODO: Falta
+    { titulo: "Postulaciones", ruta: "/postulaciones", icono: "trip", codigoPermiso: "POSTULAR_OFERTA" } //TODO: Falta
   ];
   }
   
