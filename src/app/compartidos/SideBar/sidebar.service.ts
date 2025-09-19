@@ -49,7 +49,7 @@ export class SidebarService {
     { titulo: "Panel de control", ruta: "", icono: "settings", 
       children: [
         { titulo: "Roles", ruta: "/gestion-de-roles", icono: "", codigoPermiso: "GESTIONAR_ROLES"},
-        //{ titulo: "Backup", ruta: "/backup", icono: "", codigoPermiso: "BACKUP"}, //TODO: Falta
+        { titulo: "Backup", ruta: "/backup", icono: "", codigoPermiso: "BACKUP"}, //TODO: Falta
         { titulo: "Parámetros", ruta: "/parametros", icono: "", codigoPermiso: "PARAMETROS"}
       ]
      },

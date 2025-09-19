@@ -48,6 +48,7 @@ import { CrearOfertaComponent } from './modulos/gestion de ofertas/crear oferta/
 import { VisualizarOfertasPropiasComponent } from './modulos/gestion de ofertas/visualizar oferta/visualizar-ofertas-propias.component';
 import { EtapasEmpresaComponent } from './modulos/gestion de ofertas/etapas-empresa/etapas-empresa.component';
 import { DetalleOfertaPropiaComponent } from './modulos/gestion de ofertas/visualizar oferta/detalle-oferta-propia/detalle-oferta-propia.component';
+import { BackupComponent } from './modulos/backup y recuperacion/backup.component';
 
 export const routes: Routes = [
     // { path: 'buscar-ofertas', component: BuscarComponent },
@@ -89,7 +90,7 @@ export const routes: Routes = [
     { path: 'registro-candidato', component: RegistroCandidatoComponent, canActivate: [publicGuard] },
     { path: 'crear-oferta', component: CrearOfertaComponent},
     { path: 'cuentaVerificada', component: ConfirmacionComponent},
-
+    { path: 'backup', component: BackupComponent, canActivate: [authGuard]},
     { path: 'usuarios', component: ListadoUsuariosComponent, canActivate: [authGuard] },
     { path: 'usuarios/detalle/:idUsuario', component: DetalleUsuarioComponent, canActivate: [authGuard] },
     { path: 'habilitaciones', component: HabilitacionEmpresasComponent, canActivate: [authGuard] },
