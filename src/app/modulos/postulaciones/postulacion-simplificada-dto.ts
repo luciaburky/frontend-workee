@@ -8,13 +8,4 @@ export class PostulacionSimplificadaDTO {
     fechaHoraFinPostulacionOferta!: string | null;
     fechaHoraAbandonoOferta!: string | null;
     etapas!: PostulacionOfertaEtapa;
-
 }
-
-// private Date fechaHoraInicioPostulacion;
-//     private Date fechaHoraAbandonoOferta;
-//     private Date fechaHoraFinPostulacionOferta;
-//     private Long idIniciadorPostulacion;
-//     private Long idCandidato;
-//     private Long idPostulacionOferta;
-//     private Long idOferta;

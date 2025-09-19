@@ -1,9 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, Observable } from "rxjs";
-import { EmpleadoEtapaDTO } from "../empresa/empleados/perfil-empleado/empleado-etapa-dto";
-import { ofertaEtapaDTO } from "../gestion de ofertas/crear oferta/ofertaEtapaDTO";
-import { Oferta } from "../oferta/oferta";
 import { PostulacionSimplificadaDTO } from "./postulacion-simplificada-dto";
 
 @Injectable({
@@ -18,6 +15,6 @@ export class PostulacionService {
     constructor(private http: HttpClient) { };
 
     getPostulaciones(idCandidato: number): Observable<PostulacionSimplificadaDTO[]> {
-    return this.http.get<PostulacionSimplificadaDTO[]>(`${this.url}/${idCandidato}`);
+      return this.http.get<PostulacionSimplificadaDTO[]>(`${this.url}/${idCandidato}/postulaciones`);
     }
 }

@@ -1,0 +1,95 @@
+<div class="listado-wrapper">
+    <div class="listado-header">
+        <div>
+            <h1>Postulaciones</h1>
+            <p>Gestiona tus postulaciones a ofertas</p>
+        </div>
+    </div>
+    <div class="busqueda-acciones">
+        <p-multiselect
+        placeholder="Estado"
+        optionLabel="name"
+        optionValue="code"
+        [maxSelectedLabels]="0"
+        [selectedItemsLabel]="'Estado ({0})'"
+        class="filtro"
+        [panelStyle]="{ 'background': '#fff' }">
+        <!-- [options]="filtrosEstadoOferta"
+        [(ngModel)]="filtrosSeleccionadosEstadoOferta"
+        (onChange)="onEstadosChange()"> -->
+      </p-multiselect>
+    </div>
+    
+    <div *ngIf="isLoading">
+        <app-spinner type="inline" message="Cargando postulaciones..."></app-spinner>
+    </div>
+
+    <div *ngIf="!isLoading && postulaciones.length > 0; else noPostulaciones"
+        class="grid-container">
+
+        <!-- @for (p of obtener; track $index) { -->
+
+            <div *ngFor="let p of postulaciones" class="card">
+                <div class="card-body d-flex">
+                    <div class="empresa-logo me-3">
+                        <img [src]="p.oferta.empresa?.usuario.urlFotoUsuario || 'assets/img/default-logo.png'" alt="Logo empresa">
+                    </div>
+
+                    <div class="flex-grow-1">
+                        <h5>{{ p.oferta.titulo }}</h5>
+                        <p class="empresa">{{ p.oferta.empresa?.nombreEmpresa }}</p>
+                        <div class="d-flex align-items-center mb-1">
+                            <span class="material-symbols-outlined me-1 actualizado">schedule</span>
+                            <p class="fecha mb-0">Actualizado: {{ p.etapaActual?.fechaHoraAlta | date:'dd/MM/yyyy' }}</p>
+                        </div>
+                    </div>
+                    
+                </div>
+                <div class="card-footer">
+                    <span class="etapa">{{ p.etapaActual?.nombreEtapa }}</span>
+                    <div class="ver-detalles" (click)="verDetalles(p.idPostulacion)">
+                        <span class="material-symbols-outlined" id="detalle">arrow_forward</span>
+                    </div>
+                </div>
+            </div>
+        <!-- } -->
+
+    </div>
+
+    <ng-template #noPostulaciones>
+        <div class="sin-resultados">
+        <img src="assets/img/sin-resultados.png" alt="Sin resultados" class="sin-resultados-img">
+        <p>No encontramos postulaciones...</p>
+        </div>
+    </ng-template>
+
+    <!-- tuve que usar ngIf porque no me funcionaba solo con @if -->
+        <nav *ngIf="totalPaginas > 1">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" [class.disabled]="paginaActual === 1">
+                <button class="page-link" (click)="retrocederPagina()">Anterior</button>
+            </li>
+
+            <li 
+            *ngFor="let pagina of paginasMostradas"
+            class="page-item"
+            [class.active]="paginaActual === pagina"
+            [class.disabled]="pagina === '...'">
+
+            <ng-container *ngIf="pagina !== '...'; else puntos">
+                <button class="page-link" (click)="irAPagina(+pagina)">
+                {{ pagina }}
+                </button>
+            </ng-container>
+
+            <ng-template #puntos>
+                <span class="page-link">...</span>
+            </ng-template>
+            </li>
+
+            <li class="page-item" [class.disabled]="paginaActual === totalPaginas">
+                <button class="page-link" (click)="avanzarPagina()">Siguiente</button>
+            </li>
+        </ul>
+    </nav>
+</div>
