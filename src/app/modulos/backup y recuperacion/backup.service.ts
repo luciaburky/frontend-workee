@@ -10,15 +10,22 @@ export class BackupService {
 
   constructor(private http: HttpClient) {}
 
-  generarBackup(): Observable<any> {
-    return this.http.post<any>(`${this.url}/generarBackup`, null);
+  // Devuelve texto plano => responseType 'text'
+  generarBackup(): Observable<string> {
+    return this.http.post(`${this.url}/generarBackup`, null, {
+      responseType: 'text' as 'text'
+    });
   }
 
   listarBackups(): Observable<string[]> {
     return this.http.get<string[]>(`${this.url}/listarBackups`);
   }
 
-  restaurarBackup(nombreBackup: string): Observable<any> {
-    return this.http.post<any>(`${this.url}/restaurarBackup`, { nombreBackup });
+  // El backend espera PathVariable => ponemos el nombre en la URL
+  restaurarBackup(nombreBackup: string): Observable<string> {
+    const nombre = encodeURIComponent(nombreBackup);
+    return this.http.post(`${this.url}/restaurarBackup/${nombre}`, null, {
+      responseType: 'text' as 'text'
+    });
   }
 }
