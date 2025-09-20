@@ -36,67 +36,62 @@ export class BackupComponent implements OnInit {
     });
   }
 
-  generarBakcup(): void {
-    // Pop Up Confirmación Backup
-    Swal.fire({
-      html: `
-        <div class="swal-icon-circle info">
-          <span class="material-symbols-outlined">download</span>
-        </div>
-        <h3 class="swal-headline">¿Está seguro que desea realizar un backup?</h3>
-      `,
-      showCancelButton: true,
-      reverseButtons: true,
-      focusConfirm: false,
-      confirmButtonText: 'Sí, realizar',
-      cancelButtonText: 'No, cancelar',
-      customClass: {
-        popup: 'swal-card',
-        htmlContainer: 'swal-text-center',
-        confirmButton: 'swal-btn-primary',
-        cancelButton: 'swal-btn-secondary',
-        actions: 'swal-actions-row'
+generarBakcup(): void {
+  Swal.fire({
+    html: `
+      <div class="swal-icon-circle info">
+        <span class="material-symbols-outlined">download</span>
+      </div>
+      <h3 class="swal-headline">¿Está seguro que desea realizar un backup?</h3>
+      <div class="swal-sub">
+        Ten en cuenta que las transacciones generadas durante este proceso no serán registradas en la copia de seguridad.
+      </div>
+    `,
+    showCancelButton: true,
+    reverseButtons: true,
+    focusConfirm: false,
+    confirmButtonText: 'Sí, realizar',
+    cancelButtonText: 'No, cancelar',
+    customClass: {
+      popup: 'swal-card',
+      htmlContainer: 'swal-text-center',
+      confirmButton: 'swal-btn-workee',  
+      cancelButton: 'swal-btn-secondary',
+      actions: 'swal-actions-row'
+    }
+  }).then(res => {
+    if (!res.isConfirmed) { return; }
+
+    this.backupService.generarBackup().subscribe({
+      next: (mensaje: string) => {
+        Swal.fire({
+          icon: 'success',
+          title: 'Backup realizado correctamente',
+          html: `${mensaje}`,
+          confirmButtonText: 'Aceptar',
+          customClass: {
+            popup: 'swal-card',
+            confirmButton: 'swal-btn-success'
+          }
+        });
+        this.cargarListado();
+      },
+      error: () => {
+        Swal.fire({
+          icon: 'error',
+          title: 'No se pudo completar el backup',
+          html: 'Ocurrió un problema durante el proceso de copia de seguridad.<br>Por favor, inténtelo nuevamente.',
+          confirmButtonText: 'Aceptar',
+          customClass: {
+            popup: 'swal-card',
+            confirmButton: 'swal-btn-primary'
+          }
+        });
       }
-    }).then(res => {
-      if (!res.isConfirmed) { return; }
-      console.log('Iniciando proceso de backup...');
-      // Llamada al servicio
-      this.backupService.generarBackup().subscribe({
-        next: (mensaje: string) => {
-          console.log('Backup realizado con éxito.');
-          // Mensaje de éxito: Backup
-          Swal.fire({
-            icon: 'success',
-            title: 'Backup realizado correctamente',
-            html: ` ${mensaje}`, 
-            confirmButtonText: 'Aceptar',
-            customClass: {
-              popup: 'swal-card',
-              htmlContainer: 'swal-text-center',
-              confirmButton: 'swal-btn-success'
-            }
-          });
-          this.cargarListado();
-        },
-        // Error Backup
-        error: () => {
-          Swal.fire({
-            icon: 'error',
-            title: 'No se pudo completar el backup',
-            html: 'Ocurrió un problema durante el proceso de copia de seguridad.<br>Por favor, inténtelo nuevamente.',
-            showCloseButton: true,
-            confirmButtonText: 'Aceptar',
-            customClass: {
-              popup: 'swal-card',
-              htmlContainer: 'swal-text-center',
-              confirmButton: 'swal-btn-primary',
-              closeButton: 'swal-close'
-            }
-          });
-        }
-      });
     });
-  }
+  });
+}
+
 
   // =============== RESTAURACIÓN ===============
   restaurarBackup(nombreBackup: string): void {

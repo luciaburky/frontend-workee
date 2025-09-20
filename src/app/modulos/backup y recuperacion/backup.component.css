@@ -117,3 +117,10 @@
   border-color:#84CAFF;
   box-shadow:0 0 0 4px rgba(99,162,255,0.15);
 }
+
+.swal-btn-workee {
+  background-color: #31A5DD !important; /* o el azul corporativo exacto */
+  color: #fff !important;
+  border-radius: 8px;
+  padding: 8px 20px;
+}
